@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { Suspense, useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -12,6 +12,7 @@ import { LegalFooter } from "@/components/legal/legal-footer";
 import { PassportLogo } from "@/components/brand/passport-logo";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { signupAction, type ActionResult } from "@/lib/actions/auth";
+import { SignupAttributionFields } from "@/components/auth/signup-attribution-fields";
 import { signupSchema, type SignupInput } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -126,6 +127,9 @@ export function SignupForm() {
                   </FormItem>
                 )}
               />
+              <Suspense fallback={null}>
+                <SignupAttributionFields />
+              </Suspense>
               <label className="flex items-start gap-2 text-sm text-muted-foreground">
                 <input
                   type="checkbox"

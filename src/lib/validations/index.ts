@@ -14,6 +14,22 @@ export const loginSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
+const REFERRAL_SOURCES = [
+  "search",
+  "broker",
+  "linkedin",
+  "conference",
+  "colleague",
+  "other",
+] as const;
+
+export const signupAttributionSchema = z.object({
+  referralSource: z.enum(REFERRAL_SOURCES).optional(),
+  utmSource: z.string().max(100).optional(),
+  utmMedium: z.string().max(100).optional(),
+  utmCampaign: z.string().max(100).optional(),
+});
+
 export const signupSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
@@ -25,7 +41,7 @@ export const signupSchema = z.object({
   acceptTerms: z
     .union([z.literal("on"), z.literal("true"), z.literal(true)])
     .optional(),
-});
+}).merge(signupAttributionSchema);
 
 export const signupServerSchema = signupSchema.refine(
   (data) => data.acceptTerms === "on" || data.acceptTerms === "true" || data.acceptTerms === true,

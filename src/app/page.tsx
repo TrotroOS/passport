@@ -12,6 +12,12 @@ export async function generateMetadata(): Promise<Metadata> {
       title: t("metaTitle"),
       description: t("metaDescription"),
       type: "website",
+      siteName: "Passport",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("metaTitle"),
+      description: t("metaDescription"),
     },
   };
 }

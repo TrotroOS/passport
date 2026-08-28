@@ -10,8 +10,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
+  { href: "#audiences", key: "audiences" as const },
   { href: "#features", key: "features" as const },
   { href: "#how-it-works", key: "howItWorks" as const },
+  { href: "#compare", key: "compare" as const },
   { href: "#corridors", key: "corridors" as const },
   { href: "#pricing", key: "pricing" as const },
   { href: "/help", key: "help" as const, external: true },

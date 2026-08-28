@@ -31,6 +31,7 @@ export const ADMIN_RUNBOOK_SECTIONS: RunbookSection[] = [
       "All admin shipment views are read-only — tenants manage data in the main app",
       "Mutating admin actions (regulations, abbreviations, user promotion) should be deliberate and auditable",
       "Check the dashboard daily for open feedback, recent errors, and AI spend",
+      "GTM and marketing strategy: docs/MARKETING-PLAN.md",
     ],
   },
   {

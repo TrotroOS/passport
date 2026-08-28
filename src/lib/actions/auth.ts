@@ -129,6 +129,10 @@ export async function signupAction(
     password: formData.get("password"),
     fullName: formData.get("fullName"),
     acceptTerms: formData.get("acceptTerms"),
+    referralSource: formData.get("referralSource") || undefined,
+    utmSource: formData.get("utmSource") || undefined,
+    utmMedium: formData.get("utmMedium") || undefined,
+    utmCampaign: formData.get("utmCampaign") || undefined,
   });
 
   if (!parsed.success) {
@@ -266,7 +270,14 @@ export async function signupAction(
     action: "user.registered",
     entityType: "user",
     entityId: userId,
-    metadata: { email, role: "owner" },
+    metadata: {
+      email,
+      role: "owner",
+      referral_source: parsed.data.referralSource ?? null,
+      utm_source: parsed.data.utmSource ?? null,
+      utm_medium: parsed.data.utmMedium ?? null,
+      utm_campaign: parsed.data.utmCampaign ?? null,
+    },
   });
 
   const { error: signInError } = await supabase.auth.signInWithPassword({

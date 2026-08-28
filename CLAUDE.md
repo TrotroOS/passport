@@ -130,3 +130,4 @@ export async function GET(
 - [AGENTS.md](./AGENTS.md) — alias entry point for other agents
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — full technical architecture
 - [docs/SCAFFOLDING.md](./docs/SCAFFOLDING.md) — folder structure map
+- [docs/MARKETING-PLAN.md](./docs/MARKETING-PLAN.md) — go-to-market strategy and marketing calendar

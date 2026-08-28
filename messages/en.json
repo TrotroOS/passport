@@ -192,7 +192,18 @@
     "acceptTermsPrefix": "I agree to the",
     "termsOfService": "Terms of Service",
     "privacyPolicy": "Privacy Policy",
-    "acceptableUse": "Acceptable Use Policy"
+    "acceptableUse": "Acceptable Use Policy",
+    "referralSource": "How did you hear about us?",
+    "referralSourcePlaceholder": "Select an option (optional)",
+    "referralSourceHint": "Helps us understand which channels work — optional.",
+    "referralSources": {
+      "search": "Search engine",
+      "broker": "Broker or forwarder referral",
+      "linkedin": "LinkedIn",
+      "conference": "Conference or event",
+      "colleague": "Colleague or word of mouth",
+      "other": "Other"
+    }
   },
   "legal": {
     "hubTitle": "Legal",
@@ -694,8 +705,10 @@
     "metaTitle": "Passport — Trade Compliance & Shipment Intelligence",
     "metaDescription": "Upload trade documents, verify cross-document consistency, run regulatory checks, and collaborate with brokers — before customs filing.",
     "nav": {
+      "audiences": "Who it's for",
       "features": "Features",
       "howItWorks": "How it works",
+      "compare": "Why Passport",
       "corridors": "Corridors",
       "pricing": "Pricing",
       "help": "Help",
@@ -737,6 +750,80 @@
       "corridorsValue": "3+",
       "languages": "Languages supported",
       "languagesValue": "4"
+    },
+    "audiences": {
+      "title": "Built for every link in the import chain",
+      "subtitle": "Whether you own the shipment, clear it, or move the freight — Passport gives your team one workspace before customs filing.",
+      "importers": {
+        "title": "Importers & compliance teams",
+        "description": "Stop discovering document gaps when customs already has your container.",
+        "point1": "Upload and classify invoices, packing lists, and certificates in one place",
+        "point2": "Run verification and Passport Score before broker handoff",
+        "point3": "Invite brokers with role-based access and full audit history"
+      },
+      "brokers": {
+        "title": "Customs brokers",
+        "description": "Receive cleaner files from clients and confirm readiness with evidence.",
+        "point1": "Accept email invites — no setup required for first review",
+        "point2": "Comment, resolve discrepancies, and confirm broker readiness",
+        "point3": "Reduce rework cycles on incomplete or mismatched documents"
+      },
+      "forwarders": {
+        "title": "Freight forwarders",
+        "description": "Connect logistics milestones to the compliance record your clients need.",
+        "point1": "Track containers alongside shipment documentation",
+        "point2": "Share a single shipment view with importers and brokers",
+        "point3": "Reduce last-minute document chases before arrival"
+      }
+    },
+    "compare": {
+      "title": "Why teams switch from email and spreadsheets",
+      "subtitle": "Email and Excel can store files — Passport verifies them, scores readiness, and keeps everyone aligned.",
+      "capability": "Capability",
+      "passport": "Passport",
+      "legacy": "Email & spreadsheets",
+      "rows": {
+        "documents": {
+          "label": "Central document workspace",
+          "detail": "All trade docs for a shipment in one tenant-secure place"
+        },
+        "verification": {
+          "label": "Cross-document verification",
+          "detail": "Automatic checks for quantity, value, and party mismatches"
+        },
+        "regulatory": {
+          "label": "Corridor regulatory rules",
+          "detail": "Ghana, Nigeria, Kenya checks with pass/fail guidance"
+        },
+        "collaboration": {
+          "label": "Broker collaboration",
+          "detail": "Invites, comments, and dual readiness confirmation"
+        },
+        "audit": {
+          "label": "Exportable audit trail",
+          "detail": "Who changed what, when — for internal review and handoffs"
+        }
+      }
+    },
+    "testimonials": {
+      "title": "What early teams are saying",
+      "subtitle": "Pilot feedback from import and brokerage teams testing Passport on live corridors.",
+      "disclaimer": "Representative pilot feedback — individual results vary. Passport is assistive software, not customs advice.",
+      "quote1": {
+        "text": "We caught a quantity mismatch between the invoice and packing list before our broker submitted — that alone saved us a hold at Tema.",
+        "role": "Import compliance lead",
+        "context": "Consumer goods · Ghana corridor"
+      },
+      "quote2": {
+        "text": "Clients send cleaner files now because they know we run everything through Passport first. Fewer back-and-forth emails on every shipment.",
+        "role": "Clearance operations manager",
+        "context": "Customs brokerage · West Africa"
+      },
+      "quote3": {
+        "text": "Having tracking and documents on the same shipment record means we are not scrambling when the vessel arrives.",
+        "role": "Freight operations coordinator",
+        "context": "Forwarder · multi-corridor"
+      }
     },
     "features": {
       "title": "Everything you need for trade compliance",

@@ -14,6 +14,7 @@ All agents (Cursor, Claude Code, Copilot, etc.) should follow **CLAUDE.md** when
 | [ARCHITECTURE.md §10](./ARCHITECTURE.md#10-system-design-principles) | Backend design: latency, webhooks, DB, concurrency |
 | [PRD.md](./PRD.md) | Product requirements and user journeys |
 | [docs/SCAFFOLDING.md](./docs/SCAFFOLDING.md) | Folder structure and extension points |
+| [docs/MARKETING-PLAN.md](./docs/MARKETING-PLAN.md) | Go-to-market strategy, ICPs, and 90-day calendar |
 | [README.md](./README.md) | Setup, scripts, deployment |
 
 ## Agent checklist (every task)

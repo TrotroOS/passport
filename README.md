@@ -17,6 +17,7 @@ Passport helps importers, customs brokers, and freight forwarders upload trade d
 | [docs/SCAFFOLDING.md](./docs/SCAFFOLDING.md) | Folder structure & extension points |
 | [docs/RUNBOOK.md](./docs/RUNBOOK.md) | Platform admin operator runbook |
 | [docs/USER-HELP.md](./docs/USER-HELP.md) | End-user troubleshooting guide |
+| [docs/MARKETING-PLAN.md](./docs/MARKETING-PLAN.md) | Go-to-market strategy, ICPs, channels, and 90-day calendar |
 
 ## Tech Stack
 

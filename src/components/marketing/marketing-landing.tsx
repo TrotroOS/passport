@@ -12,9 +12,12 @@ import {
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { LegalFooter } from "@/components/legal/legal-footer";
+import { MarketingAudiences } from "@/components/marketing/marketing-audiences";
+import { MarketingCompare } from "@/components/marketing/marketing-compare";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { MarketingHeroPreview } from "@/components/marketing/marketing-hero-preview";
 import { MarketingStickyCta } from "@/components/marketing/marketing-sticky-cta";
+import { MarketingTestimonials } from "@/components/marketing/marketing-testimonials";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -154,6 +157,8 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
         </div>
       </section>
 
+      <MarketingAudiences />
+
       {/* Features */}
       <section id="features" className="scroll-mt-16 border-b bg-muted/30 py-14 sm:scroll-mt-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -227,6 +232,8 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
         </div>
       </section>
 
+      <MarketingCompare />
+
       {/* Corridors */}
       <section
         id="corridors"
@@ -258,6 +265,8 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
           </div>
         </div>
       </section>
+
+      <MarketingTestimonials />
 
       {/* Pricing */}
       <section id="pricing" className="scroll-mt-16 py-14 sm:scroll-mt-20 sm:py-24">
