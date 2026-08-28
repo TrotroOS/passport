@@ -2,15 +2,7 @@
 
 import { Printer } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type {
-  AuditEvent,
-  Discrepancy,
-  Party,
-  PassportScore,
-  Product,
-  Shipment,
-  WorkflowTask,
-} from "@/types/database";
+import type { PassportScore, Shipment } from "@/types/database";
 import { printHtmlDocument } from "@/lib/print/print-html-document";
 import { buildShipmentComplianceReportHtml } from "@/lib/print/shipment-compliance-report-html";
 import { Button } from "@/components/ui/button";
@@ -19,12 +11,6 @@ import { cn } from "@/lib/utils";
 interface ShipmentPrintReportProps {
   shipment: Shipment;
   score: PassportScore | null;
-  parties: Party[];
-  products: Product[];
-  documentCount: number;
-  openDiscrepancies: Discrepancy[];
-  openTasks: WorkflowTask[];
-  auditEvents?: AuditEvent[];
   organizationName?: string;
   compact?: boolean;
   className?: string;
@@ -33,12 +19,6 @@ interface ShipmentPrintReportProps {
 export function ShipmentPrintReport({
   shipment,
   score,
-  parties,
-  products,
-  documentCount,
-  openDiscrepancies,
-  openTasks,
-  auditEvents = [],
   organizationName,
   compact = false,
   className,
@@ -50,17 +30,11 @@ export function ShipmentPrintReport({
     const html = buildShipmentComplianceReportHtml({
       shipment,
       score,
-      parties,
-      products,
-      documentCount,
-      openDiscrepancies,
-      openTasks,
-      auditEvents,
       organizationName,
       statusLabel: (status) => ts(status as "draft"),
-      roleLabel: (role) => ts(role as "seller"),
       labels: {
         title: t("title"),
+        tagline: t("tagline"),
         footer: t("footer"),
         generatedAt: t("generatedAt"),
         organization: t("organization"),
@@ -81,24 +55,6 @@ export function ShipmentPrintReport({
         consistency: t("consistency"),
         counterparty: t("counterparty"),
         regulatory: t("regulatory"),
-        partiesSection: t("partiesSection"),
-        partyName: t("partyName"),
-        partyRole: t("partyRole"),
-        noParties: t("noParties"),
-        productsSection: t("productsSection"),
-        productName: t("productName"),
-        hsCode: t("hsCode"),
-        noProducts: t("noProducts"),
-        documentsSection: t("documentsSection"),
-        documentsOnFile: t("documentsOnFile", { count: documentCount }),
-        discrepanciesSection: t("discrepanciesSection"),
-        noDiscrepancies: t("noDiscrepancies"),
-        tasksSection: t("tasksSection"),
-        noTasks: t("noTasks"),
-        auditTrail: t("auditTrail"),
-        auditTimestamp: t("auditTimestamp"),
-        auditAction: t("auditAction"),
-        auditEntity: t("auditEntity"),
         confidentialNote: t("confidentialNote"),
       },
     });

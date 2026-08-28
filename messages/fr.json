@@ -393,7 +393,8 @@
     "auditAction": "Action",
     "auditEntity": "Entity",
     "confidentialFooter": "Confidential compliance record — for internal review and audit purposes only.",
-    "confidentialNote": "Confidential compliance record for internal review and audit purposes. Not customs clearance or regulatory approval."
+    "confidentialNote": "Confidential compliance record for internal review and audit purposes. Not customs clearance or regulatory approval.",
+    "tagline": "Trade Compliance Platform"
   },
   "notifications": {
     "collaborationInviteSubject": "Passport : Invitation pour {shipmentRef}",

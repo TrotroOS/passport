@@ -3,26 +3,12 @@
 import { AuditExportButton } from "@/components/shipments/audit-export-button";
 import { ShareCollaboratorDialog } from "@/components/shipments/share-collaborator-dialog";
 import { ShipmentPrintReport } from "@/components/shipments/shipment-print-report";
-import type {
-  AuditEvent,
-  Discrepancy,
-  Party,
-  PassportScore,
-  Product,
-  Shipment,
-  WorkflowTask,
-} from "@/types/database";
+import type { PassportScore, Shipment } from "@/types/database";
 
 interface ShipmentDetailActionsProps {
   shipmentId: string;
   shipment: Shipment;
   score: PassportScore | null;
-  parties: Party[];
-  products: Product[];
-  documentCount: number;
-  openDiscrepancies: Discrepancy[];
-  openTasks: WorkflowTask[];
-  auditEvents: AuditEvent[];
   organizationName?: string;
   isOwner: boolean;
 }
@@ -31,12 +17,6 @@ export function ShipmentDetailActions({
   shipmentId,
   shipment,
   score,
-  parties,
-  products,
-  documentCount,
-  openDiscrepancies,
-  openTasks,
-  auditEvents,
   organizationName,
   isOwner,
 }: ShipmentDetailActionsProps) {
@@ -53,12 +33,6 @@ export function ShipmentDetailActions({
         className="shrink-0"
         shipment={shipment}
         score={score}
-        parties={parties}
-        products={products}
-        documentCount={documentCount}
-        openDiscrepancies={openDiscrepancies}
-        openTasks={openTasks}
-        auditEvents={auditEvents}
         organizationName={organizationName}
       />
       {isOwner ? (

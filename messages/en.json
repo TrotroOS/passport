@@ -505,6 +505,7 @@
   },
   "print": {
     "title": "Shipment Compliance Report",
+    "tagline": "Trade Compliance Platform",
     "printReport": "Print report",
     "previewTitle": "Print preview",
     "previewSubtitle": "Review the compliance summary before sending to your printer.",

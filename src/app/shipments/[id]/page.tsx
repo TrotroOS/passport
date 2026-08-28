@@ -52,7 +52,6 @@ import type {
   Discrepancy,
   Document,
   DocumentExtraction,
-  Party,
   PassportScore,
   Product,
   ProductCategory,
@@ -250,9 +249,6 @@ export default async function ShipmentDetailPage({
   ).filter((c) => c.status === "failed").length;
 
   const latestRiskAssessment = (riskAssessments?.[0] ?? null) as RiskAssessment | null;
-  const openTasks = ((workflowTasks ?? []) as WorkflowTask[]).filter(
-    (task) => task.status === "open" || task.status === "in_progress"
-  );
 
   const orgName =
     profile?.organizations &&
@@ -304,12 +300,6 @@ export default async function ShipmentDetailPage({
             shipmentId={id}
             shipment={shipment}
             score={latestScore}
-            parties={(parties ?? []) as Party[]}
-            products={(products ?? []) as Product[]}
-            documentCount={(documents ?? []).length}
-            openDiscrepancies={openDiscrepancies}
-            openTasks={openTasks}
-            auditEvents={(auditEvents ?? []) as AuditEvent[]}
             organizationName={ownerOrg?.name ?? orgName}
             isOwner={isOwner}
           />
