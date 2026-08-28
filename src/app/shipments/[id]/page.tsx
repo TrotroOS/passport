@@ -263,8 +263,8 @@ export default async function ShipmentDetailPage({
 
   return (
     <AppPageShell organizationName={orgName} userEmail={profile?.email}>
-      <main className="mx-auto w-full max-w-7xl min-w-0 overflow-x-hidden px-4 py-6 print:hidden sm:px-6 sm:py-8 lg:px-8">
-        <Button variant="ghost" size="sm" asChild className="mb-6 print:hidden">
+      <main className="no-print mx-auto w-full max-w-7xl min-w-0 overflow-x-hidden px-4 py-6 print:hidden sm:px-6 sm:py-8 lg:px-8">
+        <Button variant="ghost" size="sm" asChild className="no-print mb-6 print:hidden">
           <Link href="/dashboard">
             <ArrowLeft className="me-2 h-4 w-4" />
             {tNav("backToDashboard")}

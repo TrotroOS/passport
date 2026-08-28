@@ -42,8 +42,10 @@ export default async function RootLayout({
         <AppProviders>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <KeyboardShortcutsProvider>
-              {children}
-              <Toaster richColors position={isRtlLocale(locale) ? "top-left" : "top-right"} />
+              <div id="passport-app-shell" className="no-print">
+                {children}
+                <Toaster richColors position={isRtlLocale(locale) ? "top-left" : "top-right"} />
+              </div>
             </KeyboardShortcutsProvider>
           </NextIntlClientProvider>
         </AppProviders>

@@ -41,7 +41,7 @@ export function ShipmentDetailActions({
   isOwner,
 }: ShipmentDetailActionsProps) {
   return (
-    <div className="flex shrink-0 flex-wrap items-center gap-2 print:hidden md:flex-nowrap md:justify-end">
+    <div className="flex shrink-0 flex-wrap items-center gap-2 no-print print:hidden md:flex-nowrap md:justify-end">
       <AuditExportButton
         shipmentId={shipmentId}
         shipmentRef={shipment.shipment_ref}

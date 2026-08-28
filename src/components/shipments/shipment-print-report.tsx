@@ -67,7 +67,7 @@ export function ShipmentPrintReport({
   }
 
   const printContent = (
-    <div className="audit-print-root">
+    <div id="shipment-print-document" className="audit-print-root" aria-hidden="true">
       <div className="audit-print space-y-8 p-10 text-sm text-black">
         <header className="border-b-2 border-slate-900 pb-6">
           <div className="flex items-start justify-between gap-6">
@@ -256,7 +256,7 @@ export function ShipmentPrintReport({
         variant="outline"
         size="sm"
         onClick={handlePrint}
-        className={cn("print:hidden", className)}
+        className={cn("no-print print:hidden", className)}
         aria-label={compact ? t("printReport") : undefined}
       >
         <Printer className={compact ? "h-4 w-4 shrink-0 sm:me-2" : "me-2 h-4 w-4"} />

@@ -46,7 +46,7 @@ export function AuditExportButton({
       variant="outline"
       size="sm"
       onClick={handleExport}
-      className={cn("print:hidden", className)}
+      className={cn("no-print print:hidden", className)}
       aria-label={compact ? t("auditPack") : undefined}
     >
       <Download className={compact ? "h-4 w-4 shrink-0 sm:me-2" : "me-2 h-4 w-4"} />
