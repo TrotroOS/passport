@@ -704,5 +704,131 @@
     "delivery": "Delivery",
     "delay": "Delay",
     "other": "Other"
+  },
+  "marketing": {
+    "metaTitle": "Passport — Trade Compliance & Shipment Intelligence",
+    "metaDescription": "Upload trade documents, verify cross-document consistency, run regulatory checks, and collaborate with brokers — before customs filing.",
+    "nav": {
+      "features": "Features",
+      "howItWorks": "How it works",
+      "corridors": "Corridors",
+      "pricing": "Pricing",
+      "help": "Help",
+      "signIn": "Sign in",
+      "getStarted": "Get started",
+      "dashboard": "Dashboard"
+    },
+    "hero": {
+      "badge": "AI-powered trade compliance",
+      "title": "Clear customs with confidence — before you file",
+      "subtitle": "Passport helps importers, brokers, and forwarders upload trade documents, catch discrepancies early, score shipment readiness, and collaborate on clearance workflows across African import corridors.",
+      "primaryCta": "Start free",
+      "secondaryCta": "Sign in",
+      "disclaimer": "Assistive decision-support software — not legal or customs advice."
+    },
+    "stats": {
+      "documents": "Document types classified",
+      "documentsValue": "6+",
+      "corridors": "Regulatory corridors",
+      "corridorsValue": "3+",
+      "languages": "Languages supported",
+      "languagesValue": "4"
+    },
+    "features": {
+      "title": "Everything you need for trade compliance",
+      "subtitle": "From document ingestion to broker handoff — one platform for your shipment intelligence.",
+      "extraction": {
+        "title": "AI document extraction",
+        "description": "Upload invoices, packing lists, bills of lading, and certificates. Passport classifies documents and extracts structured fields automatically."
+      },
+      "verification": {
+        "title": "Cross-document verification",
+        "description": "Catch mismatched quantities, dates, parties, and values before they become customs delays."
+      },
+      "score": {
+        "title": "Passport Score",
+        "description": "A readiness score across documentation, verification, regulatory, and workflow dimensions — know when a shipment is clearance-ready."
+      },
+      "regulatory": {
+        "title": "Regulatory checks",
+        "description": "Corridor-specific compliance rules for Ghana, Nigeria, Kenya, and more — with clear pass/fail guidance."
+      },
+      "collaboration": {
+        "title": "Broker collaboration",
+        "description": "Invite customs brokers and forwarders with role-based access. External collaborators can accept via email — no account required upfront."
+      },
+      "tracking": {
+        "title": "Container tracking",
+        "description": "Track freight milestones and link logistics events to compliance workflows and audit trails."
+      },
+      "api": {
+        "title": "REST API & webhooks",
+        "description": "Integrate with your ERP or WMS. Scoped API keys, webhook deliveries, and audit logging for every mutating action."
+      },
+      "analytics": {
+        "title": "Analytics & alerts",
+        "description": "Organization-wide compliance alerts, clearance readiness dashboards, and shipment intelligence at a glance."
+      }
+    },
+    "howItWorks": {
+      "title": "How Passport works",
+      "subtitle": "Four steps from fragmented documents to clearance-ready shipments.",
+      "step1": {
+        "title": "Create a shipment",
+        "description": "Set your trade corridor, parties, and product lines. Passport organizes everything in one tenant-secure workspace."
+      },
+      "step2": {
+        "title": "Upload documents",
+        "description": "Drop PDFs or images — or ingest via email and WhatsApp channels. AI classifies and extracts key fields."
+      },
+      "step3": {
+        "title": "Verify & comply",
+        "description": "Run cross-document checks and regulatory rules. Resolve discrepancies and workflow tasks with full audit history."
+      },
+      "step4": {
+        "title": "Hand off to clearance",
+        "description": "Confirm readiness, share with your broker, and export compliance reports when you're satisfied — not when customs finds the gap."
+      }
+    },
+    "corridors": {
+      "title": "Built for African import corridors",
+      "subtitle": "Regulatory engines and trade intelligence tuned for the lanes you operate — with more corridors on the roadmap.",
+      "ghana": "Ghana",
+      "ghanaDetail": "Primary corridor with deep regulatory rule coverage and local compliance workflows.",
+      "nigeria": "Nigeria",
+      "nigeriaDetail": "Import documentation and permit checks for Nigerian clearance requirements.",
+      "kenya": "Kenya",
+      "kenyaDetail": "East Africa corridor support for Kenyan import compliance.",
+      "more": "More corridors",
+      "moreDetail": "Additional jurisdictions and live rule feeds on the enterprise roadmap."
+    },
+    "pricing": {
+      "title": "Simple, transparent pricing",
+      "subtitle": "Start free for pilots. Scale as your shipment volume grows.",
+      "free": "Free",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "perMonth": "/mo",
+      "custom": "Custom",
+      "shipments": "{count} shipments/mo",
+      "unlimitedShipments": "Unlimited shipments",
+      "apiCalls": "{count} API calls/mo",
+      "unlimitedApi": "Unlimited API calls",
+      "seats": "Up to {count} seats",
+      "unlimitedSeats": "Unlimited seats",
+      "ctaFree": "Start free",
+      "ctaPro": "Get Pro",
+      "ctaEnterprise": "Contact sales",
+      "popular": "Most popular"
+    },
+    "cta": {
+      "title": "Ready to modernize your trade compliance?",
+      "subtitle": "Join importers and brokers using Passport to catch issues early and move shipments faster.",
+      "button": "Create your account",
+      "contact": "Questions? Email us at {email}"
+    },
+    "footer": {
+      "tagline": "Trade compliance and shipment intelligence for modern import teams."
+    }
   }
 }

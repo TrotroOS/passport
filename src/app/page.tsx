@@ -1,5 +1,26 @@
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { MarketingLanding } from "@/components/marketing/marketing-landing";
+import { createClient } from "@/lib/supabase/server";
 
-export default function HomePage() {
-  redirect("/dashboard");
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("marketing");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    openGraph: {
+      title: t("metaTitle"),
+      description: t("metaDescription"),
+      type: "website",
+    },
+  };
+}
+
+export default async function HomePage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return <MarketingLanding isAuthenticated={Boolean(user)} />;
 }
