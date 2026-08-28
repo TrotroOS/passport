@@ -97,6 +97,36 @@ export const COMPLIANCE_REPORT_PRINT_STYLES = `
     font-weight: 600;
   }
   .data-table td.value { font-weight: 700; }
+  .report-table th {
+    text-align: left;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #475569;
+    border-bottom: 1px solid #cbd5e1;
+    padding: 0.35rem 0.75rem 0.35rem 0;
+  }
+  .report-table td {
+    padding: 0.4rem 0.75rem 0.4rem 0;
+    vertical-align: top;
+  }
+  .report-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .report-list li {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+  }
+  .empty {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin: 0;
+    font-style: italic;
+  }
   .report-footer {
     border-top: 1px solid #cbd5e1;
     padding-top: 0.75rem;
