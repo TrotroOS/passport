@@ -62,22 +62,7 @@
   display: none;
 }
 
-.passport-analytics-shell {
-  display: block;
-}
-
 @media print {
-  /* Trade analytics is screen-only; never print dashboards or charts */
-  body.passport-block-analytics-print .passport-analytics-shell,
-  body.passport-block-analytics-print [data-passport-view="analytics"],
-  .passport-trade-analytics-preview {
-    display: none !important;
-  }
-
-  body.passport-block-analytics-print:not(.passport-print-active) > * {
-    display: none !important;
-  }
-
   html,
   body {
     background: white !important;
@@ -86,15 +71,16 @@
     padding: 0 !important;
   }
 
-  /* Hide the entire app shell; show only the portaled report */
+  /* Hide the app UI when printing a compliance or analytics report */
   body.passport-print-active > *:not(.passport-print-root),
-  body:has(.passport-print-root) > *:not(.passport-print-root) {
+  body:has(.passport-print-root) > *:not(.passport-print-root),
+  body:has(.analytics-print-root) > *:not(.analytics-print-root) {
     display: none !important;
   }
 
-  /* Screen-only portal: never visible until print */
   body.passport-print-active .passport-print-root,
-  body:has(.passport-print-root) .passport-print-root {
+  body:has(.passport-print-root) .passport-print-root,
+  .analytics-print-root {
     display: block !important;
     position: static !important;
     width: 100% !important;
@@ -103,23 +89,28 @@
     overflow: visible !important;
   }
 
-  header:not(.passport-print-root header),
+  header:not(.passport-print-root header):not(.analytics-print-root header),
   nav,
   .print\\:hidden {
     display: none !important;
   }
 
+  .audit-print,
   .passport-print-document {
     font-family: Georgia, "Times New Roman", serif;
     color: #0f172a !important;
     background: white !important;
   }
 
-  .passport-print-document table {
+  .audit-print table,
+  .passport-print-document table,
+  .analytics-print-root table {
     page-break-inside: avoid;
   }
 
-  .passport-print-document section {
+  .audit-print section,
+  .passport-print-document section,
+  .analytics-print-root section {
     page-break-inside: avoid;
   }
 
