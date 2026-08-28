@@ -20,6 +20,7 @@ import type {
   WorkflowTask,
 } from "@/types/database";
 import { formatStatus } from "@/lib/utils";
+import { useShipmentPrint } from "@/hooks/use-shipment-print";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -53,6 +54,7 @@ export function ShipmentPrintReport({
   const t = useTranslations("print");
   const ts = useTranslations("status");
   const [mounted, setMounted] = useState(false);
+  const printReport = useShipmentPrint();
   const generatedAt = new Date();
   const exportId = formatAuditExportId(shipment.shipment_ref, generatedAt);
 
@@ -61,11 +63,11 @@ export function ShipmentPrintReport({
   }, []);
 
   function handlePrint() {
-    window.print();
+    printReport();
   }
 
-  const printReport = (
-    <div className="audit-print-root hidden print:block">
+  const printContent = (
+    <div className="audit-print-root">
       <div className="audit-print space-y-8 p-10 text-sm text-black">
         <header className="border-b-2 border-slate-900 pb-6">
           <div className="flex items-start justify-between gap-6">
@@ -261,7 +263,7 @@ export function ShipmentPrintReport({
         <span className={compact ? "hidden truncate sm:inline" : undefined}>{t("printReport")}</span>
       </Button>
 
-      {mounted ? createPortal(printReport, document.body) : null}
+      {mounted ? createPortal(printContent, document.body) : null}
     </>
   );
 }

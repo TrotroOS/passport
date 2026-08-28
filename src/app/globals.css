@@ -58,19 +58,33 @@
   }
 }
 
+.audit-print-root {
+  display: none !important;
+}
+
 @media print {
+  html,
   body {
     background: white !important;
     color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* Hide the app UI when printing a shipment compliance report */
+  /* Shipment report: hide entire app shell, show only the portaled document */
+  body.shipment-print-active > *:not(.audit-print-root),
   body:has(.audit-print-root) > *:not(.audit-print-root) {
     display: none !important;
   }
 
-  .audit-print-root {
+  body.shipment-print-active .audit-print-root,
+  body:has(.audit-print-root) .audit-print-root {
     display: block !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
   }
 
   header,
@@ -81,6 +95,8 @@
 
   .audit-print {
     font-family: Georgia, "Times New Roman", serif;
+    color: #0f172a !important;
+    background: white !important;
   }
 
   .audit-print table {
@@ -89,6 +105,10 @@
 
   .audit-print section {
     page-break-inside: avoid;
+  }
+
+  @page {
+    margin: 1.5cm;
   }
 }
 

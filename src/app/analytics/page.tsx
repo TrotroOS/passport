@@ -31,7 +31,7 @@ export default async function AnalyticsPage() {
       : undefined;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 print:hidden">
       <AppHeader organizationName={orgName} userEmail={profile?.email} />
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Button variant="ghost" size="sm" asChild className="mb-6">

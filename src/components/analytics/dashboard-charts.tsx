@@ -120,7 +120,7 @@ export function DashboardCharts() {
     : [];
 
   return (
-    <div className="mb-8 min-w-0 space-y-4 overflow-hidden">
+    <div className="mb-8 min-w-0 space-y-4 overflow-hidden print:hidden">
       <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-semibold">Overview (last 90 days)</h2>
         <Button variant="ghost" size="sm" asChild className="w-fit shrink-0">

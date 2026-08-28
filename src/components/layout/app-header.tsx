@@ -33,7 +33,7 @@ export async function AppHeader({ organizationName, userEmail }: AppHeaderProps)
   }
 
   return (
-    <header className="overflow-x-hidden border-b bg-background">
+    <header className="overflow-x-hidden border-b bg-background print:hidden">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 px-4 sm:h-16 sm:gap-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
           <Link href="/dashboard" className="flex shrink-0 items-center gap-2">
