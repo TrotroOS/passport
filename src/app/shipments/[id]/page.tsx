@@ -271,7 +271,7 @@ export default async function ShipmentDetailPage({
           </Link>
         </Button>
 
-        <div className="mb-8 flex min-w-0 flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
+        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="min-w-0 flex-1">
             {isCollaborator ? (
               <div className="mb-3 rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
@@ -280,25 +280,25 @@ export default async function ShipmentDetailPage({
                 . {tDash("ownerOrg")}: {ownerOrg?.name ?? "—"}.
               </div>
             ) : null}
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="break-all text-2xl font-bold tracking-tight sm:break-normal">
-                {shipment.shipment_ref}
-              </h1>
+            <h1 className="truncate text-2xl font-bold tracking-tight md:whitespace-nowrap">
+              {shipment.shipment_ref}
+            </h1>
+            <div className="mt-2 flex flex-wrap items-center gap-3">
               <Badge variant={statusVariant(shipment.status)}>
                 {ts(shipment.status as "draft")}
               </Badge>
-            </div>
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground sm:text-base">
-              {shipment.origin_country ?? "—"} → {shipment.destination_country ?? "—"}
+              <span className="text-sm text-muted-foreground">
+                {shipment.origin_country ?? "—"} → {shipment.destination_country ?? "—"}
+              </span>
               {shipment.incoterm ? (
-                <span className="ms-2 inline-flex items-center rounded-md bg-slate-200 px-2 py-0.5 text-xs font-semibold text-slate-800">
+                <span className="inline-flex items-center rounded-md bg-slate-200 px-2 py-0.5 text-xs font-semibold text-slate-800">
                   {t("incoterm")} {shipment.incoterm}
                 </span>
               ) : null}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              {t("createdAt")} {formatDate(shipment.created_at)}
-            </p>
+              <span className="text-xs text-muted-foreground">
+                {t("createdAt")} {formatDate(shipment.created_at)}
+              </span>
+            </div>
           </div>
           <ShipmentDetailActions
             shipmentId={id}

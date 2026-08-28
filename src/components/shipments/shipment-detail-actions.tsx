@@ -41,16 +41,16 @@ export function ShipmentDetailActions({
   isOwner,
 }: ShipmentDetailActionsProps) {
   return (
-    <div className="flex w-full min-w-0 flex-wrap gap-2 print:hidden">
+    <div className="flex shrink-0 flex-wrap items-center gap-2 print:hidden md:flex-nowrap md:justify-end">
       <AuditExportButton
         shipmentId={shipmentId}
         shipmentRef={shipment.shipment_ref}
         compact
-        className="min-w-0 flex-1 sm:flex-none"
+        className="shrink-0"
       />
       <ShipmentPrintReport
         compact
-        className="min-w-0 flex-1 sm:flex-none"
+        className="shrink-0"
         shipment={shipment}
         score={score}
         parties={parties}
@@ -62,9 +62,7 @@ export function ShipmentDetailActions({
         organizationName={organizationName}
       />
       {isOwner ? (
-        <div className="w-full min-w-0 sm:w-auto">
-          <ShareCollaboratorDialog shipmentId={shipmentId} />
-        </div>
+        <ShareCollaboratorDialog shipmentId={shipmentId} className="shrink-0" />
       ) : null}
     </div>
   );
