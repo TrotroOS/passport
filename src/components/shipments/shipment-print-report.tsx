@@ -302,7 +302,6 @@ function ShipmentPrintReportContent({
 
       <footer className="audit-print-footer">
         <p>{t("footer")}</p>
-        <p>{t("confidentialFooter")}</p>
         <p className="audit-print-footer-id">{exportId}</p>
       </footer>
     </div>
