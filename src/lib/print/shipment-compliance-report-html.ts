@@ -3,7 +3,7 @@ import {
   formatAuditTimestamp,
 } from "@/lib/audit/audit-labels";
 import type { PassportScore, Shipment } from "@/types/database";
-import { escapeHtml } from "@/lib/print/print-html-document";
+import { escapeHtml } from "@/lib/print/compliance-report-document";
 
 export interface ShipmentPrintLabels {
   title: string;

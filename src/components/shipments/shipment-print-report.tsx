@@ -2,64 +2,25 @@
 
 import { Printer } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { PassportScore, Shipment } from "@/types/database";
-import { printHtmlDocument } from "@/lib/print/print-html-document";
-import { buildShipmentComplianceReportHtml } from "@/lib/print/shipment-compliance-report-html";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface ShipmentPrintReportProps {
-  shipment: Shipment;
-  score: PassportScore | null;
-  organizationName?: string;
+  shipmentId: string;
   compact?: boolean;
   className?: string;
 }
 
 export function ShipmentPrintReport({
-  shipment,
-  score,
-  organizationName,
+  shipmentId,
   compact = false,
   className,
 }: ShipmentPrintReportProps) {
   const t = useTranslations("print");
-  const ts = useTranslations("status");
 
   function handlePrint() {
-    const html = buildShipmentComplianceReportHtml({
-      shipment,
-      score,
-      organizationName,
-      statusLabel: (status) => ts(status as "draft"),
-      labels: {
-        title: t("title"),
-        tagline: t("tagline"),
-        footer: t("footer"),
-        generatedAt: t("generatedAt"),
-        organization: t("organization"),
-        reportId: t("reportId"),
-        summary: t("summary"),
-        shipmentRef: t("shipmentRef"),
-        route: t("route"),
-        status: t("status"),
-        incoterm: t("incoterm"),
-        passportScore: t("passportScore"),
-        readiness: t("readiness"),
-        ownerConfirmed: t("ownerConfirmed"),
-        brokerConfirmed: t("brokerConfirmed"),
-        yes: t("yes"),
-        no: t("no"),
-        scoreBreakdown: t("scoreBreakdown"),
-        documentation: t("documentation"),
-        consistency: t("consistency"),
-        counterparty: t("counterparty"),
-        regulatory: t("regulatory"),
-        confidentialNote: t("confidentialNote"),
-      },
-    });
-
-    printHtmlDocument(`${t("title")} — ${shipment.shipment_ref}`, html);
+    const url = `/api/shipments/${encodeURIComponent(shipmentId)}/compliance-report`;
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
   return (

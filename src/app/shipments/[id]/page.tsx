@@ -298,9 +298,7 @@ export default async function ShipmentDetailPage({
           </div>
           <ShipmentDetailActions
             shipmentId={id}
-            shipment={shipment}
-            score={latestScore}
-            organizationName={ownerOrg?.name ?? orgName}
+            shipmentRef={shipment.shipment_ref}
             isOwner={isOwner}
           />
         </div>

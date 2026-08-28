@@ -1,4 +1,4 @@
-const PRINT_STYLES = `
+export const COMPLIANCE_REPORT_PRINT_STYLES = `
   @page { margin: 1.5cm; size: auto; }
   * { box-sizing: border-box; }
   html, body {
@@ -13,7 +13,7 @@ const PRINT_STYLES = `
     font-family: Georgia, "Times New Roman", serif;
     font-size: 11pt;
     line-height: 1.45;
-    padding: 0;
+    padding: 1.5rem;
   }
   .report { padding: 0; max-width: 100%; }
   .report-header {
@@ -92,6 +92,22 @@ const PRINT_STYLES = `
     font-size: 0.7rem;
     color: #475569;
   }
+  .print-toolbar {
+    margin-bottom: 1rem;
+    font-family: system-ui, sans-serif;
+    font-size: 0.875rem;
+  }
+  .print-toolbar button {
+    padding: 0.4rem 0.85rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.375rem;
+    background: #f8fafc;
+    cursor: pointer;
+  }
+  @media print {
+    body { padding: 0; }
+    .print-toolbar { display: none !important; }
+  }
 `;
 
 export function escapeHtml(value: string): string {
@@ -103,84 +119,37 @@ export function escapeHtml(value: string): string {
     .replace(/'/g, "&#39;");
 }
 
-function buildFullDocument(title: string, bodyHtml: string): string {
+export function buildComplianceReportDocument(
+  title: string,
+  bodyHtml: string,
+  options?: { autoPrint?: boolean; printButtonLabel?: string }
+): string {
+  const autoPrint = options?.autoPrint ?? true;
+  const printButtonLabel = options?.printButtonLabel ?? "Print report";
+
   return `<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="passport-report" content="compliance-v3" />
     <title>${escapeHtml(title)}</title>
-    <style>${PRINT_STYLES}</style>
+    <style>${COMPLIANCE_REPORT_PRINT_STYLES}</style>
   </head>
-  <body>${bodyHtml}</body>
-</html>`;
-}
-
-function triggerPrint(targetWindow: Window, onDone: () => void): void {
-  targetWindow.addEventListener("afterprint", onDone, { once: true });
-  targetWindow.focus();
-  targetWindow.print();
-}
-
-function printViaHiddenIframe(fullDocument: string, onDone: () => void): void {
-  const iframe = document.createElement("iframe");
-  iframe.setAttribute("aria-hidden", "true");
-  iframe.style.cssText =
-    "position:fixed;left:-10000px;top:0;width:800px;height:600px;border:0;";
-  document.body.appendChild(iframe);
-
-  const frameWindow = iframe.contentWindow;
-  const doc = frameWindow?.document;
-  if (!frameWindow || !doc) {
-    iframe.remove();
-    onDone();
-    return;
-  }
-
-  const cleanup = () => {
-    iframe.remove();
-    onDone();
-  };
-
-  frameWindow.addEventListener("afterprint", cleanup, { once: true });
-
-  doc.open();
-  doc.write(fullDocument);
-  doc.close();
-
-  // doc.write() does not reliably fire iframe onload — defer print.
-  window.setTimeout(() => {
-    frameWindow.focus();
-    frameWindow.print();
-  }, 300);
-}
-
-export function printHtmlDocument(title: string, bodyHtml: string): void {
-  const fullDocument = buildFullDocument(title, bodyHtml);
-  const blob = new Blob([fullDocument], { type: "text/html;charset=utf-8" });
-  const blobUrl = URL.createObjectURL(blob);
-
-  const cleanup = () => {
-    URL.revokeObjectURL(blobUrl);
-  };
-
-  const printWindow = window.open(blobUrl, "_blank", "noopener,noreferrer,width=900,height=700");
-
-  if (printWindow) {
-    let printed = false;
-    const startPrint = () => {
-      if (printed || printWindow.closed) return;
-      printed = true;
-      triggerPrint(printWindow, () => {
-        cleanup();
-        printWindow.close();
+  <body>
+    <div class="print-toolbar">
+      <button type="button" onclick="window.print()">${escapeHtml(printButtonLabel)}</button>
+    </div>
+    ${bodyHtml}
+    ${
+      autoPrint
+        ? `<script>
+      window.addEventListener("load", function () {
+        window.setTimeout(function () { window.print(); }, 300);
       });
-    };
-
-    printWindow.addEventListener("load", startPrint, { once: true });
-    window.setTimeout(startPrint, 500);
-    return;
-  }
-
-  printViaHiddenIframe(fullDocument, cleanup);
+    </script>`
+        : ""
+    }
+  </body>
+</html>`;
 }
