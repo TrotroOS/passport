@@ -80,13 +80,13 @@ export function ShipmentsList({ shipments }: ShipmentsListProps) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="min-w-0 space-y-3">
       {shipments.map((shipment) => (
-        <Link key={shipment.id} href={`/shipments/${shipment.id}`}>
-          <Card className="transition-colors hover:border-primary/30 hover:bg-slate-50">
+        <Link key={shipment.id} href={`/shipments/${shipment.id}`} className="block min-w-0">
+          <Card className="min-w-0 overflow-hidden transition-colors hover:border-primary/30 hover:bg-slate-50">
             <CardHeader className="pb-2">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <CardTitle className="text-lg">{shipment.shipment_ref}</CardTitle>
+              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                <CardTitle className="truncate text-lg">{shipment.shipment_ref}</CardTitle>
                 <div className="flex flex-wrap items-center gap-2">
                   {shipment.riskLevel ? (
                     <Badge variant={riskVariant(shipment.riskLevel)}>

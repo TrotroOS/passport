@@ -22,7 +22,12 @@ const FEEDBACK_TYPES = [
   { value: "other", labelKey: "typeOther" },
 ] as const;
 
-export function FeedbackButton() {
+interface FeedbackButtonProps {
+  compact?: boolean;
+  className?: string;
+}
+
+export function FeedbackButton({ compact = false, className }: FeedbackButtonProps) {
   const t = useTranslations("feedback");
   const tCommon = useTranslations("common");
   const [open, setOpen] = useState(false);
@@ -64,9 +69,15 @@ export function FeedbackButton() {
 
   if (!open) {
     return (
-      <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-        <MessageSquare className="mr-2 h-4 w-4" />
-        {t("button")}
+      <Button
+        variant="outline"
+        size="sm"
+        className={className}
+        onClick={() => setOpen(true)}
+        aria-label={compact ? t("button") : undefined}
+      >
+        <MessageSquare className={compact ? "h-4 w-4 shrink-0 sm:me-2" : "mr-2 h-4 w-4"} />
+        <span className={compact ? "hidden truncate sm:inline" : undefined}>{t("button")}</span>
       </Button>
     );
   }

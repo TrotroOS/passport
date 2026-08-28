@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Plus, BarChart3, CircleHelp } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getUserProfileForUser, getOrganizationIdForUser } from "@/lib/auth/get-organization-id";
@@ -8,10 +7,9 @@ import { listShipmentsForUser } from "@/lib/shipments/list-shipments";
 import { enrichShipmentsWithSummaries } from "@/lib/shipments/dashboard-summaries";
 import { listSharedShipmentsForUser } from "@/lib/shipments/shipment-access";
 import { AppHeader } from "@/components/layout/app-header";
+import { DashboardPageToolbar } from "@/components/dashboard/dashboard-page-toolbar";
 import { ShipmentsList } from "@/components/shipments/shipments-list";
 import { DashboardCharts } from "@/components/analytics/dashboard-charts";
-import { FeedbackButton } from "@/components/feedback/feedback-button";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -24,7 +22,6 @@ export default async function DashboardPage() {
   const supabase = await createClient();
   const t = await getTranslations("dashboard");
   const ts = await getTranslations("status");
-  const tNav = await getTranslations("nav");
   const tAnalytics = await getTranslations("analytics");
 
   const {
@@ -56,35 +53,17 @@ export default async function DashboardPage() {
       : undefined;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen overflow-x-hidden bg-background">
       <AppHeader organizationName={orgName} userEmail={profile?.email} />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
+      <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <div className="mb-8 flex min-w-0 flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
+          <div className="min-w-0 flex-1">
             <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-            <p className="text-muted-foreground">{t("subtitle")}</p>
+            <p className="mt-1 max-w-prose text-sm leading-relaxed text-muted-foreground sm:text-base">
+              {t("subtitle")}
+            </p>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/help">
-                <CircleHelp className="me-2 h-4 w-4" />
-                {tNav("help")}
-              </Link>
-            </Button>
-            <FeedbackButton />
-            <Button variant="outline" asChild>
-              <Link href="/analytics">
-                <BarChart3 className="me-2 h-4 w-4" />
-                {tNav("analytics")}
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link href="/shipments/new">
-                <Plus className="me-2 h-4 w-4" />
-                {tNav("newShipment")}
-              </Link>
-            </Button>
-          </div>
+          <DashboardPageToolbar />
         </div>
 
         {orgSummary && shipments.length > 0 ? (
@@ -130,21 +109,21 @@ export default async function DashboardPage() {
 
         <ShipmentsList shipments={shipments} />
 
-        <section className="mt-12">
+        <section className="mt-12 min-w-0">
           <h2 className="mb-2 text-xl font-semibold tracking-tight">{t("sharedTitle")}</h2>
           <p className="mb-4 text-sm text-muted-foreground">{t("sharedSubtitle")}</p>
           {sharedShipments.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("sharedEmpty")}</p>
           ) : (
-            <ul className="space-y-3">
+            <ul className="min-w-0 space-y-3">
               {sharedShipments.map((shipment) => (
                 <li key={shipment.id}>
                   <Link
                     href={`/shipments/${shipment.id}`}
-                    className="block rounded-lg border bg-white p-4 shadow-sm transition hover:border-slate-300"
+                    className="block min-w-0 rounded-lg border bg-white p-4 shadow-sm transition hover:border-slate-300"
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-semibold">{shipment.shipment_ref}</span>
+                    <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="truncate font-semibold">{shipment.shipment_ref}</span>
                       <Badge variant="outline">
                         {ts(shipment.collaborator_role as "viewer")}
                       </Badge>

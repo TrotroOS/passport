@@ -25,9 +25,9 @@ export async function AppHeader({ organizationName, userEmail }: AppHeaderProps)
   const showAdmin = user ? await isPlatformAdmin(user.id) : false;
 
   return (
-    <header className="border-b bg-background">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 items-center gap-4">
+    <header className="overflow-x-hidden border-b bg-background">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 px-4 sm:h-16 sm:gap-4 sm:px-6 lg:px-8">
+        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
           <Link href="/dashboard" className="flex shrink-0 items-center gap-2">
             <PassportLogo height={28} />
           </Link>
@@ -38,7 +38,7 @@ export async function AppHeader({ organizationName, userEmail }: AppHeaderProps)
           ) : null}
           <ShipmentSearch />
         </div>
-        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+        <div className="flex shrink-0 items-center gap-0.5 sm:gap-2">
           <ThemeToggle />
           <LanguageSwitcher />
           <AppActionsMenu />
@@ -69,9 +69,9 @@ export async function AppHeader({ organizationName, userEmail }: AppHeaderProps)
           {userEmail ? (
             <span className="hidden text-sm text-muted-foreground xl:inline">{userEmail}</span>
           ) : null}
-          <form action={logoutAction}>
-            <Button type="submit" variant="ghost" size="sm">
-              <LogOut className="me-2 h-4 w-4" />
+          <form action={logoutAction} className="shrink-0">
+            <Button type="submit" variant="ghost" size="sm" className="px-2 sm:px-3">
+              <LogOut className="h-4 w-4 sm:me-2" />
               <span className="hidden sm:inline">{t("signOut")}</span>
             </Button>
           </form>

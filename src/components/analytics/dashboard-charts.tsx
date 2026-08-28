@@ -120,10 +120,10 @@ export function DashboardCharts() {
     : [];
 
   return (
-    <div className="mb-8 space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="mb-8 min-w-0 space-y-4 overflow-hidden">
+      <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-semibold">Overview (last 90 days)</h2>
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="ghost" size="sm" asChild className="w-fit shrink-0">
           <Link href="/analytics">
             Full analytics
             <ArrowRight className="ms-2 h-4 w-4" />
@@ -131,17 +131,17 @@ export function DashboardCharts() {
         </Button>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card>
+      <div className="grid min-w-0 gap-4 lg:grid-cols-3">
+        <Card className="min-w-0 overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Compliance trend</CardTitle>
             <CardDescription>Avg Passport Score by month</CardDescription>
           </CardHeader>
-          <CardContent className="h-44">
+          <CardContent className="h-44 min-w-0 overflow-hidden">
             {compliance.length === 0 ? (
               <p className="text-sm text-muted-foreground">No score history yet</p>
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <LineChart data={compliance}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="label" tick={{ fontSize: 11 }} />
@@ -160,19 +160,19 @@ export function DashboardCharts() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="min-w-0 overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Ship className="h-4 w-4" />
+              <Ship className="h-4 w-4 shrink-0" />
               Shipment status
             </CardTitle>
             <CardDescription>Current pipeline breakdown</CardDescription>
           </CardHeader>
-          <CardContent className="h-44">
+          <CardContent className="h-44 min-w-0 overflow-hidden">
             {statusBreakdown.length === 0 ? (
               <p className="text-sm text-muted-foreground">No shipments in range</p>
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <BarChart data={statusBreakdown} layout="vertical" margin={{ left: 8 }}>
                   <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} />
                   <YAxis
@@ -193,16 +193,16 @@ export function DashboardCharts() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="min-w-0 overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Risk distribution</CardTitle>
             <CardDescription>Latest assessments</CardDescription>
           </CardHeader>
-          <CardContent className="h-44">
+          <CardContent className="h-44 min-w-0 overflow-hidden">
             {riskPie.length === 0 ? (
               <p className="text-sm text-muted-foreground">No risk data yet</p>
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <PieChart>
                   <Pie
                     data={riskPie}
@@ -228,7 +228,7 @@ export function DashboardCharts() {
       </div>
 
       {tracking ? (
-        <div className="grid gap-3 sm:grid-cols-4">
+        <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardContent className="flex items-center gap-3 pt-6">
               <Container className="h-8 w-8 text-primary" />

@@ -38,7 +38,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
-      <body className={`${fontClass} bg-background text-foreground`}>
+      <body className={`${fontClass} overflow-x-hidden bg-background text-foreground`}>
         <AppProviders>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <KeyboardShortcutsProvider>
