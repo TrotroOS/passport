@@ -58,7 +58,366 @@
   }
 }
 
+/* Shipment compliance print report (screen preview + print) */
+.audit-print-preview {
+  max-width: 210mm;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 1.25rem;
+  box-shadow:
+    0 24px 48px rgb(15 23 42 / 0.12),
+    0 0 0 1px rgb(15 23 42 / 0.04);
+}
+
+.audit-print,
+.audit-print-preview .audit-print-sheet {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #0f172a;
+}
+
+.audit-print-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.audit-print-header {
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 1rem;
+}
+
+.audit-print-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.audit-print-brand {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+.audit-print-title {
+  margin-top: 0.35rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.audit-print-subtitle {
+  margin-top: 0.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1d4ed8;
+}
+
+.audit-print-score-badge {
+  min-width: 5.5rem;
+  border: 2px solid #cbd5e1;
+  border-radius: 0.75rem;
+  padding: 0.55rem 0.85rem;
+  text-align: center;
+}
+
+.audit-print-score-badge-high {
+  border-color: #059669;
+  background: #ecfdf5;
+}
+
+.audit-print-score-badge-mid {
+  border-color: #d97706;
+  background: #fffbeb;
+}
+
+.audit-print-score-badge-low {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.audit-print-score-badge-none {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.audit-print-score-badge-label {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.audit-print-score-badge-value {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.audit-print-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem 1.5rem;
+  margin-top: 1rem;
+  font-size: 0.72rem;
+}
+
+.audit-print-meta-grid dt {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.audit-print-meta-grid dd {
+  margin-top: 0.1rem;
+}
+
+.audit-print-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+}
+
+.audit-print-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .audit-print-kpi-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.audit-print-kpi {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  background: #f8fafc;
+}
+
+.audit-print-kpi-alert {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.audit-print-kpi-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.audit-print-kpi-value {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.audit-print-section-title {
+  margin-bottom: 0.45rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid #cbd5e1;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #334155;
+}
+
+.audit-print-readiness-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.audit-print-pill {
+  display: inline-flex;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #fff;
+}
+
+.audit-print-pill-ok {
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.audit-print-score-bars {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.audit-print-score-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.audit-print-score-bar-track {
+  margin-top: 0.15rem;
+  height: 0.35rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.audit-print-score-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.audit-print-score-bar-high {
+  background: #10b981;
+}
+
+.audit-print-score-bar-mid {
+  background: #f59e0b;
+}
+
+.audit-print-score-bar-low {
+  background: #ef4444;
+}
+
+.audit-print-score-bar-none {
+  background: #94a3b8;
+}
+
+.audit-print-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.audit-print-table th {
+  border-bottom: 1px solid #94a3b8;
+  padding: 0.35rem 0.45rem 0.35rem 0;
+  text-align: left;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.audit-print-table td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.4rem 0.45rem 0.4rem 0;
+  vertical-align: top;
+}
+
+.audit-print-table-compact td,
+.audit-print-table-compact th {
+  padding-top: 0.28rem;
+  padding-bottom: 0.28rem;
+}
+
+.audit-print-timestamp {
+  white-space: nowrap;
+  font-size: 0.68rem;
+}
+
+.audit-print-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.audit-print-list-item {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.35rem 0;
+  font-size: 0.78rem;
+}
+
+.audit-print-task-list li {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0.3rem 0;
+  font-size: 0.78rem;
+}
+
+.audit-print-severity {
+  flex-shrink: 0;
+  border-radius: 0.25rem;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.audit-print-severity-critical {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.audit-print-severity-high {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.audit-print-severity-medium {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.audit-print-severity-low {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.audit-print-empty {
+  margin: 0;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: #64748b;
+}
+
+.audit-print-footer {
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #cbd5e1;
+  font-size: 0.68rem;
+  color: #64748b;
+}
+
+.audit-print-footer p + p {
+  margin-top: 0.35rem;
+}
+
+.audit-print-footer-id {
+  margin-top: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.62rem;
+  color: #94a3b8;
+}
+
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 14mm;
+  }
+
   body {
     background: white !important;
     color: #0f172a !important;
@@ -80,14 +439,13 @@
   }
 
   .audit-print {
-    font-family: Georgia, "Times New Roman", serif;
+    font-size: 10.5pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
-  .audit-print table {
-    page-break-inside: avoid;
-  }
-
-  .audit-print section {
+  .audit-print-section {
+    break-inside: avoid;
     page-break-inside: avoid;
   }
 }
