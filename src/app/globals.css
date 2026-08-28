@@ -64,19 +64,19 @@
     color: #0f172a !important;
   }
 
+  /* Hide the app UI when printing a shipment compliance report */
+  body:has(.audit-print-root) > *:not(.audit-print-root) {
+    display: none !important;
+  }
+
+  .audit-print-root {
+    display: block !important;
+  }
+
   header,
   nav,
   .print\\:hidden {
     display: none !important;
-  }
-
-  .print\\:block {
-    display: block !important;
-  }
-
-  main {
-    max-width: none !important;
-    padding: 0 !important;
   }
 
   .audit-print {

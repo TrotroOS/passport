@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Printer } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
@@ -50,28 +52,21 @@ export function ShipmentPrintReport({
 }: ShipmentPrintReportProps) {
   const t = useTranslations("print");
   const ts = useTranslations("status");
+  const [mounted, setMounted] = useState(false);
   const generatedAt = new Date();
   const exportId = formatAuditExportId(shipment.shipment_ref, generatedAt);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   function handlePrint() {
     window.print();
   }
 
-  return (
-    <>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handlePrint}
-        className={cn("print:hidden", className)}
-        aria-label={compact ? t("printReport") : undefined}
-      >
-        <Printer className={compact ? "h-4 w-4 shrink-0 sm:me-2" : "me-2 h-4 w-4"} />
-        <span className={compact ? "hidden truncate sm:inline" : undefined}>{t("printReport")}</span>
-      </Button>
-
-      <div className="hidden print:block">
-        <div className="audit-print space-y-8 p-10 text-sm text-black">
+  const printReport = (
+    <div className="audit-print-root hidden print:block">
+      <div className="audit-print space-y-8 p-10 text-sm text-black">
           <header className="border-b-2 border-slate-900 pb-6">
             <div className="flex items-start justify-between gap-6">
               <div>
@@ -226,7 +221,7 @@ export function ShipmentPrintReport({
                   </tr>
                 </thead>
                 <tbody>
-                  {auditEvents.slice(0, 25).map((event) => (
+                  {auditEvents.slice(0, 15).map((event) => (
                     <tr key={event.id} className="border-b border-slate-200">
                       <td className="py-2 pe-4 align-top text-xs">
                         {formatAuditTimestamp(event.created_at)}
@@ -249,6 +244,22 @@ export function ShipmentPrintReport({
           </footer>
         </div>
       </div>
+  );
+
+  return (
+    <>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handlePrint}
+        className={cn("print:hidden", className)}
+        aria-label={compact ? t("printReport") : undefined}
+      >
+        <Printer className={compact ? "h-4 w-4 shrink-0 sm:me-2" : "me-2 h-4 w-4"} />
+        <span className={compact ? "hidden truncate sm:inline" : undefined}>{t("printReport")}</span>
+      </Button>
+
+      {mounted ? createPortal(printReport, document.body) : null}
     </>
   );
 }
