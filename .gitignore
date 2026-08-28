@@ -37,3 +37,5 @@ mobile/.expo-test-bundle/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel

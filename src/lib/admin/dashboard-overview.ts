@@ -1,6 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { fetchAdminStats, type AdminDashboardStats } from "@/lib/admin/stats";
-import { ADMIN_ENV_KEYS } from "@/lib/admin/sections";
 
 export interface AdminAttentionCounts {
   openFeedback: number;
@@ -34,20 +33,12 @@ export interface AdminMigrationCheck {
   ok: boolean;
 }
 
-export interface AdminEnvCheck {
-  key: string;
-  label: string;
-  required: boolean;
-  configured: boolean;
-}
-
 export interface AdminDashboardOverview {
   stats: AdminDashboardStats;
   attention: AdminAttentionCounts;
   recentErrors: AdminRecentError[];
   recentFeedback: AdminRecentFeedback[];
   migrations: AdminMigrationCheck[];
-  envChecks: AdminEnvCheck[];
   appUrl: string;
 }
 
@@ -98,14 +89,6 @@ async function fetchMigrationChecks(
   ];
 }
 
-function fetchEnvChecks(): AdminEnvCheck[] {
-  return ADMIN_ENV_KEYS.map(({ key, label, required }) => ({
-    key,
-    label,
-    required,
-    configured: Boolean(process.env[key]?.trim()),
-  }));
-}
 
 export async function fetchAdminDashboardOverview(
   admin: SupabaseClient
@@ -197,7 +180,6 @@ export async function fetchAdminDashboardOverview(
       };
     }),
     migrations,
-    envChecks: fetchEnvChecks(),
     appUrl: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
   };
 }

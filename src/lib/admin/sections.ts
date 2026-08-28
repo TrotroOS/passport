@@ -123,15 +123,3 @@ export const ADMIN_OPERATOR_TASKS = [
     detail: "Admin → Inbound — check messages with Error status; verify channel webhook config.",
   },
 ] as const;
-
-export const ADMIN_ENV_KEYS = [
-  { key: "NEXT_PUBLIC_SUPABASE_URL", label: "Supabase URL", required: true },
-  { key: "NEXT_PUBLIC_SUPABASE_ANON_KEY", label: "Supabase anon key", required: true },
-  { key: "SUPABASE_SERVICE_ROLE_KEY", label: "Service role key", required: true },
-  { key: "NEXT_PUBLIC_APP_URL", label: "App URL", required: true },
-  { key: "OPENAI_API_KEY", label: "OpenAI API key", required: true },
-  { key: "SUPABASE_DB_URL", label: "Database URI (migrations)", required: false },
-  { key: "STRIPE_SECRET_KEY", label: "Stripe billing", required: false },
-  { key: "SENDGRID_API_KEY", label: "Email invites", required: false },
-  { key: "NEXT_PUBLIC_SUPPORT_EMAIL", label: "Support email override", required: false },
-] as const;

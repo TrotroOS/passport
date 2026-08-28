@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { ArrowRight, CheckCircle2, CircleAlert, XCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface AdminQuickLinksProps {
   sections: Array<{
@@ -71,7 +70,6 @@ interface AdminGuidePanelProps {
   appUrl: string;
   supportEmail: string;
   migrations: Array<{ id: string; label: string; ok: boolean }>;
-  envChecks: Array<{ key: string; label: string; required: boolean; configured: boolean }>;
   tasks: ReadonlyArray<{ title: string; detail: string }>;
 }
 
@@ -80,11 +78,9 @@ export function AdminGuidePanel({
   appUrl,
   supportEmail,
   migrations,
-  envChecks,
   tasks,
 }: AdminGuidePanelProps) {
   const pendingMigrations = migrations.filter((m) => !m.ok);
-  const missingRequiredEnv = envChecks.filter((e) => e.required && !e.configured);
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -154,39 +150,6 @@ export function AdminGuidePanel({
                 <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
               ) : (
                 <XCircle className="h-4 w-4 text-destructive" />
-              )}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="rounded-lg border border-border p-4">
-        <h2 className="mb-3 text-lg font-semibold text-foreground">Environment</h2>
-        {missingRequiredEnv.length > 0 ? (
-          <p className="mb-3 text-sm text-destructive">
-            {missingRequiredEnv.length} required variable(s) not configured in this environment.
-          </p>
-        ) : (
-          <p className="mb-3 text-sm text-emerald-600 dark:text-emerald-400">
-            Required variables are set (values are never shown here).
-          </p>
-        )}
-        <ul className="space-y-1.5 text-sm">
-          {envChecks.map((env) => (
-            <li key={env.key} className="flex items-center justify-between gap-2">
-              <span className="text-muted-foreground">
-                {env.label}
-                {env.required ? "" : " (optional)"}
-              </span>
-              {env.configured ? (
-                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              ) : (
-                <XCircle
-                  className={cn(
-                    "h-4 w-4",
-                    env.required ? "text-destructive" : "text-muted-foreground"
-                  )}
-                />
               )}
             </li>
           ))}

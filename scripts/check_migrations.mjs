@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { readFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import { getSupabaseAnonKey, getSupabaseUrl } from "./lib/supabase_env.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
@@ -23,7 +24,7 @@ function loadEnvFile() {
 
 loadEnvFile();
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const url = getSupabaseUrl();
 const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!url || !service) {
@@ -41,7 +42,7 @@ const MIGRATION_CHECKS = [
     label: "RLS policies",
     file: "20240820000010_fix_rls_reapply.sql",
     check: async () => {
-      const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      const anon = getSupabaseAnonKey();
       if (!anon) return false;
       const client = createClient(url, anon);
       const email = process.argv[2] ?? "trotroosapp@gmail.com";

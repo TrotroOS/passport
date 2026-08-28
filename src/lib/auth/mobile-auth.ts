@@ -1,5 +1,6 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireSupabaseAnonKey, requireSupabaseUrl } from "@/lib/supabase/env";
 import { writeAuditEvent } from "@/lib/audit";
 import {
   confirmAuthUserByEmail,
@@ -15,10 +16,7 @@ import { getUserProfile, type UserProfile } from "@/lib/user/user-profile";
 import type { Session } from "@supabase/supabase-js";
 
 function anonClient() {
-  return createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  return createSupabaseClient(requireSupabaseUrl(), requireSupabaseAnonKey());
 }
 
 export async function mobileLogin(

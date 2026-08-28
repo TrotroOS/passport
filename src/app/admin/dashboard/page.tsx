@@ -289,9 +289,6 @@ export default async function AdminDashboardPage() {
           supportEmail={SUPPORT_CONTACT_EMAIL}
 
           migrations={overview.migrations}
-
-          envChecks={overview.envChecks}
-
           tasks={ADMIN_OPERATOR_TASKS}
 
         />

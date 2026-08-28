@@ -36,8 +36,8 @@ const FORBIDDEN_IN_PRODUCTION = [
 ];
 
 const REQUIRED_IN_PRODUCTION = [
-  "NEXT_PUBLIC_SUPABASE_URL",
-  "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+  "SUPABASE_URL",
+  "SUPABASE_ANON_KEY",
   "SUPABASE_SERVICE_ROLE_KEY",
   "NEXT_PUBLIC_APP_URL",
   "OPENAI_API_KEY",
@@ -61,6 +61,21 @@ for (const [key, value] of FORBIDDEN_IN_PRODUCTION) {
 }
 
 for (const key of REQUIRED_IN_PRODUCTION) {
+  if (key === "SUPABASE_URL") {
+    if (!process.env.SUPABASE_URL?.trim() && !process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()) {
+      errors.push("Missing required env var: SUPABASE_URL");
+    }
+    continue;
+  }
+  if (key === "SUPABASE_ANON_KEY") {
+    if (
+      !process.env.SUPABASE_ANON_KEY?.trim() &&
+      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
+    ) {
+      errors.push("Missing required env var: SUPABASE_ANON_KEY");
+    }
+    continue;
+  }
   if (!process.env[key]?.trim()) {
     errors.push(`Missing required env var: ${key}`);
   }
@@ -88,7 +103,7 @@ if (!process.env.SENDGRID_API_KEY) {
   warnings.push("SENDGRID_API_KEY is not set — email notifications will be skipped");
 }
 
-if (!process.env.SENTRY_DSN && !process.env.NEXT_PUBLIC_SENTRY_DSN) {
+if (!process.env.SENTRY_DSN) {
   warnings.push("SENTRY_DSN is not set — error monitoring disabled");
 }
 

@@ -9,10 +9,7 @@ const links = [
   { href: "/help", label: "Help" },
   { href: "/settings/activity", label: "Activity" },
   { href: "/settings/channels", label: "Channels" },
-  { href: "/settings/api-keys", label: "API keys" },
-  { href: "/settings/webhooks", label: "Webhooks" },
   { href: "/settings/billing", label: "Billing" },
-  { href: "/settings/api-docs", label: "API docs" },
   { href: "/legal", label: "Legal" },
 ];
 

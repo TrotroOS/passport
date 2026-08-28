@@ -27,10 +27,6 @@ export const USER_HELP_TOPICS = [
     id: "inbound",
     link: { href: "/settings/channels", labelKey: "links.channels" },
   },
-  {
-    id: "api",
-    link: { href: "/settings/api-docs", labelKey: "links.apiDocs" },
-  },
 ] as const;
 
 export type UserHelpTopicId = (typeof USER_HELP_TOPICS)[number]["id"];

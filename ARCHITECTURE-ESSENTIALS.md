@@ -96,8 +96,8 @@ Organization → Users → Shipments → (Parties, Products, Documents, …)
 ## Env vars (minimum dev)
 
 ```
-NEXT_PUBLIC_SUPABASE_URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_URL
+SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 SUPABASE_DB_URL          # migrations only

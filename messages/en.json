@@ -34,8 +34,6 @@
     "newShipment": "New shipment",
     "backToDashboard": "Back to dashboard",
     "channels": "Channels",
-    "apiKeys": "API keys",
-    "webhooks": "Webhooks",
     "moreActions": "More",
     "complianceAlerts": "Compliance alerts",
     "complianceAlertsSubtitle": "Action items requiring attention across your organization",
@@ -528,8 +526,7 @@
       "readiness": "Open clearance readiness",
       "complianceAlerts": "View compliance alerts",
       "calendar": "Open compliance calendar",
-      "channels": "Document channels settings",
-      "apiDocs": "API documentation"
+      "channels": "Document channels settings"
     },
     "topics": {
       "signIn": {
@@ -610,18 +607,6 @@
           "Attach trade documents as PDF or image files — not only links.",
           "Allow a few minutes for processing, then refresh the shipment documents list.",
           "If nothing arrives after 15 minutes, upload manually and contact support with the sent timestamp."
-        ]
-      },
-      "api": {
-        "title": "API or webhook errors",
-        "summary": "Integrations returning 401, 403, or delivery failures.",
-        "steps": [
-          "Confirm your API key is active under Settings → API keys.",
-          "Send the Authorization header as documented in Settings → API docs.",
-          "For webhooks, verify the endpoint URL is reachable (HTTPS in production) and returns 2xx.",
-          "Check Settings → Webhooks → deliveries for failure payloads and response codes.",
-          "Rotate keys if you suspect leakage; update integrations with the new key.",
-          "Rate limits may apply — backoff and retry on 429 responses."
         ]
       }
     }
@@ -760,10 +745,6 @@
       "tracking": {
         "title": "Container tracking",
         "description": "Track freight milestones and link logistics events to compliance workflows and audit trails."
-      },
-      "api": {
-        "title": "REST API & webhooks",
-        "description": "Integrate with your ERP or WMS. Scoped API keys, webhook deliveries, and audit logging for every mutating action."
       },
       "analytics": {
         "title": "Analytics & alerts",

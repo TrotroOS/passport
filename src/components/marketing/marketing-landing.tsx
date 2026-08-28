@@ -8,7 +8,6 @@ import {
   Sparkles,
   Truck,
   Users,
-  Webhook,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { LegalFooter } from "@/components/legal/legal-footer";
@@ -41,7 +40,6 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
     { key: "regulatory", icon: Globe2 },
     { key: "collaboration", icon: Users },
     { key: "tracking", icon: Truck },
-    { key: "api", icon: Webhook },
     { key: "analytics", icon: BarChart3 },
   ] as const;
 

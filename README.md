@@ -148,8 +148,8 @@ cp .env.example .env.local
 
 | Variable | Description |
 |---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon/public key |
+| `SUPABASE_URL` | Supabase project URL (server-only) |
+| `SUPABASE_ANON_KEY` | Supabase anon/public key (server-only) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (server-only) |
 | `NEXT_PUBLIC_APP_URL` | App URL (e.g. `http://localhost:3000`) |
 | `OPENAI_API_KEY` | OpenAI API key for document extraction |
@@ -296,7 +296,7 @@ See `/settings/api-docs` for the full public v1 API reference.
 1. Apply all migrations (`001`–`021`) — see [Run database migrations](#3-run-database-migrations)
 2. Set production env vars (see `.env.example`) — **never** enable `AUTO_CONFIRM_EMAIL`, `FIRST_USER_IS_ADMIN`, or `INBOUND_ALLOW_UNVERIFIED`
 3. Configure [Upstash Redis](https://upstash.com) for rate limiting (`UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`)
-4. Set `NEXT_PUBLIC_APP_URL` to your public URL (emails, invites, API docs)
+4. Set `NEXT_PUBLIC_APP_URL` to your public URL (emails and invites)
 5. Set `TRACKING_WEBHOOK_SECRET` if using tracking webhooks
 6. Configure SendGrid for email notifications (optional but recommended)
 7. Configure Stripe for billing at `/settings/billing` (optional)
@@ -330,7 +330,7 @@ Set all env vars in your host dashboard. `prebuild` runs `validate-env` automati
 docker compose up --build
 ```
 
-Requires `.env.local` with all production variables. Build args `NEXT_PUBLIC_*` are passed at image build time.
+Requires `.env.local` with all production variables. Build args `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `NEXT_PUBLIC_APP_URL` are passed at image build time.
 
 ### CI
 

@@ -39,7 +39,7 @@ export async function reportError(
   error: Error,
   context?: Record<string, unknown>
 ): Promise<void> {
-  const dsn = process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN;
+  const dsn = process.env.SENTRY_DSN;
   if (!dsn) return;
 
   const parsed = parseSentryDsn(dsn);
@@ -86,5 +86,16 @@ export async function reportError(
 }
 
 export function reportClientError(error: Error, context?: Record<string, unknown>): void {
-  void reportError(error, { ...context, runtime: "client" });
+  void fetch("/api/monitoring/report-error", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: error.message,
+      name: error.name,
+      stack: error.stack,
+      context,
+    }),
+  }).catch(() => {
+    // Never throw from error reporting
+  });
 }
