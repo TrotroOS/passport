@@ -64,6 +64,7 @@ export function ShipmentPrintReport({
 
   return (
     <Button
+      type="button"
       variant="outline"
       size="sm"
       onClick={handlePrint}
