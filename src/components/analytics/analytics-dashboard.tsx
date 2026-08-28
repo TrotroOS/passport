@@ -222,7 +222,7 @@ export function AnalyticsDashboard() {
     | undefined;
 
   return (
-    <div className="space-y-8">
+    <div className="passport-analytics-dashboard print:hidden space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>

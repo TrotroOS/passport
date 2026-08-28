@@ -62,7 +62,22 @@
   display: none;
 }
 
+.passport-analytics-shell {
+  display: block;
+}
+
 @media print {
+  /* Trade analytics is screen-only; never print dashboards or charts */
+  body.passport-block-analytics-print .passport-analytics-shell,
+  body.passport-block-analytics-print [data-passport-view="analytics"],
+  .passport-trade-analytics-preview {
+    display: none !important;
+  }
+
+  body.passport-block-analytics-print:not(.passport-print-active) > * {
+    display: none !important;
+  }
+
   html,
   body {
     background: white !important;

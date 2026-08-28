@@ -67,7 +67,7 @@ export default async function DashboardPage() {
         </div>
 
         {orgSummary && shipments.length > 0 ? (
-          <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mb-8 grid gap-4 print:hidden sm:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="pb-2">
                 <CardDescription>{tAnalytics("kpiShipments")}</CardDescription>
