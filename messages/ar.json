@@ -394,7 +394,11 @@
     "auditEntity": "Entity",
     "confidentialFooter": "Confidential compliance record — for internal review and audit purposes only.",
     "confidentialNote": "Confidential compliance record for internal review and audit purposes. Not customs clearance or regulatory approval.",
-    "tagline": "Trade Compliance Platform"
+    "tagline": "Trade Compliance Platform",
+    "headerIntro": "This document summarizes clearance readiness and compliance posture for the shipment identified below. It is intended for internal review, audit, and stakeholder alignment.",
+    "summaryIntro": "Key shipment identifiers and overall Passport Score at the time this report was generated.",
+    "readinessIntro": "Both the importer (owner) and broker must confirm readiness before the shipment can move to ready status.",
+    "scoreBreakdownIntro": "Scores are advisory indicators derived from documentation, cross-document consistency, counterparty data, and regulatory signals."
   },
   "notifications": {
     "collaborationInviteSubject": "Passport: دعوة تعاون لـ {shipmentRef}",
