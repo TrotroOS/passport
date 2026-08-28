@@ -57,7 +57,7 @@ function AnimatedStatValue({ value, active }: { value: string; active: boolean }
 }
 
 export function MarketingStatCounters({ stats }: MarketingStatCountersProps) {
-  const { ref, inView } = useInView(0.35);
+  const { ref, inView } = useInView<HTMLDListElement>(0.35);
 
   return (
     <dl
