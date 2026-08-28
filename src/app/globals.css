@@ -58,41 +58,58 @@
   }
 }
 
+.passport-print-root {
+  display: none;
+}
+
 @media print {
+  html,
   body {
     background: white !important;
     color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* Hide the app UI when printing a shipment compliance report */
-  body:has(.audit-print-root) > *:not(.audit-print-root),
-  body:has(.analytics-print-root) > *:not(.analytics-print-root) {
+  /* Hide the entire app shell; show only the portaled report */
+  body.passport-print-active > *:not(.passport-print-root),
+  body:has(.passport-print-root) > *:not(.passport-print-root) {
     display: none !important;
   }
 
-  .audit-print-root,
-  .analytics-print-root {
+  /* Screen-only portal: never visible until print */
+  body.passport-print-active .passport-print-root,
+  body:has(.passport-print-root) .passport-print-root {
     display: block !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
   }
 
-  header,
+  header:not(.passport-print-root header),
   nav,
   .print\\:hidden {
     display: none !important;
   }
 
-  .audit-print {
+  .passport-print-document {
     font-family: Georgia, "Times New Roman", serif;
+    color: #0f172a !important;
+    background: white !important;
   }
 
-  .audit-print table,
-  .analytics-print-root table {
+  .passport-print-document table {
     page-break-inside: avoid;
   }
 
-  .audit-print section,
-  .analytics-print-root section {
+  .passport-print-document section {
     page-break-inside: avoid;
+  }
+
+  @page {
+    margin: 1.5cm;
   }
 }
 

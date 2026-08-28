@@ -20,6 +20,7 @@ import type {
   WorkflowTask,
 } from "@/types/database";
 import { formatStatus } from "@/lib/utils";
+import { usePassportPrint } from "@/hooks/use-passport-print";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -53,6 +54,7 @@ export function ShipmentPrintReport({
   const t = useTranslations("print");
   const ts = useTranslations("status");
   const [mounted, setMounted] = useState(false);
+  const handlePrint = usePassportPrint();
   const generatedAt = new Date();
   const exportId = formatAuditExportId(shipment.shipment_ref, generatedAt);
 
@@ -60,13 +62,13 @@ export function ShipmentPrintReport({
     setMounted(true);
   }, []);
 
-  function handlePrint() {
-    window.print();
+  function onPrintClick() {
+    handlePrint();
   }
 
   const printReport = (
-    <div className="audit-print-root hidden print:block">
-      <div className="audit-print space-y-8 p-10 text-sm text-black">
+    <div className="passport-print-root">
+      <div className="passport-print-document space-y-8 p-10 text-sm text-black">
         <header className="border-b-2 border-slate-900 pb-6">
           <div className="flex items-start justify-between gap-6">
             <div>
@@ -253,7 +255,7 @@ export function ShipmentPrintReport({
       <Button
         variant="outline"
         size="sm"
-        onClick={handlePrint}
+        onClick={onPrintClick}
         className={cn("print:hidden", className)}
         aria-label={compact ? t("printReport") : undefined}
       >

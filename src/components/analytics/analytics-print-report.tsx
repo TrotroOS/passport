@@ -5,8 +5,11 @@ import { createPortal } from "react-dom";
 import { Printer } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatAuditTimestamp } from "@/lib/audit/audit-labels";
+import { usePassportPrint } from "@/hooks/use-passport-print";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+const PRINT_ROW_LIMIT = 8;
 
 export interface AnalyticsPrintSnapshot {
   dateRangeLabel: string;
@@ -104,9 +107,9 @@ function AnalyticsPrintContent({
   t: (key: string, values?: Record<string, string | number>) => string;
 }) {
   const generatedAt = new Date();
-  const shipmentCounts = snapshot.summary?.shipmentCounts as
-    | { last30Days?: number; last90Days?: number; allTime?: number }
-    | undefined;
+  const topSuppliers = snapshot.supplierRows.slice(0, PRINT_ROW_LIMIT);
+  const topCorridors = snapshot.corridorRows.slice(0, PRINT_ROW_LIMIT);
+  const topMissingDocs = snapshot.missingDocs.slice(0, PRINT_ROW_LIMIT);
 
   const kpiRows = [
     [t("kpiShipments"), String(snapshot.summary?.shipmentsInRange ?? 0)],
@@ -119,11 +122,10 @@ function AnalyticsPrintContent({
     ],
     [t("kpiOpenDiscrepancies"), String(snapshot.summary?.openDiscrepancies ?? 0)],
     [t("kpiPendingTasks"), String(snapshot.summary?.pendingWorkflowTasks ?? 0)],
-    [t("kpiAllTimeShipments"), String(shipmentCounts?.allTime ?? 0)],
   ];
 
   return (
-    <div className="audit-print space-y-8 p-10 text-sm text-black">
+    <div className="passport-print-document space-y-8 p-10 text-sm text-black">
       <header className="border-b-2 border-slate-900 pb-6">
         <div className="flex items-start justify-between gap-6">
           <div>
@@ -134,35 +136,19 @@ function AnalyticsPrintContent({
             {snapshot.organizationName ? (
               <p className="mt-2 font-medium text-slate-800">{snapshot.organizationName}</p>
             ) : null}
+            <p className="mt-3 max-w-xl text-xs leading-relaxed text-slate-600">{t("printScope")}</p>
           </div>
           <div className="text-end text-xs text-slate-600">
             <p className="font-semibold uppercase tracking-wide text-slate-900">
               {t("printPeriod")}
             </p>
             <p className="mt-1">{snapshot.dateRangeLabel}</p>
+            <p className="mt-4 font-semibold uppercase tracking-wide text-slate-900">
+              {t("printGeneratedAt")}
+            </p>
+            <p className="mt-1">{formatAuditTimestamp(generatedAt.toISOString())}</p>
           </div>
         </div>
-        <dl className="mt-6 grid grid-cols-2 gap-x-8 gap-y-2 text-xs">
-          <div>
-            <dt className="font-semibold uppercase tracking-wide text-slate-600">
-              {t("printGeneratedAt")}
-            </dt>
-            <dd>{formatAuditTimestamp(generatedAt.toISOString())}</dd>
-          </div>
-          {shipmentCounts ? (
-            <div>
-              <dt className="font-semibold uppercase tracking-wide text-slate-600">
-                {t("printShipmentActivity")}
-              </dt>
-              <dd>
-                {t("kpiPeriodHint", {
-                  d30: shipmentCounts.last30Days ?? 0,
-                  d90: shipmentCounts.last90Days ?? 0,
-                })}
-              </dd>
-            </div>
-          ) : null}
-        </dl>
       </header>
 
       <PrintSection title={t("printSummary")}>
@@ -199,27 +185,12 @@ function AnalyticsPrintContent({
         />
       </PrintSection>
 
-      <PrintSection title={t("riskTrend")}>
-        <PrintTable
-          headers={[
-            t("printMonth"),
-            snapshot.localizedStatus("low"),
-            snapshot.localizedStatus("medium"),
-            snapshot.localizedStatus("high"),
-            snapshot.localizedStatus("critical"),
-          ]}
-          rows={snapshot.riskPoints.map((point) => [
-            String(point.label ?? point.month ?? "—"),
-            String(point.low ?? 0),
-            String(point.medium ?? 0),
-            String(point.high ?? 0),
-            String(point.critical ?? 0),
-          ])}
-          emptyMessage={t("noRiskTrend")}
-        />
-      </PrintSection>
-
       <PrintSection title={t("supplierPerformance")}>
+        {snapshot.supplierRows.length > PRINT_ROW_LIMIT ? (
+          <p className="mb-3 text-xs text-slate-600">
+            {t("printTopRows", { count: PRINT_ROW_LIMIT, total: snapshot.supplierRows.length })}
+          </p>
+        ) : null}
         <PrintTable
           headers={[
             t("supplier"),
@@ -227,7 +198,7 @@ function AnalyticsPrintContent({
             t("avgScore"),
             t("discrepanciesCol"),
           ]}
-          rows={snapshot.supplierRows.map((row) => [
+          rows={topSuppliers.map((row) => [
             String(row.supplierName),
             String(row.shipmentCount),
             row.avgPassportScore != null ? String(row.avgPassportScore) : "—",
@@ -238,9 +209,14 @@ function AnalyticsPrintContent({
       </PrintSection>
 
       <PrintSection title={t("corridorInsights")}>
+        {snapshot.corridorRows.length > PRINT_ROW_LIMIT ? (
+          <p className="mb-3 text-xs text-slate-600">
+            {t("printTopRows", { count: PRINT_ROW_LIMIT, total: snapshot.corridorRows.length })}
+          </p>
+        ) : null}
         <PrintTable
           headers={[t("route"), t("count"), t("avgScore"), t("routeRisk"), t("docsPercent")]}
-          rows={snapshot.corridorRows.map((row) => [
+          rows={topCorridors.map((row) => [
             String(row.routeLabel),
             String(row.shipmentCount),
             row.avgPassportScore != null ? String(row.avgPassportScore) : "—",
@@ -253,36 +229,6 @@ function AnalyticsPrintContent({
         />
       </PrintSection>
 
-      <PrintSection title={t("productCategories")}>
-        {snapshot.categoryRows.length === 0 ? (
-          <p className="text-slate-600">{t("noCategories")}</p>
-        ) : (
-          <ul className="space-y-3">
-            {snapshot.categoryRows.map((cat) => (
-              <li key={String(cat.categoryName)} className="border-b border-slate-200 pb-2">
-                <p className="font-medium">
-                  {String(cat.categoryName)} —{" "}
-                  {t("shipmentsCount", { count: Number(cat.shipmentCount) })}
-                </p>
-                {(cat.commonIssues as Array<{ issue: string; count: number }> | undefined)?.length
-                  ? (
-                      <ul className="mt-1 space-y-1 text-xs text-slate-600">
-                        {(cat.commonIssues as Array<{ issue: string; count: number }>).map(
-                          (issue) => (
-                            <li key={issue.issue}>
-                              {snapshot.localizedStatus(issue.issue)} ({issue.count})
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    )
-                  : null}
-              </li>
-            ))}
-          </ul>
-        )}
-      </PrintSection>
-
       <PrintSection title={t("documentCompleteness")}>
         <p className="mb-3 text-slate-600">
           {t("documentCompletenessDesc", {
@@ -292,7 +238,7 @@ function AnalyticsPrintContent({
         </p>
         <PrintTable
           headers={[t("printDocumentType"), t("missingCount")]}
-          rows={snapshot.missingDocs.map((doc) => [
+          rows={topMissingDocs.map((doc) => [
             snapshot.localizedStatus(String(doc.docType)),
             String(doc.missingCount ?? 0),
           ])}
@@ -300,70 +246,8 @@ function AnalyticsPrintContent({
         />
       </PrintSection>
 
-      <PrintSection title={t("printDiscrepancyTrend")}>
-        <PrintTable
-          headers={[t("printMonth"), t("printOpen"), t("printResolved")]}
-          rows={snapshot.discrepancyTrend.map((point) => [
-            String(point.label ?? point.month ?? "—"),
-            String(point.open ?? 0),
-            String(point.resolved ?? 0),
-          ])}
-          emptyMessage={t("printNoDiscrepancyTrend")}
-        />
-      </PrintSection>
-
-      {snapshot.scoreDimensions?.overall != null ? (
-        <PrintSection title={t("printScoreDimensions")}>
-          <PrintTable
-            headers={[t("printDimension"), t("avgScore")]}
-            rows={[
-              [t("chartOverall"), String(snapshot.scoreDimensions.overall ?? "—")],
-              [t("chartDocumentation"), String(snapshot.scoreDimensions.documentation ?? "—")],
-              [t("printConsistency"), String(snapshot.scoreDimensions.consistency ?? "—")],
-              [t("printCounterparty"), String(snapshot.scoreDimensions.counterparty ?? "—")],
-              [t("chartRegulatory"), String(snapshot.scoreDimensions.regulatory ?? "—")],
-            ]}
-            emptyMessage={t("printNoScoreDimensions")}
-          />
-        </PrintSection>
-      ) : null}
-
-      <PrintSection title={t("printRiskFactors")}>
-        <PrintTable
-          headers={[t("printFactor"), t("avgScore")]}
-          rows={snapshot.riskFactors.map((factor) => [
-            String(factor.label ?? factor.factorType ?? "—"),
-            factor.avgScore != null ? String(factor.avgScore) : "—",
-          ])}
-          emptyMessage={t("printNoRiskFactors")}
-        />
-      </PrintSection>
-
-      <PrintSection title={t("printShipmentPipeline")}>
-        <PrintTable
-          headers={[t("printStatus"), t("count")]}
-          rows={snapshot.statusBreakdown.map((row) => [row.name, String(row.count)])}
-          emptyMessage={t("printNoShipmentsInRange")}
-        />
-      </PrintSection>
-
-      {snapshot.tracking ? (
-        <PrintSection title={t("printFreightTracking")}>
-          <PrintTable
-            headers={[t("printMetric"), t("printValue")]}
-            rows={[
-              [t("printContainers"), String(snapshot.tracking.containersTracked ?? 0)],
-              [t("printShipmentsTracked"), String(snapshot.tracking.shipmentsWithTracking ?? 0)],
-              [t("printDelays"), String(snapshot.tracking.delayedEvents ?? 0)],
-              [t("printDeliveries"), String(snapshot.tracking.delivered ?? 0)],
-            ]}
-            emptyMessage={t("printNoTracking")}
-          />
-        </PrintSection>
-      ) : null}
-
       <footer className="border-t border-slate-300 pt-4 text-xs text-slate-600">
-        <p>{t("printFooter")}</p>
+        <p>{t("printDisclaimer")}</p>
       </footer>
     </div>
   );
@@ -376,17 +260,14 @@ export function AnalyticsPrintReport({
 }: AnalyticsPrintReportProps) {
   const t = useTranslations("analytics");
   const [mounted, setMounted] = useState(false);
+  const handlePrint = usePassportPrint();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  function handlePrint() {
-    window.print();
-  }
-
   const printReport = (
-    <div className="analytics-print-root hidden print:block">
+    <div className="passport-print-root">
       <AnalyticsPrintContent snapshot={snapshot} t={t} />
     </div>
   );
