@@ -719,6 +719,7 @@
     "hero": {
       "badge": "AI-powered trade compliance",
       "title": "Clear customs with confidence — before you file",
+      "titleHighlight": "confidence",
       "subtitle": "Passport helps importers, brokers, and forwarders upload trade documents, catch discrepancies early, score shipment readiness, and collaborate on clearance workflows across African import corridors.",
       "primaryCta": "Start free",
       "secondaryCta": "Sign in",

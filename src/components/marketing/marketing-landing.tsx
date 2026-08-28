@@ -15,7 +15,11 @@ import { LegalFooter } from "@/components/legal/legal-footer";
 import { MarketingAudiences } from "@/components/marketing/marketing-audiences";
 import { MarketingCompare } from "@/components/marketing/marketing-compare";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { MarketingHeroBadge } from "@/components/marketing/marketing-hero-badge";
 import { MarketingHeroPreview } from "@/components/marketing/marketing-hero-preview";
+import { MarketingHeroTitle } from "@/components/marketing/marketing-hero-title";
+import { MarketingReveal } from "@/components/marketing/marketing-reveal";
+import { MarketingStatCounters } from "@/components/marketing/marketing-stat-counters";
 import { MarketingStickyCta } from "@/components/marketing/marketing-sticky-cta";
 import { MarketingTestimonials } from "@/components/marketing/marketing-testimonials";
 import { Badge } from "@/components/ui/badge";
@@ -73,11 +77,11 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
       <section className="relative overflow-hidden border-b">
         <div
           aria-hidden
-          className="pointer-events-none absolute -left-20 top-0 h-64 w-64 rounded-full bg-primary/15 blur-3xl"
+          className="marketing-orb pointer-events-none absolute -left-20 top-0 h-64 w-64 rounded-full bg-primary/15 blur-3xl"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -right-16 top-32 h-48 w-48 rounded-full bg-sky-400/10 blur-3xl"
+          className="marketing-orb-delayed pointer-events-none absolute -right-16 top-32 h-48 w-48 rounded-full bg-sky-400/10 blur-3xl"
         />
         <div
           aria-hidden
@@ -92,20 +96,20 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
           <div className="mx-auto max-w-3xl text-center lg:max-w-none lg:text-left">
             <div className="lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
               <div>
-                <Badge
-                  variant="secondary"
-                  className="mb-4 border-blue-200 bg-blue-100 px-3 py-1.5 font-medium text-blue-800 sm:mb-6"
-                >
-                  {t("hero.badge")}
-                </Badge>
-                <h1 className="text-[1.75rem] font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-                  {t("hero.title")}
-                </h1>
+                <MarketingHeroBadge>{t("hero.badge")}</MarketingHeroBadge>
+                <MarketingHeroTitle
+                  title={t("hero.title")}
+                  highlight={t("hero.titleHighlight")}
+                />
                 <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-xl">
                   {t("hero.subtitle")}
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
-                  <Button asChild size="lg" className="h-12 w-full text-base sm:min-w-[160px] sm:w-auto">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="marketing-cta-glow h-12 w-full text-base sm:min-w-[160px] sm:w-auto"
+                  >
                     <Link href={isAuthenticated ? "/dashboard" : "/signup"}>
                       {isAuthenticated ? t("nav.dashboard") : t("hero.primaryCta")}
                       <ChevronRight className="ml-1 h-4 w-4" aria-hidden />
@@ -133,27 +137,13 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
             </div>
           </div>
 
-          <dl className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-3 sm:mt-16 sm:grid-cols-3 sm:gap-6">
-            {(
-              [
-                ["documents", "documentsValue"],
-                ["corridors", "corridorsValue"],
-                ["languages", "languagesValue"],
-              ] as const
-            ).map(([label, value]) => (
-              <div
-                key={label}
-                className="rounded-2xl border border-border/80 bg-card/60 px-4 py-4 text-center shadow-sm backdrop-blur-sm sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none"
-              >
-                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground sm:text-sm sm:normal-case sm:tracking-normal">
-                  {t(`stats.${label}`)}
-                </dt>
-                <dd className="mt-1 text-3xl font-bold tabular-nums text-primary sm:text-2xl">
-                  {t(`stats.${value}`)}
-                </dd>
-              </div>
-            ))}
-          </dl>
+          <MarketingStatCounters
+            stats={[
+              { label: t("stats.documents"), value: t("stats.documentsValue") },
+              { label: t("stats.corridors"), value: t("stats.corridorsValue") },
+              { label: t("stats.languages"), value: t("stats.languagesValue") },
+            ]}
+          />
         </div>
       </section>
 
@@ -162,20 +152,20 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
       {/* Features */}
       <section id="features" className="scroll-mt-16 border-b bg-muted/30 py-14 sm:scroll-mt-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="max-w-2xl sm:mx-auto sm:text-center">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">{t("features.title")}</h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
-              {t("features.subtitle")}
-            </p>
-            <p className="mt-2 text-xs text-muted-foreground md:hidden">{t("mobile.swipeHint")}</p>
-          </div>
+          <MarketingReveal>
+            <div className="max-w-2xl sm:mx-auto sm:text-center">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">{t("features.title")}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
+                {t("features.subtitle")}
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground md:hidden">{t("mobile.swipeHint")}</p>
+            </div>
+          </MarketingReveal>
 
           <div className="marketing-scroll-x -mx-4 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:mt-14 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
-            {features.map(({ key, icon: Icon }) => (
-              <Card
-                key={key}
-                className="w-[78vw] max-w-[18rem] shrink-0 snap-center border-border/80 bg-card shadow-md sm:w-auto sm:max-w-none sm:shadow-sm"
-              >
+            {features.map(({ key, icon: Icon }, index) => (
+              <MarketingReveal key={key} delay={index * 80}>
+                <Card className="marketing-card-magic w-[78vw] max-w-[18rem] shrink-0 snap-center border-border/80 bg-card shadow-md sm:w-auto sm:max-w-none sm:shadow-sm">
                 <CardHeader className="pb-2">
                   <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary">
                     <Icon className="h-5 w-5" aria-hidden />
@@ -189,7 +179,8 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
                     {t(`features.${key}.description`)}
                   </CardDescription>
                 </CardContent>
-              </Card>
+                </Card>
+              </MarketingReveal>
             ))}
           </div>
         </div>
@@ -251,7 +242,7 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
             {corridors.map(({ key, flag }) => (
               <div
                 key={key}
-                className="w-[72vw] max-w-[16rem] shrink-0 snap-center rounded-2xl border border-border bg-card p-5 shadow-md sm:w-auto sm:max-w-none sm:shadow-sm"
+                className="marketing-card-magic w-[72vw] max-w-[16rem] shrink-0 snap-center rounded-2xl border border-border bg-card p-5 shadow-md sm:w-auto sm:max-w-none sm:shadow-sm"
               >
                 <span className="text-4xl" aria-hidden>
                   {flag}
@@ -298,7 +289,7 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
                 <Card
                   key={tier}
                   className={cn(
-                    "relative flex w-[82vw] max-w-[20rem] shrink-0 snap-center flex-col sm:w-auto sm:max-w-none",
+                    "marketing-card-magic relative flex w-[82vw] max-w-[20rem] shrink-0 snap-center flex-col sm:w-auto sm:max-w-none",
                     popular && "border-primary shadow-lg ring-2 ring-primary/20"
                   )}
                 >

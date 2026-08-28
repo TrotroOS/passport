@@ -1,5 +1,6 @@
 import { Building2, Scale, Truck } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { MarketingReveal } from "@/components/marketing/marketing-reveal";
 
 const AUDIENCES = [
   { key: "importers", icon: Building2 },
@@ -21,11 +22,9 @@ export async function MarketingAudiences() {
         </div>
 
         <div className="mt-10 grid gap-6 sm:mt-14 md:grid-cols-3">
-          {AUDIENCES.map(({ key, icon: Icon }) => (
-            <div
-              key={key}
-              className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm"
-            >
+          {AUDIENCES.map(({ key, icon: Icon }, index) => (
+            <MarketingReveal key={key} delay={index * 100}>
+              <div className="marketing-card-magic h-full rounded-2xl border border-border/80 bg-card p-6 shadow-sm">
               <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Icon className="h-5 w-5" aria-hidden />
               </div>
@@ -41,7 +40,8 @@ export async function MarketingAudiences() {
                   </li>
                 ))}
               </ul>
-            </div>
+              </div>
+            </MarketingReveal>
           ))}
         </div>
       </div>

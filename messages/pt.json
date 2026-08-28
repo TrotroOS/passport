@@ -737,7 +737,8 @@
       "subtitle": "Passport helps importers, brokers, and forwarders upload trade documents, catch discrepancies early, score shipment readiness, and collaborate on clearance workflows across African import corridors.",
       "primaryCta": "Start free",
       "secondaryCta": "Sign in",
-      "disclaimer": "Assistive decision-support software — not legal or customs advice."
+      "disclaimer": "Assistive decision-support software — not legal or customs advice.",
+      "titleHighlight": "confidence"
     },
     "stats": {
       "documents": "Document types classified",
