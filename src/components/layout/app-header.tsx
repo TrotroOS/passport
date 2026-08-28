@@ -2,7 +2,6 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { BarChart3, LogOut, Settings, Shield } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth";
-import { isPlatformAdmin } from "@/lib/admin/require-platform-admin";
 import { createClient } from "@/lib/supabase/server";
 import { PassportLogo } from "@/components/brand/passport-logo";
 import { AppActionsMenu } from "@/components/layout/app-actions-menu";
@@ -22,7 +21,16 @@ export async function AppHeader({ organizationName, userEmail }: AppHeaderProps)
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const showAdmin = user ? await isPlatformAdmin(user.id) : false;
+
+  let showAdmin = false;
+  if (user) {
+    const { data: profile, error } = await supabase
+      .from("users")
+      .select("is_platform_admin")
+      .eq("id", user.id)
+      .maybeSingle();
+    showAdmin = !error && profile?.is_platform_admin === true;
+  }
 
   return (
     <header className="overflow-x-hidden border-b bg-background">

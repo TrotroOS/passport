@@ -88,13 +88,13 @@ async function runUpdateSession(
   }
 
   if (user && pathname.startsWith("/admin")) {
-    const { data: profile } = await supabase
+    const { data: profile, error } = await supabase
       .from("users")
       .select("is_platform_admin")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
 
-    if (!profile?.is_platform_admin) {
+    if (error || profile?.is_platform_admin !== true) {
       const url = request.nextUrl.clone();
       url.pathname = "/dashboard";
       const redirectResponse = NextResponse.redirect(url);

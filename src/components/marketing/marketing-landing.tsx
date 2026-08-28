@@ -94,7 +94,7 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
               <div>
                 <Badge
                   variant="secondary"
-                  className="mb-4 border-primary/20 bg-primary/5 px-3 py-1 text-primary sm:mb-6"
+                  className="mb-4 border-blue-200 bg-blue-100 px-3 py-1.5 font-medium text-blue-800 sm:mb-6"
                 >
                   {t("hero.badge")}
                 </Badge>

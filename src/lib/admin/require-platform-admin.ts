@@ -8,18 +8,12 @@ export interface PlatformAdminContext {
   admin: ReturnType<typeof createAdminClient>;
 }
 
-export async function isPlatformAdmin(userId: string): Promise<boolean> {
-  const admin = createAdminClient();
-  const { data } = await admin
-    .from("users")
-    .select("is_platform_admin")
-    .eq("id", userId)
-    .single();
-
-  return data?.is_platform_admin === true;
-}
-
-export async function getPlatformAdminContext(): Promise<PlatformAdminContext | null> {
+/** Read platform-admin flag for the signed-in user only (RLS-scoped, fail closed). */
+async function readSessionPlatformAdminFlag(): Promise<{
+  userId: string;
+  email: string;
+  isPlatformAdmin: boolean;
+} | null> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -27,19 +21,35 @@ export async function getPlatformAdminContext(): Promise<PlatformAdminContext | 
 
   if (!user) return null;
 
-  const admin = createAdminClient();
-  const { data: profile } = await admin
+  const { data: profile, error } = await supabase
     .from("users")
     .select("is_platform_admin, email")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
-  if (!profile?.is_platform_admin) return null;
+  if (error || !profile) return null;
 
   return {
     userId: user.id,
     email: profile.email,
-    admin,
+    isPlatformAdmin: profile.is_platform_admin === true,
+  };
+}
+
+export async function isPlatformAdmin(userId: string): Promise<boolean> {
+  const session = await readSessionPlatformAdminFlag();
+  if (!session || session.userId !== userId) return false;
+  return session.isPlatformAdmin;
+}
+
+export async function getPlatformAdminContext(): Promise<PlatformAdminContext | null> {
+  const session = await readSessionPlatformAdminFlag();
+  if (!session?.isPlatformAdmin) return null;
+
+  return {
+    userId: session.userId,
+    email: session.email,
+    admin: createAdminClient(),
   };
 }
 
