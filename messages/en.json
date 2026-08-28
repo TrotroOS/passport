@@ -711,6 +711,25 @@
       "secondaryCta": "Sign in",
       "disclaimer": "Assistive decision-support software — not legal or customs advice."
     },
+    "heroPreview": {
+      "shipmentRef": "Shipment",
+      "ready": "Ready",
+      "passportScore": "Passport Score",
+      "docs": "Docs",
+      "checks": "Checks",
+      "tasks": "Tasks",
+      "extracted": "Extracted",
+      "invoice": "Commercial invoice",
+      "verified": "Verified",
+      "match": "Qty match OK"
+    },
+    "mobile": {
+      "swipeHint": "Swipe to explore →"
+    },
+    "stickyCta": {
+      "title": "Start clearing smarter",
+      "subtitle": "Free plan — no credit card"
+    },
     "stats": {
       "documents": "Document types classified",
       "documentsValue": "6+",

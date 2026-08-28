@@ -60,10 +60,11 @@ export async function AppHeader({ organizationName, userEmail }: AppHeaderProps)
           </Link>
           <Link
             href="/settings/profile"
-            className="hidden text-sm text-muted-foreground hover:text-foreground sm:inline-flex sm:items-center sm:gap-1"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            aria-label={t("settings")}
           >
             <Settings className="h-4 w-4" />
-            {t("settings")}
+            <span className="hidden sm:inline">{t("settings")}</span>
           </Link>
           {userEmail ? (
             <span className="hidden text-sm text-muted-foreground xl:inline">{userEmail}</span>

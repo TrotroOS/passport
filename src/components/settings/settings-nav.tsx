@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/settings/profile", label: "Profile" },
-  { href: "/help", label: "Help" },
   { href: "/settings/activity", label: "Activity" },
   { href: "/settings/channels", label: "Channels" },
   { href: "/settings/billing", label: "Billing" },
+  { href: "/help", label: "Help" },
   { href: "/legal", label: "Legal" },
 ];
 
@@ -17,16 +17,16 @@ export function SettingsNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-wrap gap-2 border-b pb-4">
+    <nav className="marketing-scroll-x -mx-4 flex gap-2 overflow-x-auto border-b px-4 pb-4 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
       {links.map((link) => (
         <Link
           key={link.href}
           href={link.href}
           className={cn(
-            "rounded-md px-3 py-1.5 text-sm font-medium transition",
+            "shrink-0 rounded-md px-3 py-2 text-sm font-medium transition",
             pathname === link.href || pathname.startsWith(`${link.href}/`)
               ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-slate-100 hover:text-foreground"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
           )}
         >
           {link.label}

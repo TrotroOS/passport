@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   BarChart3,
   CheckCircle2,
+  ChevronRight,
   FileSearch,
   Globe2,
   ShieldCheck,
@@ -12,6 +13,8 @@ import {
 import { getTranslations } from "next-intl/server";
 import { LegalFooter } from "@/components/legal/legal-footer";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { MarketingHeroPreview } from "@/components/marketing/marketing-hero-preview";
+import { MarketingStickyCta } from "@/components/marketing/marketing-sticky-cta";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,83 +56,128 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
   ] as const;
 
   const plans = [
-    { tier: "free" as const, popular: false },
     { tier: "pro" as const, popular: true },
+    { tier: "free" as const, popular: false },
     { tier: "enterprise" as const, popular: false },
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background pb-20 text-foreground md:pb-0">
       <MarketingHeader isAuthenticated={isAuthenticated} />
+      <MarketingStickyCta isAuthenticated={isAuthenticated} />
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,hsl(var(--primary)/0.08),transparent_50%)]"
+          className="pointer-events-none absolute -left-20 top-0 h-64 w-64 rounded-full bg-primary/15 blur-3xl"
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border)/0.4)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border)/0.4)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_75%)]"
+          className="pointer-events-none absolute -right-16 top-32 h-48 w-48 rounded-full bg-sky-400/10 blur-3xl"
         />
-        <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:py-32">
-          <div className="mx-auto max-w-3xl text-center">
-            <Badge variant="secondary" className="mb-6">
-              {t("hero.badge")}
-            </Badge>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              {t("hero.title")}
-            </h1>
-            <p className="mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl">
-              {t("hero.subtitle")}
-            </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button asChild size="lg" className="min-w-[160px]">
-                <Link href={isAuthenticated ? "/dashboard" : "/signup"}>
-                  {isAuthenticated ? t("nav.dashboard") : t("hero.primaryCta")}
-                </Link>
-              </Button>
-              {!isAuthenticated ? (
-                <Button asChild variant="outline" size="lg" className="min-w-[160px]">
-                  <Link href="/login">{t("hero.secondaryCta")}</Link>
-                </Button>
-              ) : null}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,hsl(var(--primary)/0.1),transparent_55%)]"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border)/0.35)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border)/0.35)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_at_center,black_15%,transparent_70%)] sm:bg-[size:4rem_4rem]"
+        />
+
+        <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-24 lg:py-28">
+          <div className="mx-auto max-w-3xl text-center lg:max-w-none lg:text-left">
+            <div className="lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
+              <div>
+                <Badge
+                  variant="secondary"
+                  className="mb-4 border-primary/20 bg-primary/5 px-3 py-1 text-primary sm:mb-6"
+                >
+                  {t("hero.badge")}
+                </Badge>
+                <h1 className="text-[1.75rem] font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+                  {t("hero.title")}
+                </h1>
+                <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:mt-6 sm:text-xl">
+                  {t("hero.subtitle")}
+                </p>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
+                  <Button asChild size="lg" className="h-12 w-full text-base sm:min-w-[160px] sm:w-auto">
+                    <Link href={isAuthenticated ? "/dashboard" : "/signup"}>
+                      {isAuthenticated ? t("nav.dashboard") : t("hero.primaryCta")}
+                      <ChevronRight className="ml-1 h-4 w-4" aria-hidden />
+                    </Link>
+                  </Button>
+                  {!isAuthenticated ? (
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="lg"
+                      className="h-12 w-full text-base sm:min-w-[160px] sm:w-auto"
+                    >
+                      <Link href="/login">{t("hero.secondaryCta")}</Link>
+                    </Button>
+                  ) : null}
+                </div>
+                <p className="mt-4 text-xs leading-relaxed text-muted-foreground sm:mt-6">
+                  {t("hero.disclaimer")}
+                </p>
+              </div>
+
+              <div className="mt-2 lg:mt-0">
+                <MarketingHeroPreview />
+              </div>
             </div>
-            <p className="mt-6 text-xs text-muted-foreground">{t("hero.disclaimer")}</p>
           </div>
 
-          <dl className="mx-auto mt-16 grid max-w-3xl grid-cols-3 gap-6 text-center">
-            <div>
-              <dt className="text-sm text-muted-foreground">{t("stats.documents")}</dt>
-              <dd className="mt-1 text-2xl font-bold text-primary">{t("stats.documentsValue")}</dd>
-            </div>
-            <div>
-              <dt className="text-sm text-muted-foreground">{t("stats.corridors")}</dt>
-              <dd className="mt-1 text-2xl font-bold text-primary">{t("stats.corridorsValue")}</dd>
-            </div>
-            <div>
-              <dt className="text-sm text-muted-foreground">{t("stats.languages")}</dt>
-              <dd className="mt-1 text-2xl font-bold text-primary">{t("stats.languagesValue")}</dd>
-            </div>
+          <dl className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-3 sm:mt-16 sm:grid-cols-3 sm:gap-6">
+            {(
+              [
+                ["documents", "documentsValue"],
+                ["corridors", "corridorsValue"],
+                ["languages", "languagesValue"],
+              ] as const
+            ).map(([label, value]) => (
+              <div
+                key={label}
+                className="rounded-2xl border border-border/80 bg-card/60 px-4 py-4 text-center shadow-sm backdrop-blur-sm sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none"
+              >
+                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground sm:text-sm sm:normal-case sm:tracking-normal">
+                  {t(`stats.${label}`)}
+                </dt>
+                <dd className="mt-1 text-3xl font-bold tabular-nums text-primary sm:text-2xl">
+                  {t(`stats.${value}`)}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       </section>
 
       {/* Features */}
-      <section id="features" className="scroll-mt-20 border-b bg-muted/20 py-20 sm:py-24">
+      <section id="features" className="scroll-mt-16 border-b bg-muted/30 py-14 sm:scroll-mt-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("features.title")}</h2>
-            <p className="mt-4 text-muted-foreground">{t("features.subtitle")}</p>
+          <div className="max-w-2xl sm:mx-auto sm:text-center">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">{t("features.title")}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
+              {t("features.subtitle")}
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground md:hidden">{t("mobile.swipeHint")}</p>
           </div>
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+          <div className="marketing-scroll-x -mx-4 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:mt-14 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
             {features.map(({ key, icon: Icon }) => (
-              <Card key={key} className="border-border/80 bg-card/80 shadow-sm">
+              <Card
+                key={key}
+                className="w-[78vw] max-w-[18rem] shrink-0 snap-center border-border/80 bg-card shadow-md sm:w-auto sm:max-w-none sm:shadow-sm"
+              >
                 <CardHeader className="pb-2">
-                  <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary">
                     <Icon className="h-5 w-5" aria-hidden />
                   </div>
-                  <CardTitle className="text-base">{t(`features.${key}.title`)}</CardTitle>
+                  <CardTitle className="text-base leading-snug">
+                    {t(`features.${key}.title`)}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-sm leading-relaxed">
@@ -143,22 +191,36 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="scroll-mt-20 py-20 sm:py-24">
+      <section id="how-it-works" className="scroll-mt-16 py-14 sm:scroll-mt-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("howItWorks.title")}</h2>
-            <p className="mt-4 text-muted-foreground">{t("howItWorks.subtitle")}</p>
+          <div className="max-w-2xl sm:mx-auto sm:text-center">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">{t("howItWorks.title")}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
+              {t("howItWorks.subtitle")}
+            </p>
           </div>
-          <ol className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+
+          <ol className="relative mt-10 space-y-0 sm:mt-14 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-4 lg:gap-6">
+            <div
+              aria-hidden
+              className="absolute bottom-4 left-5 top-4 w-px bg-gradient-to-b from-primary/40 via-primary/20 to-transparent md:hidden"
+            />
             {steps.map((step, index) => (
-              <li key={step} className="relative">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+              <li
+                key={step}
+                className="relative flex gap-4 rounded-2xl border border-transparent p-4 active:bg-muted/40 md:block md:rounded-none md:border-0 md:p-0 md:active:bg-transparent"
+              >
+                <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground shadow-md shadow-primary/25">
                   {index + 1}
                 </div>
-                <h3 className="mt-4 text-lg font-semibold">{t(`howItWorks.${step}.title`)}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {t(`howItWorks.${step}.description`)}
-                </p>
+                <div className="min-w-0 pb-6 md:pb-0">
+                  <h3 className="text-base font-semibold leading-snug sm:text-lg">
+                    {t(`howItWorks.${step}.title`)}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {t(`howItWorks.${step}.description`)}
+                  </p>
+                </div>
               </li>
             ))}
           </ol>
@@ -166,22 +228,28 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
       </section>
 
       {/* Corridors */}
-      <section id="corridors" className="scroll-mt-20 border-y bg-muted/20 py-20 sm:py-24">
+      <section
+        id="corridors"
+        className="scroll-mt-16 border-y bg-gradient-to-b from-muted/40 to-muted/20 py-14 sm:scroll-mt-20 sm:py-24"
+      >
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("corridors.title")}</h2>
-            <p className="mt-4 text-muted-foreground">{t("corridors.subtitle")}</p>
+          <div className="max-w-2xl sm:mx-auto sm:text-center">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">{t("corridors.title")}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
+              {t("corridors.subtitle")}
+            </p>
           </div>
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+          <div className="marketing-scroll-x -mx-4 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:mt-14 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
             {corridors.map(({ key, flag }) => (
               <div
                 key={key}
-                className="rounded-xl border border-border bg-card p-6 shadow-sm transition-colors hover:border-primary/30"
+                className="w-[72vw] max-w-[16rem] shrink-0 snap-center rounded-2xl border border-border bg-card p-5 shadow-md sm:w-auto sm:max-w-none sm:shadow-sm"
               >
-                <span className="text-3xl" aria-hidden>
+                <span className="text-4xl" aria-hidden>
                   {flag}
                 </span>
-                <h3 className="mt-4 text-lg font-semibold">{t(`corridors.${key}`)}</h3>
+                <h3 className="mt-3 text-lg font-semibold">{t(`corridors.${key}`)}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {t(`corridors.${key}Detail`)}
                 </p>
@@ -192,13 +260,17 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="scroll-mt-20 py-20 sm:py-24">
+      <section id="pricing" className="scroll-mt-16 py-14 sm:scroll-mt-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("pricing.title")}</h2>
-            <p className="mt-4 text-muted-foreground">{t("pricing.subtitle")}</p>
+          <div className="max-w-2xl sm:mx-auto sm:text-center">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">{t("pricing.title")}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:mt-4 sm:text-base">
+              {t("pricing.subtitle")}
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground lg:hidden">{t("mobile.swipeHint")}</p>
           </div>
-          <div className="mt-14 grid gap-6 lg:grid-cols-3">
+
+          <div className="marketing-scroll-x -mx-4 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:mt-14 sm:grid sm:grid-cols-3 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0">
             {plans.map(({ tier, popular }) => {
               const plan = BILLING_PLANS[tier];
               const limits = [
@@ -217,16 +289,16 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
                 <Card
                   key={tier}
                   className={cn(
-                    "relative flex flex-col",
-                    popular && "border-primary shadow-md ring-1 ring-primary/20"
+                    "relative flex w-[82vw] max-w-[20rem] shrink-0 snap-center flex-col sm:w-auto sm:max-w-none",
+                    popular && "border-primary shadow-lg ring-2 ring-primary/20"
                   )}
                 >
                   {popular ? (
-                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 shadow-sm">
                       {t("pricing.popular")}
                     </Badge>
                   ) : null}
-                  <CardHeader>
+                  <CardHeader className="pb-3">
                     <CardTitle>{t(`pricing.${tier}`)}</CardTitle>
                     <div className="mt-2 flex items-baseline gap-1">
                       <span className="text-3xl font-bold">
@@ -239,7 +311,7 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
                     <CardDescription className="mt-2">{plan.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-1">
-                    <ul className="space-y-2 text-sm">
+                    <ul className="space-y-2.5 text-sm">
                       {limits.map((item) => (
                         <li key={item} className="flex items-start gap-2">
                           <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
@@ -251,7 +323,7 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
                   <CardFooter>
                     <Button
                       asChild
-                      className="w-full"
+                      className="h-11 w-full"
                       variant={popular ? "default" : "outline"}
                     >
                       <Link
@@ -279,21 +351,27 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
       </section>
 
       {/* CTA */}
-      <section className="border-t bg-primary py-16 text-primary-foreground sm:py-20">
-        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("cta.title")}</h2>
-          <p className="mt-4 text-primary-foreground/90">{t("cta.subtitle")}</p>
-          <Button asChild size="lg" variant="secondary" className="mt-8">
+      <section className="relative overflow-hidden border-t bg-primary py-14 text-primary-foreground sm:py-20">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_50%)]"
+        />
+        <div className="relative mx-auto max-w-3xl px-4 text-center sm:px-6">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">{t("cta.title")}</h2>
+          <p className="mt-3 text-sm leading-relaxed text-primary-foreground/90 sm:mt-4 sm:text-base">
+            {t("cta.subtitle")}
+          </p>
+          <Button asChild size="lg" variant="secondary" className="mt-8 h-12 w-full sm:w-auto">
             <Link href={isAuthenticated ? "/dashboard" : "/signup"}>{t("cta.button")}</Link>
           </Button>
-          <p className="mt-6 text-sm text-primary-foreground/80">
+          <p className="mt-6 text-xs leading-relaxed text-primary-foreground/80 sm:text-sm">
             {t("cta.contact", { email: SUPPORT_CONTACT_EMAIL })}
           </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-12">
+      <footer className="border-t py-10 sm:py-12">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <p className="mb-8 text-center text-sm text-muted-foreground">{t("footer.tagline")}</p>
           <LegalFooter />

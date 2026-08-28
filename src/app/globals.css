@@ -91,3 +91,32 @@
     page-break-inside: avoid;
   }
 }
+
+@layer utilities {
+  .marketing-scroll-x {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .marketing-scroll-x::-webkit-scrollbar {
+    display: none;
+  }
+
+  @keyframes marketing-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .marketing-float {
+    animation: marketing-float 5s ease-in-out infinite;
+  }
+
+  .marketing-float-delayed {
+    animation: marketing-float 5s ease-in-out 1.2s infinite;
+  }
+}
