@@ -392,7 +392,8 @@
     "auditTimestamp": "Timestamp",
     "auditAction": "Action",
     "auditEntity": "Entity",
-    "confidentialFooter": "Confidential compliance record — for internal review and audit purposes only."
+    "confidentialFooter": "Confidential compliance record — for internal review and audit purposes only.",
+    "confidentialNote": "Confidential compliance record for internal review and audit purposes. Not customs clearance or regulatory approval."
   },
   "notifications": {
     "collaborationInviteSubject": "Passport: Convite para {shipmentRef}",
