@@ -12,6 +12,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import type { RegulatoryCheckWithRegulation } from "@/types/database";
 import { useLocalizedStatus } from "@/lib/i18n/use-localized-status";
+import { isSafeHttpUrl } from "@/lib/security/sanitize-text";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -127,8 +128,12 @@ export function CompliancePanel({
             {checks.map((check) => {
               const regulation = check.regulations;
               const details = check.details ?? {};
-              const sourceUrl =
+              const sourceUrlRaw =
                 (details.source_url as string) ?? regulation?.source_url;
+              const sourceUrl =
+                typeof sourceUrlRaw === "string" && isSafeHttpUrl(sourceUrlRaw)
+                  ? sourceUrlRaw
+                  : null;
               const authority =
                 (details.authority as string) ?? regulation?.authority;
 

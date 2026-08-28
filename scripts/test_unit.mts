@@ -55,6 +55,73 @@ test("guess mime from extension", () => {
   assert.equal(guessMimeType("invoice.pdf"), "application/pdf");
 });
 
+console.log("\nSecurity: text sanitization & upload validation");
+import { sanitizeUserText, isSafeHttpUrl } from "../src/lib/security/sanitize-text.ts";
+import {
+  sanitizeUploadFileName,
+  validateUploadBuffer,
+} from "../src/lib/security/validate-upload.ts";
+
+const PDF_MAGIC = Buffer.from([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x34]);
+const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const JPEG_MAGIC = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]);
+
+test("sanitizeUserText strips HTML tags", () => {
+  assert.equal(
+    sanitizeUserText("<b>hello</b> <script>x</script>"),
+    "hello x"
+  );
+});
+test("sanitizeUserText removes control characters", () => {
+  assert.equal(sanitizeUserText("hello\u0000world"), "helloworld");
+});
+test("isSafeHttpUrl accepts https links", () => {
+  assert.equal(isSafeHttpUrl("https://example.com/doc"), true);
+});
+test("isSafeHttpUrl rejects javascript URLs", () => {
+  assert.equal(isSafeHttpUrl("javascript:alert(1)"), false);
+});
+test("sanitizeUploadFileName rejects path traversal", () => {
+  assert.equal(sanitizeUploadFileName("../invoice.pdf"), null);
+  assert.equal(sanitizeUploadFileName("invoice.pdf"), "invoice.pdf");
+});
+test("validateUploadBuffer accepts PDF magic bytes", () => {
+  const result = validateUploadBuffer(PDF_MAGIC, "invoice.pdf", "application/pdf");
+  assert.equal(result.ok, true);
+});
+test("validateUploadBuffer rejects MIME/content mismatch", () => {
+  const result = validateUploadBuffer(PDF_MAGIC, "photo.png", "image/png");
+  assert.equal(result.ok, false);
+});
+test("validateUploadBuffer accepts PNG magic bytes", () => {
+  const result = validateUploadBuffer(PNG_MAGIC, "scan.png", "image/png");
+  assert.equal(result.ok, true);
+});
+test("validateUploadBuffer accepts JPEG magic bytes", () => {
+  const result = validateUploadBuffer(JPEG_MAGIC, "photo.jpg", "image/jpeg");
+  assert.equal(result.ok, true);
+});
+test("validateInboundAttachment verifies buffer signature", () => {
+  assert.equal(
+    validateInboundAttachment(
+      "application/pdf",
+      PDF_MAGIC.length,
+      PDF_MAGIC,
+      "invoice.pdf"
+    ).valid,
+    true
+  );
+  assert.equal(
+    validateInboundAttachment(
+      "image/png",
+      PDF_MAGIC.length,
+      PDF_MAGIC,
+      "fake.png"
+    ).valid,
+    false
+  );
+});
+
 console.log("\nAPI key helpers");
 import {
   API_KEY_PREFIX,

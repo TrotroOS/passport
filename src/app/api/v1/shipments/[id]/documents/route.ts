@@ -3,11 +3,8 @@ import { apiSuccess } from "@/lib/api/api-key-auth";
 import { requireApiKey } from "@/lib/api/require-api-key";
 import { getShipmentForOrg } from "@/lib/api/shipment-service";
 import { uploadShipmentDocument } from "@/lib/documents/upload-document";
+import { validateUploadFile } from "@/lib/security/validate-upload";
 import { ApiError, apiErrorResponse } from "@/lib/errors/api-error";
-import {
-  ALLOWED_MIME_TYPES,
-  MAX_FILE_SIZE,
-} from "@/lib/utils";
 import { uploadDocumentSchema } from "@/lib/validations";
 
 interface RouteParams {
@@ -65,18 +62,11 @@ export async function POST(request: Request, { params }: RouteParams) {
     return apiErrorResponse(new ApiError("VALIDATION_ERROR", "File is required", 400));
   }
 
-  if (file.size > MAX_FILE_SIZE) {
+  const fileValidation = await validateUploadFile(file);
+  if (!fileValidation.ok) {
     return apiErrorResponse(
-      new ApiError("VALIDATION_ERROR", "File must be 20MB or less", 400)
+      new ApiError("VALIDATION_ERROR", fileValidation.error, 400)
     );
-  }
-
-  if (
-    !ALLOWED_MIME_TYPES.includes(
-      file.type as (typeof ALLOWED_MIME_TYPES)[number]
-    )
-  ) {
-    return apiErrorResponse(new ApiError("VALIDATION_ERROR", "File type not allowed", 400));
   }
 
   const result = await uploadShipmentDocument({

@@ -1,4 +1,5 @@
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/utils";
+import { validateUploadBuffer } from "@/lib/security/validate-upload";
 
 export interface AttachmentValidation {
   valid: boolean;
@@ -7,7 +8,9 @@ export interface AttachmentValidation {
 
 export function validateInboundAttachment(
   mimeType: string,
-  sizeBytes: number
+  sizeBytes: number,
+  buffer?: Buffer,
+  fileName?: string
 ): AttachmentValidation {
   if (sizeBytes <= 0) {
     return { valid: false, error: "Empty file" };
@@ -23,6 +26,13 @@ export function validateInboundAttachment(
       valid: false,
       error: `Unsupported file type: ${normalized}`,
     };
+  }
+
+  if (buffer && fileName) {
+    const result = validateUploadBuffer(buffer, fileName, normalized);
+    if (!result.ok) {
+      return { valid: false, error: result.error };
+    }
   }
 
   return { valid: true };

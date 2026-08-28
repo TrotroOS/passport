@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
-import { randomUUID } from "crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { writeAuditEvent } from "@/lib/audit";
-import {
-  ALLOWED_MIME_TYPES,
-  MAX_FILE_SIZE,
-} from "@/lib/utils";
 import { uploadDocumentSchema } from "@/lib/validations";
-import { scheduleDocumentProcessing } from "@/lib/pipeline/queue-document-processing";
 import { requireShipmentPermission } from "@/lib/shipments/shipment-access";
 import { uploadShipmentDocument } from "@/lib/documents/upload-document";
+import { validateUploadFile } from "@/lib/security/validate-upload";
 import { ApiError } from "@/lib/errors/api-error";
 import { checkRateLimit } from "@/lib/rate-limit/rate-limit";
 
@@ -98,37 +93,30 @@ export async function POST(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: "File is required" }, { status: 400 });
   }
 
-  if (file.size > MAX_FILE_SIZE) {
-    return NextResponse.json({ error: "File must be 20MB or less" }, { status: 400 });
-  }
-
-  if (
-    !ALLOWED_MIME_TYPES.includes(
-      file.type as (typeof ALLOWED_MIME_TYPES)[number]
-    )
-  ) {
-    return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
+  const fileValidation = await validateUploadFile(file);
+  if (!fileValidation.ok) {
+    return NextResponse.json({ error: fileValidation.error }, { status: 400 });
   }
 
   const shipment = access.shipment;
   const isCollaborator = access.level === "collaborator";
 
+  const result = await uploadShipmentDocument({
+    shipmentId,
+    organizationId: shipment.organization_id,
+    userId: user.id,
+    file,
+    fileName: file.name,
+    mimeType: file.type,
+    docType: parsed.data.doc_type,
+    uploadedByCollaborator: isCollaborator,
+  });
+
+  if ("error" in result) {
+    return NextResponse.json({ error: result.error }, { status: 500 });
+  }
+
   if (isCollaborator) {
-    const result = await uploadShipmentDocument({
-      shipmentId,
-      organizationId: shipment.organization_id,
-      userId: user.id,
-      file,
-      fileName: file.name,
-      mimeType: file.type,
-      docType: parsed.data.doc_type,
-      uploadedByCollaborator: true,
-    });
-
-    if ("error" in result) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
-    }
-
     const admin = createAdminClient();
     await writeAuditEvent(admin, {
       organizationId: shipment.organization_id,
@@ -140,71 +128,14 @@ export async function POST(request: Request, { params }: RouteParams) {
       metadata: {
         collaborator_organization_id: access.userOrganizationId,
         collaborator_role: access.role,
-        file_name: file.name,
+        file_name: fileValidation.fileName,
       },
     });
-
-    return NextResponse.json({ document: result.document }, { status: 201 });
   }
-
-  const arrayBuffer = await file.arrayBuffer();
-  const documentId = randomUUID();
-  const filePath = `${shipment.organization_id}/${shipmentId}/${documentId}`;
-
-  const { error: uploadError } = await supabase.storage
-    .from("passport-documents")
-    .upload(filePath, arrayBuffer, {
-      contentType: file.type,
-      upsert: false,
-    });
-
-  if (uploadError) {
-    return NextResponse.json({ error: uploadError.message }, { status: 500 });
-  }
-
-  const { data: document, error: docError } = await supabase
-    .from("documents")
-    .insert({
-      id: documentId,
-      shipment_id: shipmentId,
-      organization_id: shipment.organization_id,
-      doc_type: parsed.data.doc_type,
-      file_path: filePath,
-      file_name: file.name,
-      mime_type: file.type,
-      uploaded_by: user.id,
-      uploaded_by_collaborator: false,
-    })
-    .select()
-    .single();
-
-  if (docError || !document) {
-    await supabase.storage.from("passport-documents").remove([filePath]);
-    return NextResponse.json(
-      { error: docError?.message ?? "Failed to save document record" },
-      { status: 500 }
-    );
-  }
-
-  await writeAuditEvent(supabase, {
-    organizationId: shipment.organization_id,
-    userId: user.id,
-    action: "document.uploaded",
-    entityType: "document",
-    entityId: document.id,
-    shipmentId,
-    metadata: {
-      doc_type: document.doc_type,
-      file_name: file.name,
-      mime_type: file.type,
-    },
-  });
-
-  scheduleDocumentProcessing({ documentId: document.id, userId: user.id });
 
   return NextResponse.json(
     {
-      document,
+      document: result.document,
       processing_queued: true,
     },
     { status: 201 }

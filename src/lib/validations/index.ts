@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { isValidApiScope } from "@/lib/api/api-key-scopes";
+import { sanitizeUserText } from "@/lib/security/sanitize-text";
 import {
   ALLOWED_MIME_TYPES,
   DOCUMENT_TYPES,
@@ -16,7 +17,11 @@ export const loginSchema = z.object({
 export const signupSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  fullName: z.string().min(1, "Full name is required").max(100),
+  fullName: z
+    .string()
+    .min(1, "Full name is required")
+    .max(100)
+    .transform(sanitizeUserText),
   acceptTerms: z
     .union([z.literal("on"), z.literal("true"), z.literal(true)])
     .optional(),
@@ -133,12 +138,18 @@ export const createWebhookSchema = z.object({
 
 export const submitFeedbackSchema = z.object({
   type: z.enum(["bug", "feature", "suggestion", "other"]),
-  message: z.string().min(1, "Message is required").max(2000),
+  message: z
+    .string()
+    .min(1, "Message is required")
+    .max(2000)
+    .transform(sanitizeUserText),
 });
 
 export const updateFeedbackSchema = z.object({
   status: z.enum(["open", "acknowledged", "closed"]).optional(),
-  admin_notes: z.string().max(2000).optional().nullable(),
+  admin_notes: z
+    .union([z.string().max(2000).transform(sanitizeUserText), z.null()])
+    .optional(),
 });
 
 const canonicalDocTypes = [
@@ -170,7 +181,11 @@ export const inviteCollaboratorSchema = z.object({
 });
 
 export const createShipmentCommentSchema = z.object({
-  body: z.string().min(1, "Comment is required").max(5000),
+  body: z
+    .string()
+    .min(1, "Comment is required")
+    .max(5000)
+    .transform(sanitizeUserText),
 });
 
 export const confirmReadySchema = z.object({
@@ -210,7 +225,12 @@ export const updateUserPreferencesSchema = z.object({
 });
 
 export const updateUserProfileSchema = z.object({
-  full_name: z.string().min(1, "Name is required").max(200).optional(),
+  full_name: z
+    .string()
+    .min(1, "Name is required")
+    .max(200)
+    .transform(sanitizeUserText)
+    .optional(),
   phone: z.string().max(50).optional().nullable(),
   preferred_language: z.enum(["en", "fr", "pt", "ar"]).optional(),
 });

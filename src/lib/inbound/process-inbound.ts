@@ -134,7 +134,9 @@ export async function processInboundMessage(
       const mimeType = guessMimeType(attachment.fileName, attachment.mimeType);
       const validation = validateInboundAttachment(
         mimeType,
-        attachment.buffer.length
+        attachment.buffer.length,
+        attachment.buffer,
+        attachment.fileName
       );
 
       if (!validation.valid) {

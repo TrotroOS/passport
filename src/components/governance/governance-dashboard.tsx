@@ -22,6 +22,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn, formatDate } from "@/lib/utils";
+import { isSafeHttpUrl } from "@/lib/security/sanitize-text";
 import type {
   ConnectorStatus,
   OrgGovernanceSummary,
@@ -400,7 +401,7 @@ export function GovernanceDashboard() {
                   {src.source_type.replace(/_/g, " ")}
                   {src.authority ? ` · ${src.authority}` : null}
                 </p>
-                {src.base_url ? (
+                {src.base_url && isSafeHttpUrl(src.base_url) ? (
                   <Link
                     href={src.base_url}
                     target="_blank"

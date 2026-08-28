@@ -82,7 +82,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       shipment_id: shipmentId,
       user_id: user.id,
       organization_id: organizationId,
-      body: parsed.data.body.trim(),
+      body: parsed.data.body,
     })
     .select("*, users(id, email, full_name), organizations(id, name)")
     .single();

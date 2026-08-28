@@ -2,6 +2,10 @@ import { randomUUID } from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { writeAuditEvent } from "@/lib/audit";
 import { scheduleDocumentProcessing } from "@/lib/pipeline/queue-document-processing";
+import {
+  sanitizeUploadFileName,
+  validateUploadBuffer,
+} from "@/lib/security/validate-upload";
 import { dispatchWebhook } from "@/lib/webhooks/webhook-service";
 import type { DocumentType, IngestionSource } from "@/types/database";
 
@@ -25,21 +29,32 @@ export async function uploadShipmentDocument(
 ): Promise<{ document: Record<string, unknown> } | { error: string }> {
   const admin = createAdminClient();
   const documentId = randomUUID();
-  const safeName = input.fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const filePath =
-    input.storageSubfolder === "inbound"
-      ? `${input.organizationId}/${input.shipmentId}/inbound/${documentId}-${safeName}`
-      : `${input.organizationId}/${input.shipmentId}/${documentId}`;
 
   const buffer =
     input.file instanceof Buffer
       ? input.file
       : Buffer.from(await (input.file as File).arrayBuffer());
 
+  const validation = validateUploadBuffer(
+    buffer,
+    input.fileName,
+    input.mimeType
+  );
+  if (!validation.ok) {
+    return { error: validation.error };
+  }
+
+  const safeName =
+    sanitizeUploadFileName(input.fileName) ?? validation.fileName;
+  const filePath =
+    input.storageSubfolder === "inbound"
+      ? `${input.organizationId}/${input.shipmentId}/inbound/${documentId}-${safeName}`
+      : `${input.organizationId}/${input.shipmentId}/${documentId}`;
+
   const { error: uploadError } = await admin.storage
     .from("passport-documents")
-    .upload(filePath, buffer, {
-      contentType: input.mimeType,
+    .upload(filePath, validation.buffer, {
+      contentType: validation.mimeType,
       upsert: false,
     });
 
@@ -55,8 +70,8 @@ export async function uploadShipmentDocument(
       organization_id: input.organizationId,
       doc_type: input.docType,
       file_path: filePath,
-      file_name: input.fileName,
-      mime_type: input.mimeType,
+      file_name: safeName,
+      mime_type: validation.mimeType,
       uploaded_by: input.userId ?? null,
       uploaded_by_collaborator: input.uploadedByCollaborator ?? false,
       ingestion_source: input.ingestionSource ?? "manual",
@@ -79,8 +94,8 @@ export async function uploadShipmentDocument(
     shipmentId: input.shipmentId,
     metadata: {
       doc_type: document.doc_type,
-      file_name: input.fileName,
-      mime_type: input.mimeType,
+      file_name: safeName,
+      mime_type: validation.mimeType,
       ingestion_source: input.ingestionSource ?? "manual",
     },
   });
