@@ -31,9 +31,9 @@ export default async function AnalyticsPage() {
       : undefined;
 
   return (
-    <div className="min-h-screen bg-slate-50 print:hidden">
+    <div className="min-h-screen bg-slate-50">
       <AppHeader organizationName={orgName} userEmail={profile?.email} />
-      <main className="mx-auto max-w-7xl px-4 py-8 print:hidden sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Button variant="ghost" size="sm" asChild className="mb-6">
           <Link href="/dashboard">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -55,7 +55,7 @@ export default async function AnalyticsPage() {
             </Link>
           </Button>
         </div>
-        <AnalyticsDashboard organizationName={orgName} />
+        <AnalyticsDashboard />
       </main>
     </div>
   );

@@ -20,10 +20,6 @@ import { useTranslations } from "next-intl";
 import type { AnalyticsDateRange } from "@/lib/analytics/date-range";
 import { formatMonthLabel } from "@/lib/analytics/date-range";
 import { useLocalizedStatus } from "@/lib/i18n/use-localized-status";
-import {
-  AnalyticsPrintReport,
-  type AnalyticsPrintSnapshot,
-} from "@/components/analytics/analytics-print-report";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -45,7 +41,7 @@ function SkeletonBlock({ className }: { className?: string }) {
   return <div className={`animate-pulse rounded-md bg-slate-200 ${className ?? ""}`} />;
 }
 
-export function AnalyticsDashboard({ organizationName }: { organizationName?: string }) {
+export function AnalyticsDashboard() {
   const t = useTranslations("analytics");
   const localizedStatus = useLocalizedStatus();
   const [dateRange, setDateRange] = useState<AnalyticsDateRange>("90d");
@@ -225,77 +221,6 @@ export function AnalyticsDashboard({ organizationName }: { organizationName?: st
     | { last30Days?: number; last90Days?: number; allTime?: number }
     | undefined;
 
-  const printSnapshot = useMemo((): AnalyticsPrintSnapshot => {
-    const rangeLabel =
-      dateOptions.find((opt) => opt.value === dateRange)?.label ?? dateRange;
-
-    const snapshotCompliancePoints =
-      (compliance?.compliance as { points?: Array<Record<string, unknown>> })?.points?.map(
-        (p) => ({
-          ...p,
-          label: formatMonthLabel(String(p.month)),
-        })
-      ) ?? [];
-
-    const snapshotRiskPoints =
-      (riskTrend?.points as Array<Record<string, unknown>>)?.map((p) => ({
-        ...p,
-        label: formatMonthLabel(String(p.month)),
-      })) ?? [];
-
-    const snapshotRiskPie = summary?.riskDistribution
-      ? Object.entries(summary.riskDistribution as Record<string, number>).map(
-          ([name, value]) => ({
-            name: localizedStatus(name),
-            value,
-            key: name,
-          })
-        )
-      : [];
-
-    const snapshotStatusBreakdown = statusBreakdownRaw.map((row) => ({
-      ...row,
-      name: localizedStatus(row.status),
-    }));
-
-    return {
-      dateRangeLabel: rangeLabel,
-      organizationName,
-      summary,
-      compliancePoints: snapshotCompliancePoints,
-      riskPie: snapshotRiskPie,
-      riskPoints: snapshotRiskPoints,
-      supplierRows: (suppliers?.suppliers as Array<Record<string, unknown>>) ?? [],
-      categoryRows: (categories?.categories as Array<Record<string, unknown>>) ?? [],
-      corridorRows: (corridors?.corridors as Array<Record<string, unknown>>) ?? [],
-      missingDocs: (documents?.missingByType as Array<Record<string, unknown>>) ?? [],
-      discrepancyTrend,
-      scoreDimensions,
-      riskFactors,
-      statusBreakdown: snapshotStatusBreakdown,
-      tracking,
-      documents,
-      localizedStatus,
-    };
-  }, [
-    categories,
-    compliance,
-    corridors,
-    dateOptions,
-    dateRange,
-    discrepancyTrend,
-    documents,
-    localizedStatus,
-    organizationName,
-    riskFactors,
-    riskTrend,
-    scoreDimensions,
-    statusBreakdownRaw,
-    summary,
-    suppliers,
-    tracking,
-  ]);
-
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -304,7 +229,6 @@ export function AnalyticsDashboard({ organizationName }: { organizationName?: st
           <p className="text-muted-foreground">{t("orgInsights")}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <AnalyticsPrintReport snapshot={printSnapshot} disabled={initialLoading} />
           {dateOptions.map((opt) => (
             <Button
               key={opt.value}
