@@ -4,13 +4,21 @@ import { Download } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface AuditExportButtonProps {
   shipmentId: string;
   shipmentRef: string;
+  compact?: boolean;
+  className?: string;
 }
 
-export function AuditExportButton({ shipmentId, shipmentRef }: AuditExportButtonProps) {
+export function AuditExportButton({
+  shipmentId,
+  shipmentRef,
+  compact = false,
+  className,
+}: AuditExportButtonProps) {
   const t = useTranslations("export");
 
   async function handleExport() {
@@ -34,9 +42,15 @@ export function AuditExportButton({ shipmentId, shipmentRef }: AuditExportButton
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={handleExport} className="print:hidden">
-      <Download className="me-2 h-4 w-4" />
-      {t("auditPack")}
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={handleExport}
+      className={cn("print:hidden", className)}
+      aria-label={compact ? t("auditPack") : undefined}
+    >
+      <Download className={compact ? "h-4 w-4 shrink-0 sm:me-2" : "me-2 h-4 w-4"} />
+      <span className={compact ? "hidden truncate sm:inline" : undefined}>{t("auditPack")}</span>
     </Button>
   );
 }

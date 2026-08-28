@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -17,6 +18,7 @@ import {
 
 interface ShareCollaboratorDialogProps {
   shipmentId: string;
+  className?: string;
 }
 
 async function copyInviteLink(url: string) {
@@ -58,7 +60,7 @@ function showInviteResult(data: {
   toast.success("Invitation created");
 }
 
-export function ShareCollaboratorDialog({ shipmentId }: ShareCollaboratorDialogProps) {
+export function ShareCollaboratorDialog({ shipmentId, className }: ShareCollaboratorDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -99,8 +101,8 @@ export function ShareCollaboratorDialog({ shipmentId }: ShareCollaboratorDialogP
 
   if (!open) {
     return (
-      <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-        <Share2 className="mr-2 h-4 w-4" />
+      <Button variant="outline" size="sm" onClick={() => setOpen(true)} className={cn("w-full sm:w-auto", className)}>
+        <Share2 className="mr-2 h-4 w-4 shrink-0" />
         Share
       </Button>
     );

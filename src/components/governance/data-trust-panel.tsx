@@ -117,9 +117,9 @@ export function DataTrustPanel({ shipmentId }: DataTrustPanelProps) {
     .slice(0, 12);
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-start justify-between gap-4">
-        <div>
+    <Card className="min-w-0 overflow-hidden">
+      <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
           <CardTitle className="flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-primary" />
             {t("shipmentTitle")}

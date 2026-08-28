@@ -16,7 +16,7 @@ export function DutyEstimateCard({ estimate }: DutyEstimateCardProps) {
   if (estimate.products.length === 0) return null;
 
   return (
-    <Card>
+    <Card className="min-w-0 overflow-hidden">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Calculator className="h-5 w-5" />
@@ -52,8 +52,8 @@ export function DutyEstimateCard({ estimate }: DutyEstimateCardProps) {
         </div>
 
         {estimate.products.length > 1 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="app-contained-scroll">
+            <table className="w-full min-w-[28rem] text-sm">
               <thead>
                 <tr className="border-b text-left text-muted-foreground">
                   <th className="pb-2 pr-3 font-medium">Product</th>

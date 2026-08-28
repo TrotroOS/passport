@@ -51,7 +51,7 @@ export function ReadinessPanel({
   }
 
   return (
-    <Card>
+    <Card className="min-w-0 overflow-hidden">
       <CardHeader>
         <CardTitle className="text-lg">{t("title")}</CardTitle>
         <CardDescription>{t("description")}</CardDescription>

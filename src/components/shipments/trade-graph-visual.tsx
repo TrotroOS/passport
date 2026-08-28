@@ -84,10 +84,10 @@ export function TradeGraphVisual({ graph }: TradeGraphVisualProps) {
   const { positions, width, height, centerId } = layout;
 
   return (
-    <div className="overflow-x-auto rounded-md border bg-slate-50 p-2">
+    <div className="app-contained-scroll rounded-md border bg-slate-50 p-2">
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="mx-auto w-full max-w-xl"
+        className="mx-auto h-auto w-full max-w-full"
         role="img"
         aria-label="Trade relationship graph"
       >

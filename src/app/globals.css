@@ -119,4 +119,11 @@
   .marketing-float-delayed {
     animation: marketing-float 5s ease-in-out 1.2s infinite;
   }
+
+  .app-contained-scroll {
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }

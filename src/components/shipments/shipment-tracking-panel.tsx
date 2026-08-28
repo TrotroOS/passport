@@ -212,7 +212,7 @@ export function ShipmentTrackingPanel({
   });
 
   return (
-    <Card className="lg:col-span-2">
+    <Card className="min-w-0 overflow-hidden lg:col-span-2">
       <CardHeader>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>

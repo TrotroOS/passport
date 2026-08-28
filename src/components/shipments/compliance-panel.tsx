@@ -84,11 +84,11 @@ export function CompliancePanel({
   }
 
   return (
-    <Card>
+    <Card className="min-w-0 overflow-hidden">
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Scale className="h-5 w-5 text-muted-foreground" />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex min-w-0 items-center gap-2">
+            <Scale className="h-5 w-5 shrink-0 text-muted-foreground" />
             <CardTitle className="text-lg">{t("title")}</CardTitle>
           </div>
           {!readOnly ? (
@@ -97,6 +97,7 @@ export function CompliancePanel({
               size="sm"
               onClick={runRegulatory}
               disabled={isRunning}
+              className="w-full shrink-0 sm:w-auto"
             >
               {isRunning ? (
                 <>
@@ -133,10 +134,10 @@ export function CompliancePanel({
 
               return (
                 <li key={check.id} className="rounded-md border p-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-start gap-2">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex min-w-0 items-start gap-2">
                       {statusIcon(check.status)}
-                      <div>
+                      <div className="min-w-0">
                         <p className="font-medium">
                           {regulation?.title ??
                             (details.regulation_title as string) ??
@@ -170,7 +171,7 @@ export function CompliancePanel({
                         )}
                       </div>
                     </div>
-                    <Badge variant={statusVariant(check.status)}>
+                    <Badge variant={statusVariant(check.status)} className="shrink-0 self-start">
                       {localizedStatus(check.status)}
                     </Badge>
                   </div>

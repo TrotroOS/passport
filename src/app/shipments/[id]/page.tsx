@@ -10,7 +10,7 @@ import {
   hasPermission,
   listCollaboratorsForShipment,
 } from "@/lib/shipments/shipment-access";
-import { AppHeader } from "@/components/layout/app-header";
+import { AppPageShell } from "@/components/layout/app-page-shell";
 import { AddPartyForm } from "@/components/shipments/add-party-form";
 import { AddProductForm } from "@/components/shipments/add-product-form";
 import { DocumentUploadForm } from "@/components/shipments/document-upload-form";
@@ -22,15 +22,13 @@ import { CompliancePanel } from "@/components/shipments/compliance-panel";
 import { WorkflowTasksPanel } from "@/components/shipments/workflow-tasks-panel";
 import { RiskPanel } from "@/components/shipments/risk-panel";
 import { TradeGraphPanel } from "@/components/shipments/trade-graph-panel";
-import { ShareCollaboratorDialog } from "@/components/shipments/share-collaborator-dialog";
 import { CollaboratorsPanel } from "@/components/shipments/collaborators-panel";
 import { ShipmentCommentsPanel } from "@/components/shipments/shipment-comments-panel";
 import { ReadinessPanel } from "@/components/shipments/readiness-panel";
 import { ProductHsPanel } from "@/components/shipments/product-hs-panel";
 import { HsCodeChecksPanel } from "@/components/shipments/hs-code-checks-panel";
+import { ShipmentDetailActions } from "@/components/shipments/shipment-detail-actions";
 import { ShipmentTrackingPanel } from "@/components/shipments/shipment-tracking-panel";
-import { ShipmentPrintReport } from "@/components/shipments/shipment-print-report";
-import { AuditExportButton } from "@/components/shipments/audit-export-button";
 import { AuditEventList } from "@/components/audit/audit-event-list";
 import { PartyScreeningPanel } from "@/components/compliance/party-screening-panel";
 import { DocumentChecklistPanel } from "@/components/compliance/document-checklist-panel";
@@ -264,9 +262,8 @@ export default async function ShipmentDetailPage({
       : undefined;
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <AppHeader organizationName={orgName} userEmail={profile?.email} />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <AppPageShell organizationName={orgName} userEmail={profile?.email}>
+      <main className="mx-auto w-full max-w-7xl min-w-0 overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <Button variant="ghost" size="sm" asChild className="mb-6 print:hidden">
           <Link href="/dashboard">
             <ArrowLeft className="me-2 h-4 w-4" />
@@ -274,8 +271,8 @@ export default async function ShipmentDetailPage({
           </Link>
         </Button>
 
-        <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
-          <div>
+        <div className="mb-8 flex min-w-0 flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
+          <div className="min-w-0 flex-1">
             {isCollaborator ? (
               <div className="mb-3 rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
                 {t("collaboratingAs")}{" "}
@@ -283,15 +280,15 @@ export default async function ShipmentDetailPage({
                 . {tDash("ownerOrg")}: {ownerOrg?.name ?? "—"}.
               </div>
             ) : null}
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="break-all text-2xl font-bold tracking-tight sm:break-normal">
                 {shipment.shipment_ref}
               </h1>
               <Badge variant={statusVariant(shipment.status)}>
                 {ts(shipment.status as "draft")}
               </Badge>
             </div>
-            <p className="mt-1 text-muted-foreground">
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground sm:text-base">
               {shipment.origin_country ?? "—"} → {shipment.destination_country ?? "—"}
               {shipment.incoterm ? (
                 <span className="ms-2 inline-flex items-center rounded-md bg-slate-200 px-2 py-0.5 text-xs font-semibold text-slate-800">
@@ -303,24 +300,22 @@ export default async function ShipmentDetailPage({
               {t("createdAt")} {formatDate(shipment.created_at)}
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2 print:hidden">
-            <AuditExportButton shipmentId={id} shipmentRef={shipment.shipment_ref} />
-            <ShipmentPrintReport
-              shipment={shipment}
-              score={latestScore}
-              parties={(parties ?? []) as Party[]}
-              products={(products ?? []) as Product[]}
-              documentCount={(documents ?? []).length}
-              openDiscrepancies={openDiscrepancies}
-              openTasks={openTasks}
-              auditEvents={(auditEvents ?? []) as AuditEvent[]}
-              organizationName={ownerOrg?.name ?? orgName}
-            />
-            {isOwner ? <ShareCollaboratorDialog shipmentId={id} /> : null}
-          </div>
+          <ShipmentDetailActions
+            shipmentId={id}
+            shipment={shipment}
+            score={latestScore}
+            parties={(parties ?? []) as Party[]}
+            products={(products ?? []) as Product[]}
+            documentCount={(documents ?? []).length}
+            openDiscrepancies={openDiscrepancies}
+            openTasks={openTasks}
+            auditEvents={(auditEvents ?? []) as AuditEvent[]}
+            organizationName={ownerOrg?.name ?? orgName}
+            isOwner={isOwner}
+          />
         </div>
 
-        <div className="mb-6 grid gap-6 lg:grid-cols-2">
+        <div className="mb-6 grid min-w-0 gap-6 lg:grid-cols-2">
           <ReadinessPanel
             shipmentId={id}
             ownerConfirmed={shipment.owner_confirmed_ready}
@@ -335,7 +330,7 @@ export default async function ShipmentDetailPage({
           />
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 min-w-0">
           <DataTrustPanel shipmentId={id} />
         </div>
 
@@ -349,12 +344,12 @@ export default async function ShipmentDetailPage({
           />
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Card>
+        <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+          <Card className="min-w-0 overflow-hidden">
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-muted-foreground" />
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex min-w-0 items-center gap-2">
+                  <Users className="h-5 w-5 shrink-0 text-muted-foreground" />
                   <CardTitle className="text-lg">{t("parties")}</CardTitle>
                 </div>
                 {isOwner ? <AddPartyForm shipmentId={id} /> : null}
@@ -385,11 +380,11 @@ export default async function ShipmentDetailPage({
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="min-w-0 overflow-hidden">
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Package className="h-5 w-5 text-muted-foreground" />
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex min-w-0 items-center gap-2">
+                  <Package className="h-5 w-5 shrink-0 text-muted-foreground" />
                   <CardTitle className="text-lg">{t("products")}</CardTitle>
                 </div>
                 {isOwner ? (
@@ -430,10 +425,10 @@ export default async function ShipmentDetailPage({
             </div>
           ) : null}
 
-          <Card className="lg:col-span-2">
+          <Card className="min-w-0 overflow-hidden lg:col-span-2">
             <CardHeader>
-              <div className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-muted-foreground" />
+              <div className="flex min-w-0 items-center gap-2">
+                <FileText className="h-5 w-5 shrink-0 text-muted-foreground" />
                 <CardTitle className="text-lg">{t("documents")}</CardTitle>
               </div>
               <CardDescription>{t("documentsDescription")}</CardDescription>
@@ -509,7 +504,7 @@ export default async function ShipmentDetailPage({
             />
           </div>
 
-          <Card className="lg:col-span-2">
+          <Card className="min-w-0 overflow-hidden lg:col-span-2">
             <CardHeader>
               <CardTitle className="text-lg">{t("auditLog")}</CardTitle>
               <CardDescription>{t("auditDescription")}</CardDescription>
@@ -523,6 +518,6 @@ export default async function ShipmentDetailPage({
           </Card>
         </div>
       </main>
-    </div>
+    </AppPageShell>
   );
 }

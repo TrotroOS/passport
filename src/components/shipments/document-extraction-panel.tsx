@@ -319,13 +319,13 @@ export function DocumentExtractionPanel({
           (status === "processed" || status === "needs_review");
 
         return (
-          <Card key={doc.id}>
+          <Card key={doc.id} className="min-w-0 overflow-hidden">
             <CardHeader className="pb-3">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-start gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex min-w-0 items-start gap-3">
                   <StatusIcon status={status} />
-                  <div>
-                    <CardTitle className="text-base">
+                  <div className="min-w-0">
+                    <CardTitle className="break-words text-base">
                       {formatStatus(doc.doc_type)}
                       {doc.doc_type_ai && doc.doc_type_ai !== doc.doc_type && (
                         <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -346,7 +346,7 @@ export function DocumentExtractionPanel({
                     )}
                   </div>
                 </div>
-                <div className="flex shrink-0 items-center gap-2">
+                <div className="flex shrink-0 flex-wrap items-center gap-2">
                   <Badge variant={processingStatusVariant(status)}>
                     {formatProcessingStatus(status)}
                   </Badge>
