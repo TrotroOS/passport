@@ -119,8 +119,9 @@ export function printHtmlDocument(title: string, bodyHtml: string): void {
   const iframe = document.createElement("iframe");
   iframe.setAttribute("title", title);
   iframe.setAttribute("aria-hidden", "true");
+  // Off-screen but sized so browsers render content reliably for print.
   iframe.style.cssText =
-    "position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden;";
+    "position:fixed;left:-10000px;top:0;width:800px;height:600px;border:0;visibility:hidden;";
   document.body.appendChild(iframe);
 
   const frameWindow = iframe.contentWindow;
@@ -129,6 +130,17 @@ export function printHtmlDocument(title: string, bodyHtml: string): void {
     iframe.remove();
     return;
   }
+
+  const cleanup = () => {
+    window.setTimeout(() => iframe.remove(), 500);
+  };
+
+  frameWindow.addEventListener("afterprint", cleanup, { once: true });
+
+  iframe.onload = () => {
+    frameWindow.focus();
+    frameWindow.print();
+  };
 
   doc.open();
   doc.write(`<!DOCTYPE html>
@@ -141,13 +153,4 @@ export function printHtmlDocument(title: string, bodyHtml: string): void {
   <body>${bodyHtml}</body>
 </html>`);
   doc.close();
-
-  const cleanup = () => {
-    window.setTimeout(() => iframe.remove(), 250);
-  };
-
-  frameWindow.addEventListener("afterprint", cleanup, { once: true });
-
-  frameWindow.focus();
-  frameWindow.print();
 }
