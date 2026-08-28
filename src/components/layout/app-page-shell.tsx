@@ -15,7 +15,7 @@ export function AppPageShell({
   className = "bg-slate-50",
 }: AppPageShellProps) {
   return (
-    <div className={`min-h-screen overflow-x-hidden print:hidden ${className}`}>
+    <div className={`min-h-screen overflow-x-hidden ${className}`}>
       <AppHeader organizationName={organizationName} userEmail={userEmail} />
       {children}
     </div>
