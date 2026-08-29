@@ -27,6 +27,7 @@
     "smoke-test": "node scripts/smoke_test.mjs",
     "test:sendgrid": "node scripts/test_sendgrid.mjs",
     "verify-production": "node scripts/verify_production.mjs",
+    "sync-vercel-env": "node scripts/sync_vercel_production_env.mjs",
     "mobile": "npm --prefix mobile start",
     "mobile:install": "npm --prefix mobile install"
   },

@@ -39,3 +39,4 @@ mobile/.expo-test-bundle/
 next-env.d.ts
 
 .vercel
+.env*
