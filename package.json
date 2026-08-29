@@ -28,6 +28,8 @@
     "test:sendgrid": "node scripts/test_sendgrid.mjs",
     "verify-production": "node scripts/verify_production.mjs",
     "sync-vercel-env": "node scripts/sync_vercel_production_env.mjs",
+    "configure-supabase-auth": "node scripts/configure_supabase_auth.mjs",
+    "test:oauth": "node scripts/test_oauth_config.mjs",
     "mobile": "npm --prefix mobile start",
     "mobile:install": "npm --prefix mobile install"
   },

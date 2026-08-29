@@ -17,13 +17,27 @@ port = 54323
 
 [auth]
 enabled = true
-site_url = "http://localhost:3000"
-additional_redirect_urls = ["http://localhost:3000"]
+site_url = "env(NEXT_PUBLIC_APP_URL)"
+additional_redirect_urls = [
+  "http://localhost:3000/auth/callback",
+  "http://127.0.0.1:3000/auth/callback",
+  "https://passport-one-kappa.vercel.app/auth/callback",
+]
 enable_signup = true
 
 [auth.email]
 enable_signup = true
 enable_confirmations = false
+
+[auth.external.google]
+enabled = false
+client_id = ""
+secret = ""
+
+[auth.external.apple]
+enabled = false
+client_id = ""
+secret = ""
 
 [storage]
 enabled = true

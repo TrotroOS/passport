@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
-import { createClient } from "@/lib/supabase/server";
 import { completeOAuthSignIn } from "@/lib/auth/complete-oauth-sign-in";
 import { resolvePostAuthPath } from "@/lib/auth/auth-redirect";
 import { isSafeRedirectPath } from "@/lib/collaboration/link-pending-invitations";
 import { getAppUrl } from "@/lib/app-url";
+import { createRouteHandlerClient } from "@/lib/supabase/route-handler";
 
 function loginErrorRedirect(code: string, message?: string) {
   const loginErrorUrl = new URL("/login", getAppUrl());
@@ -15,7 +15,22 @@ function loginErrorRedirect(code: string, message?: string) {
   return NextResponse.redirect(loginErrorUrl);
 }
 
-export async function GET(request: Request) {
+function successRedirect(request: NextRequest, redirectPath: string) {
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const forwardedProto = request.headers.get("x-forwarded-proto") ?? "https";
+
+  if (process.env.NODE_ENV === "development") {
+    return NextResponse.redirect(new URL(redirectPath, request.url));
+  }
+
+  if (forwardedHost) {
+    return NextResponse.redirect(new URL(redirectPath, `${forwardedProto}://${forwardedHost}`));
+  }
+
+  return NextResponse.redirect(new URL(redirectPath, getAppUrl()));
+}
+
+export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const tokenHash = url.searchParams.get("token_hash");
@@ -27,10 +42,11 @@ export async function GET(request: Request) {
     next && isSafeRedirectPath(next) ? next : resolvePostAuthPath(null);
 
   if (oauthError) {
-    return loginErrorRedirect("oauth_denied");
+    return loginErrorRedirect("oauth_denied", oauthError);
   }
 
-  const supabase = await createClient();
+  const response = NextResponse.next({ request });
+  const supabase = createRouteHandlerClient(request, response);
 
   if (tokenHash && type) {
     const { error: verifyError } = await supabase.auth.verifyOtp({
@@ -64,5 +80,10 @@ export async function GET(request: Request) {
     return loginErrorRedirect("oauth_profile", completion.error);
   }
 
-  return NextResponse.redirect(new URL(redirectPath, getAppUrl()));
+  const redirectResponse = successRedirect(request, redirectPath);
+  response.cookies.getAll().forEach((cookie) => {
+    redirectResponse.cookies.set(cookie);
+  });
+
+  return redirectResponse;
 }

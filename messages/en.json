@@ -214,6 +214,7 @@
       "profile": "We could not finish setting up your account. Please contact support.",
       "terms": "Please accept the terms before continuing with Google or Apple.",
       "start": "Could not start social sign-in. Confirm Google and Apple are enabled in Supabase.",
+      "notConfigured": "Google and Apple sign-in are not configured yet. Add OAuth credentials and run npm run configure-supabase-auth.",
       "generic": "Social sign-in failed. Please try again or use email and password."
     }
   },

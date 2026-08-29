@@ -83,6 +83,7 @@ export function LoginForm() {
       oauth_profile: message ?? t("oauthErrors.profile"),
       oauth_terms: t("oauthErrors.terms"),
       oauth_start: t("oauthErrors.start"),
+      oauth_not_configured: t("oauthErrors.notConfigured"),
     };
     toast.error(errors[oauthError] ?? t("oauthErrors.generic"));
   }, [oauthError, searchParams, t]);
