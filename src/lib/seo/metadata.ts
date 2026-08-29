@@ -68,9 +68,6 @@ export function buildRootMetadata(): Metadata {
     alternates: {
       canonical: siteUrl,
     },
-    verification: {
-      google: "google67e218557784b354",
-    },
   };
 }
 
