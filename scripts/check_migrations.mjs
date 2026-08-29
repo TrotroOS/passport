@@ -64,6 +64,15 @@ async function triggerExists(name) {
   return rows.length > 0;
 }
 
+async function policyExists(name) {
+  if (!pgClient) return false;
+  const { rows } = await pgClient.query(
+    "SELECT 1 FROM pg_policies WHERE policyname = $1 LIMIT 1",
+    [name]
+  );
+  return rows.length > 0;
+}
+
 const MIGRATION_CHECKS = [
   {
     id: "002/010",
@@ -211,6 +220,18 @@ const MIGRATION_CHECKS = [
     label: "Platform admin flag protection",
     file: "20240820000023_protect_platform_admin_flag.sql",
     check: async () => triggerExists("users_guard_platform_admin"),
+  },
+  {
+    id: "024",
+    label: "Shipment counterparty visibility (comments/collaborators)",
+    file: "20240820000024_shipment_counterparty_visibility.sql",
+    check: async () => policyExists("users_select_shipment_counterparty"),
+  },
+  {
+    id: "025",
+    label: "Container tracking provider sync metadata",
+    file: "20240820000025_container_tracking_provider.sql",
+    check: async () => columnExists("container_details", "tracking_provider"),
   },
 ];
 

@@ -2,7 +2,7 @@ import {
   formatNotificationMessage,
   translateEventType,
 } from "@/lib/i18n/messages";
-import { getAppUrl } from "@/lib/app-url";
+import { resolveEmailAppUrl } from "@/lib/app-url";
 import { sendEmail } from "@/lib/notifications/email";
 
 export interface TrackingNotificationPayload {
@@ -22,7 +22,7 @@ export async function sendTrackingEventNotification(
 ): Promise<void> {
   const locale = payload.locale ?? "en";
 
-  const link = `${getAppUrl()}/shipments/${payload.shipmentId}`;
+  const link = `${resolveEmailAppUrl()}/shipments/${payload.shipmentId}`;
   const localizedEventType = translateEventType(locale, payload.eventType);
   const subject = formatNotificationMessage(locale, "trackingUpdateSubject", {
     shipmentRef: payload.shipmentRef,

@@ -44,7 +44,11 @@ try {
     }
 
     if (health.checks?.ai_provider?.status !== "configured") {
-      fail("OpenAI not configured — document extraction disabled");
+      if (process.env.ALLOW_MISSING_OPENAI === "true") {
+        warn("OpenAI not configured — document extraction disabled (ALLOW_MISSING_OPENAI=true)");
+      } else {
+        fail("OpenAI not configured — document extraction disabled");
+      }
     } else {
       ok("AI provider configured");
     }
@@ -53,6 +57,14 @@ try {
       warn("SendGrid not configured — invite emails will use copy-link fallback");
     } else {
       ok("Email delivery configured");
+    }
+
+    if (health.checks?.tracking?.status === "live") {
+      ok(`Live tracking configured (${health.checks.tracking.provider})`);
+    } else if (health.checks?.tracking?.status === "mock") {
+      warn("Tracking provider is mock — container events are demo data only");
+    } else if (health.checks?.tracking?.status === "missing_api_key") {
+      warn("TRACKING_PROVIDER is set but TRACKING_API_KEY is missing");
     }
 
     if (!health.app_url) {

@@ -27,8 +27,12 @@ function loadEnvFile() {
 
 const PRODUCTION_URL = "https://passport-one-kappa.vercel.app";
 
-const SECRET_VARS = ["SENDGRID_API_KEY"];
-const CONFIG_VARS = ["INBOUND_EMAIL_FROM", "NEXT_PUBLIC_APP_URL"];
+const SECRET_VARS = ["SENDGRID_API_KEY", "UPSTASH_REDIS_REST_TOKEN"];
+const CONFIG_VARS = [
+  "INBOUND_EMAIL_FROM",
+  "NEXT_PUBLIC_APP_URL",
+  "UPSTASH_REDIS_REST_URL",
+];
 
 const env = loadEnvFile();
 let failed = 0;
@@ -39,6 +43,7 @@ function upsert(name, value, { secret = false } = {}) {
     return;
   }
   console.log(`→ Setting ${name} on Vercel Production…`);
+  // Pass --value last; angle brackets in INBOUND_EMAIL_FROM break some Windows shells.
   const args = [
     "vercel",
     "env",
@@ -47,13 +52,11 @@ function upsert(name, value, { secret = false } = {}) {
     "production",
     "--force",
     "--yes",
-    "--value",
-    value,
   ];
   if (secret) args.push("--sensitive");
   else args.push("--no-sensitive");
 
-  const result = spawnSync("npx", args, {
+  const result = spawnSync("npx", [...args, "--value", value], {
     cwd: root,
     stdio: "inherit",
     shell: true,

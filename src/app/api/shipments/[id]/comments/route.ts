@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { writeAuditEvent } from "@/lib/audit";
+import { notifyCollaborationComment } from "@/lib/collaboration/notify-comment";
+import { loadShipmentComments } from "@/lib/shipments/load-shipment-comments";
 import { requireShipmentPermission } from "@/lib/shipments/shipment-access";
 import { createShipmentCommentSchema } from "@/lib/validations";
 import { getOrganizationIdForUser } from "@/lib/auth/get-organization-id";
@@ -31,13 +34,10 @@ export async function GET(_request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: access.error }, { status: access.status });
   }
 
-  const { data: comments } = await supabase
-    .from("shipment_comments")
-    .select("*, users(id, email, full_name), organizations(id, name)")
-    .eq("shipment_id", shipmentId)
-    .order("created_at", { ascending: true });
+  const admin = createAdminClient();
+  const comments = await loadShipmentComments(admin, shipmentId);
 
-  return NextResponse.json({ comments: comments ?? [] });
+  return NextResponse.json({ comments });
 }
 
 export async function POST(request: Request, { params }: RouteParams) {
@@ -107,6 +107,26 @@ export async function POST(request: Request, { params }: RouteParams) {
       collaborator_role: access.role ?? null,
     },
   });
+
+  const commentUsers = comment.users as
+    | { email: string; full_name: string | null }
+    | null
+    | undefined;
+  const commenterName =
+    commentUsers?.full_name ?? commentUsers?.email ?? "A collaborator";
+
+  if (access.level !== "owner") {
+    void notifyCollaborationComment(admin, {
+      organizationId: access.shipment.organization_id,
+      shipmentId,
+      shipmentRef: access.shipment.shipment_ref,
+      commenterUserId: user.id,
+      commenterName,
+      commentPreview: parsed.data.body,
+    });
+  }
+
+  revalidatePath(`/shipments/${shipmentId}`);
 
   return NextResponse.json({ comment }, { status: 201 });
 }

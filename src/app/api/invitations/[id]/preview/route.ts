@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getExternalInviteById } from "@/lib/collaboration/external-invite-store";
+import { recordInvitationViewed } from "@/lib/collaboration/invitation-view-tracking";
 import { hasInviteeEmailColumn } from "@/lib/collaboration/schema-support";
 
 interface RouteParams {
@@ -42,6 +43,15 @@ export async function GET(_request: Request, { params }: RouteParams) {
 
     const isExternal = !invitation.user_id && Boolean(invitation.invitee_email);
 
+    await recordInvitationViewed(admin, {
+      invitationId: invitation.id,
+      shipmentId: shipment.id,
+      organizationId: shipment.organization_id,
+      shipmentRef: shipment.shipment_ref,
+      viewerLabel: isExternal ? invitation.invitee_email : null,
+      inviteeEmail: invitation.invitee_email,
+    });
+
     return NextResponse.json({
       invitation: {
         id: invitation.id,
@@ -82,6 +92,15 @@ export async function GET(_request: Request, { params }: RouteParams) {
     .select("name")
     .eq("id", shipment.organization_id)
     .single();
+
+  await recordInvitationViewed(admin, {
+    invitationId: externalInvite.id,
+    shipmentId: shipment.id,
+    organizationId: shipment.organization_id,
+    shipmentRef: shipment.shipment_ref,
+    viewerLabel: externalInvite.invitee_email,
+    inviteeEmail: externalInvite.invitee_email,
+  });
 
   return NextResponse.json({
     invitation: {

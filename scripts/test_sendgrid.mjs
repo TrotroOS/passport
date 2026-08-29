@@ -24,6 +24,18 @@ function loadEnvFile() {
 
 loadEnvFile();
 
+function resolveEmailAppUrl() {
+  const emailOverride = process.env.EMAIL_PUBLIC_APP_URL?.trim();
+  if (emailOverride && !/localhost|127\.0\.0\.1/i.test(emailOverride)) {
+    return emailOverride.replace(/\/$/, "");
+  }
+  const configured = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  if (!/localhost|127\.0\.0\.1/i.test(configured)) {
+    return configured.replace(/\/$/, "");
+  }
+  return configured.replace(/\/$/, "");
+}
+
 const apiKey = process.env.SENDGRID_API_KEY;
 const to = process.argv[2] ?? process.env.SENDGRID_TEST_TO;
 
@@ -44,7 +56,7 @@ const fromPayload = match
   ? { name: match[1].trim(), email: match[2].trim() }
   : { name: "Passport", email: from };
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+const appUrl = resolveEmailAppUrl();
 
 const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
   method: "POST",

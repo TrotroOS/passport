@@ -22,8 +22,17 @@ export interface TrackingProvider {
   readonly name: string;
   getShipmentEvents(
     containerNumber: string,
-    billOfLading?: string
+    billOfLading?: string,
+    context?: ContainerTrackingContext
   ): Promise<TrackingProviderEvent[]>;
+}
+
+export interface ContainerTrackingContext {
+  carrier?: string | null;
+  carrierScac?: string | null;
+  providerContainerId?: string | null;
+  providerTrackingRequestId?: string | null;
+  providerLastSyncedAt?: string | null;
 }
 
 export const SIGNIFICANT_TRACKING_EVENT_TYPES: TrackingEventType[] = [

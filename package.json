@@ -71,5 +71,11 @@
   "overrides": {
     "glob": "^10.4.6",
     "postcss": "^8.5.26"
+  },
+  "allowScripts": {
+    "@swc/core@1.16.1": true,
+    "esbuild@0.28.2": true,
+    "@parcel/watcher@2.6.0": true,
+    "unrs-resolver@1.12.2": true
   }
 }

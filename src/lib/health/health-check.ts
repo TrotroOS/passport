@@ -9,12 +9,25 @@ export interface HealthStatus {
     redis: { status: "up" | "down" | "not_configured"; latencyMs?: number };
     ai_provider: { status: "configured" | "not_configured" };
     email_delivery: { status: "configured" | "not_configured" };
+    tracking: {
+      provider: string;
+      status: "live" | "mock" | "missing_api_key";
+    };
   };
   app_url: string | null;
   version: string;
 }
 
 export async function getHealthStatus(): Promise<HealthStatus> {
+  const trackingProvider = (process.env.TRACKING_PROVIDER ?? "mock").toLowerCase();
+  const trackingApiKey = process.env.TRACKING_API_KEY?.trim() ?? "";
+  const trackingStatus: HealthStatus["checks"]["tracking"]["status"] =
+    trackingProvider === "mock"
+      ? "mock"
+      : trackingApiKey
+        ? "live"
+        : "missing_api_key";
+
   const checks: HealthStatus["checks"] = {
     database: { status: "down" },
     redis: { status: "not_configured" },
@@ -23,6 +36,10 @@ export async function getHealthStatus(): Promise<HealthStatus> {
     },
     email_delivery: {
       status: process.env.SENDGRID_API_KEY ? "configured" : "not_configured",
+    },
+    tracking: {
+      provider: trackingProvider,
+      status: trackingStatus,
     },
   };
 
@@ -55,6 +72,14 @@ export async function getHealthStatus(): Promise<HealthStatus> {
   }
 
   if (checks.email_delivery.status === "not_configured" && overall === "healthy") {
+    overall = "degraded";
+  }
+
+  if (checks.tracking.status === "missing_api_key" && overall === "healthy") {
+    overall = "degraded";
+  }
+
+  if (checks.tracking.status === "mock" && overall === "healthy") {
     overall = "degraded";
   }
 

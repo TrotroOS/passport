@@ -31,6 +31,13 @@ export async function POST(_request: Request, { params }: RouteParams) {
   }
 
   const result = await runRegulatoryEngine(shipmentId, user.id);
+  if (!result.success) {
+    const message =
+      result.error === "unsupported_corridor"
+        ? "Regulatory checks are available for Ghana, Nigeria, and Kenya import corridors only."
+        : result.error ?? "Regulatory check failed";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
   const taskResult = await recalculateTasks(shipmentId);
   const scoreResult = await calculatePassportScore(shipmentId, user.id);
 

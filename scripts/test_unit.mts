@@ -213,6 +213,12 @@ test("viewer can comment but not upload", () => {
   assert.equal(hasPermission({ level: "collaborator", role: "viewer" }, "comment"), true);
   assert.equal(hasPermission({ level: "collaborator", role: "viewer" }, "upload"), false);
 });
+test("owner cannot confirm as broker", () => {
+  assert.equal(
+    hasPermission({ level: "owner" }, "broker_confirm"),
+    false
+  );
+});
 test("editor can confirm broker readiness", () => {
   assert.equal(
     hasPermission({ level: "collaborator", role: "editor" }, "broker_confirm"),
@@ -298,6 +304,38 @@ test("trackingEventDedupKey is stable", () => {
   );
   assert.ok(key.includes("vessel_arrived"));
 });
+import { mapTerminal49ContainerToEvents } from "../src/lib/tracking/terminal49/map-events.ts";
+import { inferCarrierScac } from "../src/lib/tracking/terminal49/client.ts";
+
+test("mapTerminal49ContainerToEvents maps vessel arrival", () => {
+  const events = mapTerminal49ContainerToEvents(
+    {
+      pod_arrived_at: "2026-02-01T08:00:00Z",
+      pod_terminal: "Tema Port",
+      shipping_line_name: "Maersk",
+    },
+    { pod_arrived_at: "2026-02-01T08:00:00Z" }
+  );
+  assert.equal(events.length, 1);
+  assert.equal(events[0]?.event_type, "vessel_arrived");
+  assert.equal(events[0]?.location, "Tema Port");
+});
+test("inferCarrierScac resolves common carrier names", () => {
+  assert.equal(inferCarrierScac("Maersk"), "MAEU");
+  assert.equal(inferCarrierScac("MAEU"), "MAEU");
+  assert.equal(inferCarrierScac("unknown line"), undefined);
+});
+import { getTrackingConfig } from "../src/lib/tracking/config.ts";
+
+test("getTrackingConfig returns demo for mock provider", () => {
+  const prev = process.env.TRACKING_PROVIDER;
+  process.env.TRACKING_PROVIDER = "mock";
+  const cfg = getTrackingConfig();
+  assert.equal(cfg.mode, "demo");
+  assert.equal(cfg.isLive, false);
+  if (prev === undefined) delete process.env.TRACKING_PROVIDER;
+  else process.env.TRACKING_PROVIDER = prev;
+});
 test("calculateRouteRisk increases score on delay events", () => {
   const base = calculateRouteRisk("CN", "GH", []);
   const delayed = calculateRouteRisk("CN", "GH", [
@@ -380,6 +418,38 @@ test("estimateShipmentDuty skips unsupported corridors", () => {
   assert.equal(estimate.corridorSupported, false);
   assert.equal(estimate.products.length, 0);
   assert.equal(estimate.grandTotal, 0);
+});
+
+console.log("\nApp URL helpers");
+import {
+  getInvitationUrl,
+  isLocalhostAppUrl,
+  resolveEmailAppUrl,
+} from "../src/lib/app-url.ts";
+
+test("isLocalhostAppUrl detects localhost", () => {
+  assert.equal(isLocalhostAppUrl("http://localhost:3000"), true);
+  assert.equal(isLocalhostAppUrl("https://passport-one-kappa.vercel.app"), false);
+});
+test("resolveEmailAppUrl ignores localhost browser origin", () => {
+  const prevUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const prevEmail = process.env.EMAIL_PUBLIC_APP_URL;
+  process.env.NEXT_PUBLIC_APP_URL = "https://passport-one-kappa.vercel.app";
+  delete process.env.EMAIL_PUBLIC_APP_URL;
+  assert.equal(
+    getInvitationUrl("abc", "http://localhost:3000"),
+    "https://passport-one-kappa.vercel.app/invitations/abc"
+  );
+  process.env.NEXT_PUBLIC_APP_URL = "http://localhost:3000";
+  process.env.EMAIL_PUBLIC_APP_URL = "https://passport-one-kappa.vercel.app";
+  assert.equal(
+    getInvitationUrl("abc", "http://localhost:3000"),
+    "https://passport-one-kappa.vercel.app/invitations/abc"
+  );
+  if (prevUrl === undefined) delete process.env.NEXT_PUBLIC_APP_URL;
+  else process.env.NEXT_PUBLIC_APP_URL = prevUrl;
+  if (prevEmail === undefined) delete process.env.EMAIL_PUBLIC_APP_URL;
+  else process.env.EMAIL_PUBLIC_APP_URL = prevEmail;
 });
 
 console.log("\nAll unit tests passed.");

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { MessageSquare } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -33,6 +33,31 @@ export function ShipmentCommentsPanel({
   const [comments, setComments] = useState(initialComments);
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const refreshComments = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/shipments/${shipmentId}/comments`);
+      if (!response.ok) return;
+      const data = await response.json();
+      if (Array.isArray(data.comments)) {
+        setComments(data.comments);
+      }
+    } catch {
+      // ignore background refresh errors
+    }
+  }, [shipmentId]);
+
+  useEffect(() => {
+    setComments(initialComments);
+  }, [initialComments]);
+
+  useEffect(() => {
+    function onFocus() {
+      void refreshComments();
+    }
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [refreshComments]);
 
   async function submitComment() {
     if (!body.trim()) {

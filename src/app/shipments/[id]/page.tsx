@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ArrowLeft, FileText, Package, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserProfileForUser } from "@/lib/auth/get-organization-id";
 import { getShipmentForUser } from "@/lib/shipments/list-shipments";
 import {
@@ -10,7 +11,8 @@ import {
   hasPermission,
   listCollaboratorsForShipment,
 } from "@/lib/shipments/shipment-access";
-import { resolveReadinessConfirmationDetails } from "@/lib/shipments/readiness-confirmation";
+import { loadShipmentComments } from "@/lib/shipments/load-shipment-comments";
+import { resolveReadinessConfirmationDetails, loadUserNamesForAuditEvents } from "@/lib/shipments/readiness-confirmation";
 import { AppPageShell } from "@/components/layout/app-page-shell";
 import { AddPartyForm } from "@/components/shipments/add-party-form";
 import { AddProductForm } from "@/components/shipments/add-product-form";
@@ -30,6 +32,7 @@ import { ProductHsPanel } from "@/components/shipments/product-hs-panel";
 import { HsCodeChecksPanel } from "@/components/shipments/hs-code-checks-panel";
 import { ShipmentDetailActions } from "@/components/shipments/shipment-detail-actions";
 import { ShipmentTrackingPanel } from "@/components/shipments/shipment-tracking-panel";
+import { getTrackingConfig } from "@/lib/tracking/config";
 import { AuditEventList } from "@/components/audit/audit-event-list";
 import { PartyScreeningPanel } from "@/components/compliance/party-screening-panel";
 import { DocumentChecklistPanel } from "@/components/compliance/document-checklist-panel";
@@ -109,6 +112,7 @@ export default async function ShipmentDetailPage({
   }
 
   const access = await getShipmentAccess(supabase, user.id, id);
+  const trackingConfig = getTrackingConfig();
   const isOwner = access.level === "owner";
   const isCollaborator = access.level === "collaborator";
   const canUpload = hasPermission(access, "upload");
@@ -117,18 +121,16 @@ export default async function ShipmentDetailPage({
   const canOwnerConfirm = hasPermission(access, "owner_confirm");
   const canBrokerConfirm = hasPermission(access, "broker_confirm");
 
-  const [{ data: ownerOrg }, collaborators, { data: comments }] = await Promise.all([
+  const admin = createAdminClient();
+
+  const [{ data: ownerOrg }, collaborators, comments] = await Promise.all([
     supabase
       .from("organizations")
       .select("name")
       .eq("id", shipment.organization_id)
       .single(),
     listCollaboratorsForShipment(supabase, id),
-    supabase
-      .from("shipment_comments")
-      .select("*, users(id, email, full_name), organizations(id, name)")
-      .eq("shipment_id", id)
-      .order("created_at", { ascending: true }),
+    loadShipmentComments(admin, id),
   ]);
 
   const [{ data: parties }, { data: products }, { data: documents }, { data: auditEvents }] =
@@ -258,23 +260,13 @@ export default async function ShipmentDetailPage({
       ? (profile.organizations as { name: string }).name
       : undefined;
 
-  type AuditEventWithUser = AuditEvent & {
-    users?: { full_name: string | null; email: string | null } | null;
-  };
 
-  const readinessUserNames = new Map<string, string>();
-  for (const event of (auditEvents ?? []) as AuditEventWithUser[]) {
-    if (event.user_id && event.users) {
-      readinessUserNames.set(
-        event.user_id,
-        event.users.full_name?.trim() || event.users.email || event.user_id
-      );
-    }
-  }
+  const auditEventsList = (auditEvents ?? []) as AuditEvent[];
+  const readinessUserNames = await loadUserNamesForAuditEvents(admin, auditEventsList);
 
   const readinessDetails = resolveReadinessConfirmationDetails(
     shipment,
-    (auditEvents ?? []) as AuditEvent[],
+    auditEventsList,
     readinessUserNames
   );
 
@@ -457,6 +449,7 @@ export default async function ShipmentDetailPage({
               containers={(containers ?? []) as ContainerDetail[]}
               events={(trackingEvents ?? []) as ShipmentTrackingEvent[]}
               canManage={canUpload}
+              trackingMode={trackingConfig.mode}
             />
           </div>
 
@@ -476,6 +469,7 @@ export default async function ShipmentDetailPage({
           <div className="lg:col-span-2">
             <CompliancePanel
               shipmentId={id}
+              destinationCountry={shipment.destination_country}
               checks={(regulatoryChecks ?? []) as RegulatoryCheckWithRegulation[]}
               readOnly={!isOwner}
             />

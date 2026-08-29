@@ -34,6 +34,7 @@ interface ShipmentTrackingPanelProps {
   containers: ContainerDetail[];
   events: ShipmentTrackingEvent[];
   canManage?: boolean;
+  trackingMode?: "demo" | "live" | "unconfigured";
 }
 
 const TRACKING_STATUS_KEYS: Record<
@@ -86,6 +87,7 @@ export function ShipmentTrackingPanel({
   containers: initialContainers,
   events: initialEvents,
   canManage = false,
+  trackingMode = "demo",
 }: ShipmentTrackingPanelProps) {
   const t = useTranslations("tracking");
   const te = useTranslations("events");
@@ -107,6 +109,8 @@ export function ShipmentTrackingPanel({
 
   const currentStatus = deriveTrackingStatus(events);
   const localizedStatus = t(TRACKING_STATUS_KEYS[currentStatus]);
+  const isDemoTracking = trackingMode === "demo";
+  const showUnconfiguredHint = trackingMode === "unconfigured";
 
   function localizedEventType(eventType: string): string {
     try {
@@ -132,6 +136,17 @@ export function ShipmentTrackingPanel({
         return;
       }
 
+      if (data.pending) {
+        toast.info(t("refreshPending"));
+      } else {
+        toast.success(t("refreshSuccess", { count: data.inserted ?? 0 }));
+      }
+
+      if (data.messages?.length) {
+        for (const message of data.messages as string[]) {
+          toast.message(message);
+        }
+      }
       const eventsResponse = await fetch(
         `/api/shipments/${shipmentId}/tracking-events`
       );
@@ -140,7 +155,6 @@ export function ShipmentTrackingPanel({
         setEvents(eventsData.events ?? []);
       }
 
-      toast.success(t("refreshSuccess", { count: data.inserted ?? 0 }));
       if (data.inserted > 0) {
         window.location.reload();
       }
@@ -220,9 +234,16 @@ export function ShipmentTrackingPanel({
               <Ship className="h-5 w-5 text-muted-foreground" />
               <CardTitle className="text-lg">{t("title")}</CardTitle>
             </div>
-            <CardDescription>{t("description")}</CardDescription>
+            <CardDescription>
+              {isDemoTracking ? t("descriptionDemo") : t("description")}
+            </CardDescription>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            {isDemoTracking ? (
+              <Badge variant="outline">{t("demoBadge")}</Badge>
+            ) : trackingMode === "live" ? (
+              <Badge variant="success">{t("liveBadge")}</Badge>
+            ) : null}
             <Badge variant={statusVariant(currentStatus)}>{localizedStatus}</Badge>
             {canManage ? (
               <>
@@ -247,6 +268,16 @@ export function ShipmentTrackingPanel({
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
+        {isDemoTracking ? (
+          <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+            {t("demoBanner")}
+          </p>
+        ) : null}
+        {showUnconfiguredHint ? (
+          <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-muted-foreground">
+            {t("unconfiguredBanner")}
+          </p>
+        ) : null}
         {canManage && showAddForm ? (
           <form
             onSubmit={submitContainer}
@@ -377,6 +408,19 @@ export function ShipmentTrackingPanel({
                       <span>
                         {t("blLabel")}: {container.bill_of_lading_number}
                       </span>
+                    ) : null}
+                    {container.tracking_provider ? (
+                      <span>
+                        {t("providerLabel")}: {container.tracking_provider}
+                      </span>
+                    ) : null}
+                    {container.provider_last_synced_at ? (
+                      <span>
+                        {t("lastSynced")}:{" "}
+                        {formatDate(container.provider_last_synced_at)}
+                      </span>
+                    ) : container.tracking_provider ? (
+                      <span>{t("syncPending")}</span>
                     ) : null}
                   </div>
                 </li>

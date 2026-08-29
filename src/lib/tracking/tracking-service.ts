@@ -2,6 +2,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { writeAuditEvent } from "@/lib/audit";
 import type { ContainerDetail, ShipmentTrackingEvent } from "@/types/database";
 import { createTrackingProvider } from "./providers";
+import { Terminal49TrackingProvider } from "./providers/terminal49-provider";
+import { inferCarrierScac } from "./terminal49/client";
+import { shouldRunScheduledTrackingRefresh } from "./config";
+import type { ContainerTrackingContext } from "./types";
 import {
   extractContainersFromBolData,
   normalizeContainerNumber,
@@ -62,6 +66,10 @@ export async function addContainerToShipment(
 ): Promise<{ container: ContainerDetail; fetchResult?: FetchTrackingResult }> {
   const admin = createAdminClient();
   const containerNumber = normalizeContainerNumber(input.containerNumber);
+  const carrierScac =
+    inferCarrierScac(input.carrier) ??
+    inferCarrierScac(process.env.TRACKING_DEFAULT_SCAC ?? null) ??
+    null;
 
   const { data: shipment } = await admin
     .from("shipments")
@@ -82,6 +90,7 @@ export async function addContainerToShipment(
         container_type: input.containerType ?? null,
         seal_number: input.sealNumber ?? null,
         carrier: input.carrier ?? null,
+        carrier_scac: carrierScac,
         vessel_name: input.vesselName ?? null,
         voyage_number: input.voyageNumber ?? null,
         bill_of_lading_number: input.billOfLadingNumber ?? null,
@@ -114,6 +123,8 @@ export interface FetchTrackingResult {
   inserted: number;
   skipped: number;
   provider: string;
+  pending?: boolean;
+  messages?: string[];
 }
 
 export async function fetchTrackingEvents(
@@ -154,12 +165,53 @@ export async function fetchTrackingEvents(
   let inserted = 0;
   let skipped = 0;
   const newSignificantEvents: ShipmentTrackingEvent[] = [];
+  const messages: string[] = [];
+  let anyPending = false;
 
   for (const container of containers as ContainerDetail[]) {
-    const events = await provider.getShipmentEvents(
-      container.container_number,
-      container.bill_of_lading_number ?? undefined
-    );
+    const context: ContainerTrackingContext = {
+      carrier: container.carrier,
+      carrierScac: container.carrier_scac ?? undefined,
+      providerContainerId: container.provider_container_id,
+      providerTrackingRequestId: container.provider_tracking_request_id,
+      providerLastSyncedAt: container.provider_last_synced_at,
+    };
+
+    let events: Awaited<
+      ReturnType<typeof provider.getShipmentEvents>
+    > = [];
+    let providerContainerId = container.provider_container_id ?? null;
+    let providerTrackingRequestId = container.provider_tracking_request_id ?? null;
+
+    if (provider instanceof Terminal49TrackingProvider) {
+      const sync = await provider.syncContainer(
+        container.container_number,
+        container.bill_of_lading_number ?? undefined,
+        context
+      );
+      events = sync.events;
+      providerContainerId = sync.providerContainerId ?? providerContainerId;
+      providerTrackingRequestId =
+        sync.providerTrackingRequestId ?? providerTrackingRequestId;
+      if (sync.pending) anyPending = true;
+      if (sync.message) messages.push(`${container.container_number}: ${sync.message}`);
+    } else {
+      events = await provider.getShipmentEvents(
+        container.container_number,
+        container.bill_of_lading_number ?? undefined,
+        context
+      );
+    }
+
+    await admin
+      .from("container_details")
+      .update({
+        tracking_provider: provider.name,
+        provider_container_id: providerContainerId,
+        provider_tracking_request_id: providerTrackingRequestId,
+        provider_last_synced_at: new Date().toISOString(),
+      })
+      .eq("id", container.id);
 
     for (const event of events) {
       const key = `${container.container_number}|${event.event_type}|${event.event_date ?? "epoch"}`;
@@ -229,7 +281,13 @@ export async function fetchTrackingEvents(
     await runRiskAssessment(shipmentId, userId);
   }
 
-  return { inserted, skipped, provider: provider.name };
+  return {
+    inserted,
+    skipped,
+    provider: provider.name,
+    pending: anyPending,
+    messages: messages.length ? messages : undefined,
+  };
 }
 
 async function notifyTrackingSubscribers(
@@ -353,6 +411,7 @@ export async function syncContainersFromBolExtraction(
       shipment_id: shipmentId,
       container_number: normalized,
       carrier: bol.carrier,
+      carrier_scac: inferCarrierScac(bol.carrier) ?? null,
       vessel_name: bol.vessel,
       voyage_number: bol.voyage_number,
       bill_of_lading_number: bol.bill_of_lading_number,
@@ -371,7 +430,18 @@ export async function syncContainersFromBolExtraction(
 export async function refreshAllTracking(): Promise<{
   shipmentsProcessed: number;
   totalInserted: number;
+  skipped?: boolean;
+  reason?: string;
 }> {
+  if (!shouldRunScheduledTrackingRefresh()) {
+    return {
+      shipmentsProcessed: 0,
+      totalInserted: 0,
+      skipped: true,
+      reason: "Scheduled refresh runs only when TRACKING_PROVIDER=terminal49 and TRACKING_API_KEY is set",
+    };
+  }
+
   const admin = createAdminClient();
   const { data: rows } = await admin
     .from("container_details")

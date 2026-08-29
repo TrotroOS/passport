@@ -36,3 +36,33 @@ export function isSupportedImportDestination(destination: string | null | undefi
 export function isGhanaDestination(destination: string | null | undefined): boolean {
   return resolveDestinationJurisdiction(destination) === "GH";
 }
+
+export const SUPPORTED_IMPORT_CORRIDORS = [
+  { code: "GH", label: "Ghana" },
+  { code: "NG", label: "Nigeria" },
+  { code: "KE", label: "Kenya" },
+] as const;
+
+export function supportedCorridorLabels(): string {
+  return SUPPORTED_IMPORT_CORRIDORS.map((c) => c.label).join(", ");
+}
+
+export function describeImportCorridor(destination: string | null | undefined): {
+  supported: boolean;
+  code: string | null;
+  label: string | null;
+  destination: string | null;
+} {
+  const trimmed = destination?.trim() || null;
+  const code = resolveDestinationJurisdiction(destination);
+  if (!code) {
+    return { supported: false, code: null, label: null, destination: trimmed };
+  }
+  const match = SUPPORTED_IMPORT_CORRIDORS.find((c) => c.code === code);
+  return {
+    supported: true,
+    code,
+    label: match?.label ?? code,
+    destination: trimmed,
+  };
+}

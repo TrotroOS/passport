@@ -97,6 +97,14 @@ if (!process.env.TRACKING_WEBHOOK_SECRET) {
 
 if ((process.env.TRACKING_PROVIDER ?? "mock") === "mock") {
   warnings.push("TRACKING_PROVIDER=mock — use a live provider for production tracking");
+} else if (!process.env.TRACKING_API_KEY?.trim()) {
+  errors.push(
+    `TRACKING_API_KEY is required when TRACKING_PROVIDER=${process.env.TRACKING_PROVIDER}`
+  );
+}
+
+if (process.env.NODE_ENV === "production" && !process.env.CRON_SECRET?.trim()) {
+  warnings.push("CRON_SECRET is not set — scheduled tracking refresh disabled");
 }
 
 if (!process.env.SENDGRID_API_KEY) {

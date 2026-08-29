@@ -16,6 +16,7 @@ const ACTION_LABELS: Record<string, string> = {
   "document.extraction.confirmed": "Document extraction confirmed",
   "collaborator.document_uploaded": "Collaborator uploaded document",
   "collaborator.invited": "Collaborator invited",
+  "collaborator.invitation_viewed": "Collaboration invite link opened",
   "collaborator.accepted": "Collaboration invitation accepted",
   "collaborator.declined": "Collaboration invitation declined",
   "collaborator.revoked": "Collaborator access revoked",

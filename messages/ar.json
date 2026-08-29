@@ -168,7 +168,16 @@
     "discharged": "تم التفريغ",
     "customsClearance": "التخليص الجمركي",
     "delivered": "تم التسليم",
-    "delayed": "متأخر"
+    "delayed": "متأخر",
+    "refreshPending": "Tracking sync in progress — carrier data may take a few hours to appear.",
+    "lastSynced": "Last synced",
+    "syncPending": "Awaiting carrier data",
+    "providerLabel": "Provider",
+    "descriptionDemo": "Sample timeline for workflow demos — not live carrier data.",
+    "demoBadge": "Demo data",
+    "liveBadge": "Live tracking",
+    "demoBanner": "Demo mode: events are illustrative only. Configure Terminal49 for real container milestones, or push updates from your forwarder via webhook.",
+    "unconfiguredBanner": "Live tracking is not configured. Set TRACKING_PROVIDER=terminal49 and TRACKING_API_KEY on the server, or use demo mode."
   },
   "risk": {
     "title": "تقييم المخاطر",
@@ -195,7 +204,10 @@
     "source": "المصدر",
     "passed": "نجح",
     "failed": "فشل",
-    "notApplicable": "غير applicable"
+    "notApplicable": "غير applicable",
+    "descriptionSupported": "Applicable {corridor} import regulations and pass/fail status",
+    "unsupportedCorridor": "Destination “{destination}” is outside supported import corridors ({corridors}). Verification and documents still apply; regulatory rule packs are not available for this route yet.",
+    "unknownDestination": "Not set"
   },
   "tasks": {
     "title": "مهام سير العمل",
@@ -439,7 +451,11 @@
     "collaborationInviteExternalBody": "دُعيت للتعاون في الشحنة {shipmentRef}.\n\nالمؤسسة: {orgName}\nالدور: {role}\n\nلا تحتاج إلى حساب Passport — افتح هذا الرابط لإنشاء حساب وقبول الدعوة:\n{link}",
     "trackingUpdateSubject": "Passport: تحديث تتبع لـ {shipmentRef}",
     "trackingUpdateBody": "حدث جديد للشحنة {shipmentRef}:\n\nالحدث: {eventType}\n{description}\n{location}\n{date}\n\nعرض الشحنة: {link}",
-    "trackingWhatsApp": "Passport — {shipmentRef}: {eventType} — {description}"
+    "trackingWhatsApp": "Passport — {shipmentRef}: {eventType} — {description}",
+    "invitationViewedSubject": "Passport: Invite link opened for {shipmentRef}",
+    "invitationViewedBody": "{viewer} opened the collaboration invite for shipment {shipmentRef}.\n\nThey have not accepted yet — you'll get another update when they join.\n\nView shipment: {link}",
+    "collaborationCommentSubject": "Passport: New comment on {shipmentRef}",
+    "collaborationCommentBody": "{commenter} commented on shipment {shipmentRef}:\n\n\"{comment}\"\n\nView shipment: {link}"
   },
   "status": {
     "draft": "مسودة",
@@ -693,7 +709,8 @@
     "confirmedBy": "Confirmed by {name}",
     "confirmedAt": "Confirmed on {date}",
     "overallComplete": "Both parties confirmed — shipment may proceed to ready status.",
-    "overallPending": "Waiting for owner and broker confirmation before the shipment can move to ready."
+    "overallPending": "Waiting for owner and broker confirmation before the shipment can move to ready.",
+    "brokerEditorHint": "Only collaborators with the Editor role can confirm broker readiness."
   },
   "help": {
     "nav": "Help",

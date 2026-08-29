@@ -41,7 +41,6 @@ const OWNER_PERMISSIONS: ShipmentPermission[] = [
   "upload",
   "edit_tasks",
   "owner_confirm",
-  "broker_confirm",
   "invite",
   "revoke",
 ];

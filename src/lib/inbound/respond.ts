@@ -1,5 +1,5 @@
 import { getInboundConfig } from "@/lib/inbound/config";
-import { getAppUrl } from "@/lib/app-url";
+import { resolveEmailAppUrl } from "@/lib/app-url";
 
 export interface InboundResponsePayload {
   channel: "email" | "whatsapp";
@@ -12,7 +12,7 @@ export interface InboundResponsePayload {
 }
 
 function dashboardUrl(shipmentId: string): string {
-  return `${getAppUrl()}/shipments/${shipmentId}`;
+  return `${resolveEmailAppUrl()}/shipments/${shipmentId}`;
 }
 
 export async function sendInboundResponse(
@@ -114,7 +114,7 @@ export async function sendUnknownSenderReply(
   channel: "email" | "whatsapp",
   recipient: string
 ): Promise<void> {
-  const signupUrl = getAppUrl();
+  const signupUrl = resolveEmailAppUrl();
 
   if (channel === "email") {
     const apiKey = process.env.SENDGRID_API_KEY;

@@ -12,6 +12,10 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import type { RegulatoryCheckWithRegulation } from "@/types/database";
 import { useLocalizedStatus } from "@/lib/i18n/use-localized-status";
+import {
+  describeImportCorridor,
+  supportedCorridorLabels,
+} from "@/lib/regulatory/jurisdiction";
 import { isSafeHttpUrl } from "@/lib/security/sanitize-text";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +30,7 @@ import {
 interface CompliancePanelProps {
   shipmentId: string;
   checks: RegulatoryCheckWithRegulation[];
+  destinationCountry?: string | null;
   readOnly?: boolean;
 }
 
@@ -56,12 +61,15 @@ function statusVariant(status: string) {
 export function CompliancePanel({
   shipmentId,
   checks,
+  destinationCountry = null,
   readOnly = false,
 }: CompliancePanelProps) {
   const t = useTranslations("compliance");
   const localizedStatus = useLocalizedStatus();
   const [isRunning, setIsRunning] = useState(false);
   const failedCount = checks.filter((c) => c.status === "failed").length;
+  const corridor = describeImportCorridor(destinationCountry);
+  const corridors = supportedCorridorLabels();
 
   async function runRegulatory() {
     setIsRunning(true);
@@ -112,7 +120,9 @@ export function CompliancePanel({
           ) : null}
         </div>
         <CardDescription>
-          {t("description")}
+          {corridor.supported
+            ? t("descriptionSupported", { corridor: corridor.label ?? corridors })
+            : t("description")}
           {failedCount > 0 && (
             <span className="ml-1 font-medium text-red-600">
               — {t("failedCount", { count: failedCount })}
@@ -121,8 +131,17 @@ export function CompliancePanel({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {checks.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("noChecksYet")}</p>
+        {!corridor.supported ? (
+          <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+            {t("unsupportedCorridor", {
+              destination: corridor.destination ?? t("unknownDestination"),
+              corridors,
+            })}
+          </p>
+        ) : checks.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            {t("noChecksYet", { corridor: corridor.label ?? corridors })}
+          </p>
         ) : (
           <ul className="space-y-3">
             {checks.map((check) => {

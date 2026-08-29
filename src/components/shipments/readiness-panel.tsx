@@ -83,7 +83,12 @@ export function ReadinessPanel({
     <Card className="min-w-0 overflow-hidden">
       <CardHeader>
         <CardTitle className="text-lg">{t("title")}</CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
+        <CardDescription>
+          {t("description")}
+          {!canBrokerConfirm && !brokerConfirmed ? (
+            <span className="mt-1 block text-xs">{t("brokerEditorHint")}</span>
+          ) : null}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">

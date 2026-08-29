@@ -331,6 +331,16 @@ export async function runRegulatoryEngine(
     };
   }
 
+  if (!resolveDestinationJurisdiction(ctx.shipment.destination_country)) {
+    return {
+      success: false,
+      checksCount: 0,
+      failedCount: 0,
+      regulatoryScore: 0,
+      error: "unsupported_corridor",
+    };
+  }
+
   const regulations = await getApplicableRegulations(shipmentId);
   const checkResults = runRegulatoryChecks(regulations, ctx);
 

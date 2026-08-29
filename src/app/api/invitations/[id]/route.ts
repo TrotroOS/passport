@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getInvitationForUser } from "@/lib/collaboration/link-pending-invitations";
+import { recordInvitationViewed } from "@/lib/collaboration/invitation-view-tracking";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -52,6 +53,21 @@ export async function GET(_request: Request, { params }: RouteParams) {
   const isExternal =
     ("_external" in invitation && invitation._external) ||
     (!invitation.user_id && Boolean(invitation.invitee_email));
+
+  if (invitation.status === "pending" && shipment) {
+    await recordInvitationViewed(admin, {
+      invitationId: invitation.id,
+      shipmentId: shipment.id,
+      organizationId: shipment.organization_id,
+      shipmentRef: shipment.shipment_ref,
+      viewerUserId: user.id,
+      viewerLabel: profile?.email ?? user.email ?? null,
+      inviteeEmail:
+        "invitee_email" in invitation
+          ? (invitation.invitee_email as string | null)
+          : null,
+    });
+  }
 
   return NextResponse.json({
     invitation: {

@@ -160,7 +160,12 @@ export function AdminShipmentView({ shipmentId, detail }: AdminShipmentViewProps
         )}
 
         <div className="lg:col-span-2">
-          <CompliancePanel shipmentId={shipmentId} checks={detail.regulatoryChecks} />
+          <CompliancePanel
+            shipmentId={shipmentId}
+            checks={detail.regulatoryChecks}
+            destinationCountry={shipment.destination_country}
+            readOnly
+          />
         </div>
 
         <div className="lg:col-span-2">

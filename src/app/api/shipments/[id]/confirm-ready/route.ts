@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { writeAuditEvent } from "@/lib/audit";
+import {
+  loadUserNamesForAuditEvents,
+  resolveReadinessConfirmationDetails,
+} from "@/lib/shipments/readiness-confirmation";
 import { requireShipmentPermission } from "@/lib/shipments/shipment-access";
 import { confirmReadySchema } from "@/lib/validations";
 
@@ -91,5 +96,24 @@ export async function POST(request: Request, { params }: RouteParams) {
     },
   });
 
-  return NextResponse.json({ shipment });
+  revalidatePath(`/shipments/${shipmentId}`);
+
+  const { data: readinessAuditEvents } = await admin
+    .from("audit_events")
+    .select("*")
+    .eq("shipment_id", shipmentId)
+    .in("action", ["shipment.owner_confirmed_ready", "shipment.broker_confirmed_ready"])
+    .order("created_at", { ascending: false });
+
+  const userNamesById = await loadUserNamesForAuditEvents(
+    admin,
+    readinessAuditEvents ?? []
+  );
+  const readiness = resolveReadinessConfirmationDetails(
+    shipment,
+    readinessAuditEvents ?? [],
+    userNamesById
+  );
+
+  return NextResponse.json({ shipment, readiness });
 }

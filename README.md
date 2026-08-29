@@ -156,7 +156,10 @@ cp .env.example .env.local
 | `OPENAI_API_KEY` | OpenAI API key for document extraction |
 | `AI_PROVIDER` | `openai` \| `anthropic` \| `gemini` (default: `openai`) |
 | `AI_MODEL` | Model name (default: `gpt-4o-2024-08-06`) |
-| `TRACKING_PROVIDER` | `mock` or external provider (optional) |
+| `TRACKING_PROVIDER` | `mock` (demo) or `terminal49` for live container tracking — see [docs/TRACKING.md](./docs/TRACKING.md) |
+| `TRACKING_API_KEY` | Terminal49 API token when using `terminal49` |
+| `TRACKING_DEFAULT_SCAC` | Default carrier SCAC (e.g. `MAEU`) when carrier name is unknown |
+| `CRON_SECRET` | Bearer token for `/api/cron/tracking-refresh` (Vercel cron, every 6h) |
 | `TRACKING_WEBHOOK_SECRET` | Required in production for tracking webhooks |
 | `UPSTASH_REDIS_REST_URL` | Redis for rate limiting (required in production) |
 | `UPSTASH_REDIS_REST_TOKEN` | Redis token (required in production) |

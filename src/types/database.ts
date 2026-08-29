@@ -651,9 +651,14 @@ export interface ContainerDetail {
   container_type: string | null;
   seal_number: string | null;
   carrier: string | null;
+  carrier_scac: string | null;
   vessel_name: string | null;
   voyage_number: string | null;
   bill_of_lading_number: string | null;
+  tracking_provider: string | null;
+  provider_container_id: string | null;
+  provider_tracking_request_id: string | null;
+  provider_last_synced_at: string | null;
   created_at: string;
   updated_at: string;
 }
