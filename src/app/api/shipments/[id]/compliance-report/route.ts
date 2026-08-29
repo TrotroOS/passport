@@ -68,7 +68,7 @@ export async function GET(_request: Request, { params }: RouteParams) {
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle(),
-    admin.from("organizations").select("name").eq("id", shipment.organization_id).maybeSingle(),
+    admin.from("organizations").select("name").eq("id", access.shipment.organization_id).maybeSingle(),
     admin.from("parties").select("*").eq("shipment_id", shipmentId).order("created_at"),
     admin.from("products").select("*").eq("shipment_id", shipmentId).order("created_at"),
     admin.from("documents").select("*").eq("shipment_id", shipmentId).order("created_at"),
