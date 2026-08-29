@@ -497,7 +497,7 @@ export function ApiKeysManager({ initialKeys, appBaseUrl }: ApiKeysManagerProps)
               {keys.map((key) => (
                 <li
                   key={key.id}
-                  className="flex items-center justify-between rounded-md border p-3"
+                  className="flex flex-col gap-3 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div>
                     <p className="font-medium">{key.name}</p>
@@ -521,7 +521,7 @@ export function ApiKeysManager({ initialKeys, appBaseUrl }: ApiKeysManagerProps)
                         : ""}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <Badge variant={key.is_active ? "success" : "secondary"}>
                       {key.is_active ? "Active" : "Revoked"}
                     </Badge>

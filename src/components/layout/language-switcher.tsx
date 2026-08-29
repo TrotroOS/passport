@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { localeLabels, locales, type Locale } from "@/i18n/config";
+import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
@@ -13,7 +14,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  compact?: boolean;
+  className?: string;
+}
+
+export function LanguageSwitcher({ compact = false, className }: LanguageSwitcherProps) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
   const router = useRouter();
@@ -45,7 +51,14 @@ export function LanguageSwitcher() {
 
   return (
     <Select value={locale} onValueChange={onChange} disabled={isPending}>
-      <SelectTrigger className="h-8 w-[130px] text-xs" aria-label={t("language")}>
+      <SelectTrigger
+        className={cn(
+          "h-8 text-xs",
+          compact ? "w-full" : "w-[5.5rem] sm:w-[130px]",
+          className
+        )}
+        aria-label={t("language")}
+      >
         <SelectValue placeholder={t("language")} />
       </SelectTrigger>
       <SelectContent>

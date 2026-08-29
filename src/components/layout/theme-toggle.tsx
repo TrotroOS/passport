@@ -2,9 +2,14 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/components/providers/theme-provider";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  className?: string;
+}
+
+export function ThemeToggle({ className }: ThemeToggleProps) {
   const { resolved, setTheme } = useTheme();
 
   return (
@@ -12,7 +17,7 @@ export function ThemeToggle() {
       type="button"
       variant="ghost"
       size="icon"
-      className="h-9 w-9"
+      className={cn("h-9 w-9", className)}
       aria-label={resolved === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       onClick={() => setTheme(resolved === "dark" ? "light" : "dark")}
     >
