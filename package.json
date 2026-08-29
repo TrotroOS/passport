@@ -29,7 +29,7 @@
     "verify-production": "node scripts/verify_production.mjs",
     "sync-vercel-env": "node scripts/sync_vercel_production_env.mjs",
     "configure-supabase-auth": "node scripts/configure_supabase_auth.mjs",
-    "test:oauth": "node scripts/test_oauth_config.mjs",
+    "verify-participant-type": "node scripts/verify_participant_type.mjs",
     "mobile": "npm --prefix mobile start",
     "mobile:install": "npm --prefix mobile install"
   },

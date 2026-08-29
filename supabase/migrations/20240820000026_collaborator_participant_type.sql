@@ -7,3 +7,5 @@ ALTER TABLE public.shipment_collaborators
 CREATE INDEX IF NOT EXISTS idx_shipment_collaborators_participant_type
   ON public.shipment_collaborators(shipment_id, participant_type)
   WHERE status IN ('pending', 'active');
+
+NOTIFY pgrst, 'reload schema';

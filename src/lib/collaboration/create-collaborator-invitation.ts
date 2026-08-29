@@ -9,7 +9,7 @@ import {
   deliverCollaborationInvite,
   getAppOriginFromRequest,
 } from "@/lib/collaboration/invite-delivery";
-import { hasInviteeEmailColumn } from "@/lib/collaboration/schema-support";
+import { hasInviteeEmailColumn, hasParticipantTypeColumn } from "@/lib/collaboration/schema-support";
 import type {
   CollaboratorParticipantType,
   CollaboratorRole,
@@ -84,6 +84,14 @@ export async function createCollaboratorInvitation(
 
   const admin = createAdminClient();
   const supportsInviteeEmail = await hasInviteeEmailColumn(admin);
+  const supportsParticipantType = await hasParticipantTypeColumn(admin);
+
+  function applyParticipantType(payload: Record<string, unknown>) {
+    if (supportsParticipantType) {
+      payload.participant_type = participantType;
+    }
+    return payload;
+  }
 
   const { data: invitee } = await admin
     .from("users")
@@ -139,18 +147,17 @@ export async function createCollaboratorInvitation(
       };
     }
 
-    const collaboratorPayload: Record<string, unknown> = {
+    const collaboratorPayload: Record<string, unknown> = applyParticipantType({
       shipment_id: shipmentId,
       organization_id: invitee.organization_id,
       user_id: invitee.id,
       role,
-      participant_type: participantType,
       status: "pending",
       invited_by: userId,
       invited_at: new Date().toISOString(),
       accepted_at: null,
       revoked_at: null,
-    };
+    });
 
     if (supportsInviteeEmail) {
       collaboratorPayload.invitee_email = email;
@@ -232,19 +239,18 @@ export async function createCollaboratorInvitation(
       };
     }
 
-    const externalPayload = {
+    const externalPayload = applyParticipantType({
       shipment_id: shipmentId,
       organization_id: null,
       user_id: null,
       invitee_email: email,
       role,
-      participant_type: participantType,
       status: "pending" as const,
       invited_by: userId,
       invited_at: new Date().toISOString(),
       accepted_at: null,
       revoked_at: null,
-    };
+    });
 
     const { data: collaborator, error } = existingEmailInvite
       ? await admin

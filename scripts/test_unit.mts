@@ -514,4 +514,41 @@ test("resolvePostAuthPath defaults to dashboard", () => {
   assert.equal(resolvePostAuthPath("/dashboard"), "/dashboard");
 });
 
+console.log("\nCollaborator participant types");
+import {
+  inviteCollaboratorSchema,
+  collaboratorParticipantTypes,
+} from "../src/lib/validations/index.ts";
+import {
+  isMissingParticipantTypeError,
+} from "../src/lib/collaboration/schema-support.ts";
+
+test("inviteCollaboratorSchema accepts customs_broker", () => {
+  const parsed = inviteCollaboratorSchema.parse({
+    email: "broker@example.com",
+    role: "editor",
+    participant_type: "customs_broker",
+  });
+  assert.equal(parsed.participant_type, "customs_broker");
+});
+test("inviteCollaboratorSchema defaults participant_type to collaborator", () => {
+  const parsed = inviteCollaboratorSchema.parse({
+    email: "user@example.com",
+    role: "viewer",
+  });
+  assert.equal(parsed.participant_type, "collaborator");
+});
+test("collaboratorParticipantTypes includes broker and forwarder", () => {
+  assert.ok(collaboratorParticipantTypes.includes("customs_broker"));
+  assert.ok(collaboratorParticipantTypes.includes("freight_forwarder"));
+});
+test("isMissingParticipantTypeError detects schema cache message", () => {
+  assert.equal(
+    isMissingParticipantTypeError(
+      "Could not find the 'participant_type' column of 'shipment_collaborators' in the schema cache"
+    ),
+    true
+  );
+});
+
 console.log("\nAll unit tests passed.");
