@@ -5,7 +5,10 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Static verification files (e.g. Google Search Console) must not redirect to login.
-  if (pathname.endsWith(".html")) {
+  if (
+    pathname.endsWith(".html") ||
+    pathname === "/google67e218557784b354.html"
+  ) {
     return NextResponse.next();
   }
 
