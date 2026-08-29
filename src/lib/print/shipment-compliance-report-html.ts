@@ -1,11 +1,8 @@
 import {
-  formatAuditAction,
-  formatAuditEntityType,
   formatAuditExportId,
   formatAuditTimestamp,
 } from "@/lib/audit/audit-labels";
 import type {
-  AuditEvent,
   Discrepancy,
   Document,
   Party,
@@ -98,11 +95,6 @@ export interface ShipmentPrintLabels {
   tasksIntro: string;
   taskPriority: string;
   noTasks: string;
-  auditTrail: string;
-  auditIntro: string;
-  auditTimestamp: string;
-  auditAction: string;
-  auditEntity: string;
   confidentialNote: string;
 }
 
@@ -117,7 +109,6 @@ export interface ShipmentComplianceReportInput {
   regulatoryChecks: RegulatoryCheckWithRegulation[];
   openDiscrepancies: Discrepancy[];
   openTasks: WorkflowTask[];
-  auditEvents: AuditEvent[];
   organizationName?: string;
   readiness: ReadinessConfirmationDetails;
   labels: ShipmentPrintLabels;
@@ -222,12 +213,6 @@ export function buildShipmentComplianceReportHtml(input: ShipmentComplianceRepor
     (task) => `[${formatStatus(task.priority)}] ${task.title}`
   );
 
-  const auditRows = input.auditEvents.slice(0, 15).map((event) => [
-    formatAuditTimestamp(event.created_at),
-    formatAuditAction(event.action),
-    formatAuditEntityType(event.entity_type),
-  ]);
-
   const riskBody =
     input.riskAssessment != null
       ? `<table class="data-table"><tbody>
@@ -327,12 +312,6 @@ export function buildShipmentComplianceReportHtml(input: ShipmentComplianceRepor
     ${section(t.discrepanciesSection, t.discrepanciesIntro, list(discrepancyItems, t.noDiscrepancies))}
 
     ${section(t.tasksSection, t.tasksIntro, list(taskItems, t.noTasks))}
-
-    ${section(
-      t.auditTrail,
-      t.auditIntro,
-      table([t.auditTimestamp, t.auditAction, t.auditEntity], auditRows, "—")
-    )}
 
     <footer class="report-footer">
       <p>${escapeHtml(t.footer)}</p>

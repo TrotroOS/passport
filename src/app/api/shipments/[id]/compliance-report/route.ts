@@ -56,7 +56,6 @@ export async function GET(_request: Request, { params }: RouteParams) {
     { data: regulatoryChecks },
     { data: allDiscrepancies },
     { data: workflowTasks },
-    { data: auditEvents },
     { data: readinessAuditEvents },
     { data: riskRow },
   ] = await Promise.all([
@@ -85,12 +84,6 @@ export async function GET(_request: Request, { params }: RouteParams) {
       .eq("shipment_id", shipmentId)
       .order("priority")
       .order("created_at", { ascending: false }),
-    admin
-      .from("audit_events")
-      .select("*")
-      .eq("shipment_id", shipmentId)
-      .order("created_at", { ascending: false })
-      .limit(15),
     admin
       .from("audit_events")
       .select("*")
@@ -136,7 +129,6 @@ export async function GET(_request: Request, { params }: RouteParams) {
     regulatoryChecks: (regulatoryChecks ?? []) as RegulatoryCheckWithRegulation[],
     openDiscrepancies,
     openTasks,
-    auditEvents: (auditEvents ?? []) as AuditEvent[],
     organizationName: organization?.name ?? undefined,
     readiness,
     statusLabel: (status) => ts(status as "draft"),
@@ -215,11 +207,6 @@ export async function GET(_request: Request, { params }: RouteParams) {
       tasksIntro: t("tasksIntro"),
       taskPriority: t("taskPriority"),
       noTasks: t("noTasks"),
-      auditTrail: t("auditTrail"),
-      auditIntro: t("auditIntro"),
-      auditTimestamp: t("auditTimestamp"),
-      auditAction: t("auditAction"),
-      auditEntity: t("auditEntity"),
       confidentialNote: t("confidentialNote"),
     },
   });
