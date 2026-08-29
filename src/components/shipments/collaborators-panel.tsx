@@ -62,7 +62,9 @@ export function CollaboratorsPanel({
     if (data.invitation_url) {
       await navigator.clipboard.writeText(data.invitation_url);
       toast.success(t("copyLinkInstead"), {
-        description: t("copyLinkInsteadDescription"),
+        description: data.email_error
+          ? `${t("copyLinkInsteadDescription")} (${data.email_error})`
+          : t("copyLinkInsteadDescription"),
       });
       return;
     }

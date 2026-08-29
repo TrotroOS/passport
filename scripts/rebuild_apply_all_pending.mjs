@@ -27,6 +27,12 @@ const TAIL_MIGRATIONS = [
   "20240820000015_analytics_indexes.sql",
   "20240820000016_freight_tracking.sql",
   "20240820000017_user_language_preference.sql",
+  "20240820000018_compliance_enhancements.sql",
+  "20240820000019_data_governance.sql",
+  "20240820000020_additional_corridors.sql",
+  "20240820000021_billing.sql",
+  "20240820000022_external_collaborator_invites.sql",
+  "20240820000023_protect_platform_admin_flag.sql",
 ];
 
 function readMigration(name) {
@@ -38,7 +44,7 @@ function readMigration(name) {
 }
 
 const parts = [
-  "-- Passport: apply all pending migrations (003–015 after initial schema 001/002)",
+  "-- Passport: apply all pending migrations (003–023 after initial schema 001/002)",
   "-- Regenerate with: node scripts/rebuild_apply_all_pending.mjs",
   "-- Paste entire file in Supabase SQL Editor if CLI apply-migrations fails.",
   "",

@@ -157,6 +157,7 @@ async function createCollaboratorInvitation({
         email_sent: delivery.email_sent,
         email_configured: delivery.email_configured,
         invitation_url: delivery.invitation_url,
+        email_error: delivery.email_error,
       },
       { status: 201 }
     );

@@ -292,22 +292,116 @@ See `/settings/api-docs` for the full public v1 API reference.
 
 ## Production deployment
 
-### Pre-flight checklist
+### Public launch checklist
 
-1. Apply all migrations (`001`–`021`) — see [Run database migrations](#3-run-database-migrations)
-2. Set production env vars (see `.env.example`) — **never** enable `AUTO_CONFIRM_EMAIL`, `FIRST_USER_IS_ADMIN`, or `INBOUND_ALLOW_UNVERIFIED`
-3. Configure [Upstash Redis](https://upstash.com) for rate limiting (`UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`)
-4. Set `NEXT_PUBLIC_APP_URL` to your public URL (emails and invites)
-5. Set `TRACKING_WEBHOOK_SECRET` if using tracking webhooks
-6. Configure SendGrid for email notifications (optional but recommended)
-7. Configure Stripe for billing at `/settings/billing` (optional)
-8. Set `SENTRY_DSN` for error monitoring (optional)
-9. Enable `OPENSANCTIONS_ENABLED=true` for live party screening (optional)
+Use this before opening signup to the public or running a paid pilot.
+
+#### Database
+
+- [ ] `npm run check-migrations` reports all migrations applied (`001`–`023`)
+- [ ] Pending migrations applied via `npm run apply-migrations` (needs `SUPABASE_DB_URL`) or Supabase SQL Editor
+- [ ] Critical pending items on fresh prod: **020** (corridors), **021** (Stripe billing columns), **022** (external invites), **023** (admin flag guard)
+
+#### Environment (Vercel / host dashboard)
+
+- [ ] `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- [ ] `NEXT_PUBLIC_APP_URL` matches your live domain (invites, emails, redirects)
+- [ ] `OPENAI_API_KEY`
+- [ ] **Upstash Redis** — `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` (required for rate limiting)
+- [ ] **Never set in production:** `AUTO_CONFIRM_EMAIL`, `FIRST_USER_IS_ADMIN`, `INBOUND_ALLOW_UNVERIFIED`
+- [ ] Recommended: `SENDGRID_API_KEY`, `SENTRY_DSN`, `TRACKING_WEBHOOK_SECRET`
+- [ ] Optional: `STRIPE_SECRET_KEY` + price IDs, `OPENSANCTIONS_ENABLED=true`
 
 Validate before deploy:
 
 ```bash
 NODE_ENV=production npm run validate-env
+```
+
+#### Deploy pipeline
+
+- [ ] GitHub → Vercel auto-deploy works (push to `master` updates production within minutes)
+- [ ] Node **22** on CI and host (see `.node-version` and `package.json` engines)
+- [ ] GitHub Actions CI green (`.github/workflows/ci.yml`)
+- [ ] Vercel build env includes all production variables (`vercel.json` uses `SKIP_ENV_VALIDATION=true` only for build; runtime still validates via `instrumentation.ts`)
+
+#### Smoke test after deploy
+
+```bash
+# Local dev server
+npm run dev
+npm run smoke-test
+
+# Production (read-only GET checks)
+SMOKE_TEST_URL=https://your-app.vercel.app npm run smoke-test
+```
+
+Smoke test verifies homepage, `/api/health` (DB up), auth pages, legal pages, and auth redirects.
+
+#### Manual QA (recommended once per release)
+
+- [ ] Signup → confirm email (Supabase Auth, not auto-confirm)
+- [ ] Create shipment → upload document → run verification → print compliance report
+- [ ] Invite external collaborator (requires migration **022** + SendGrid)
+- [ ] Owner/broker readiness confirmation appears in UI and print report
+
+#### Legal & ops
+
+- [ ] `/legal/*` pages reviewed (Terms, Privacy, Compliance disclaimer, AUP, DPA)
+- [ ] Support contact configured (`NEXT_PUBLIC_SUPPORT_EMAIL`)
+- [ ] Platform admin runbook: [docs/RUNBOOK.md](./docs/RUNBOOK.md)
+
+### Pre-flight (quick reference)
+
+1. Apply all migrations (`001`–`023`) — see [Run database migrations](#3-run-database-migrations)
+2. Set production env vars (see `.env.example`) — **never** enable dev-only flags listed above
+3. Configure [Upstash Redis](https://upstash.com) for rate limiting
+4. Set `NEXT_PUBLIC_APP_URL` to your public URL
+5. Configure SendGrid for email (strongly recommended for invites)
+6. Configure Stripe for billing at `/settings/billing` (optional until paid launch)
+7. Set `SENTRY_DSN` for error monitoring (recommended)
+
+### SendGrid (collaboration invites)
+
+External broker invites send email via SendGrid. Without it, Passport still creates invitations and returns a **copy link** fallback.
+
+1. Create a [SendGrid](https://sendgrid.com) API key with **Mail Send** permission
+2. Verify a sender domain or single sender in SendGrid
+3. Set in Vercel **Production**:
+   - `SENDGRID_API_KEY`
+   - `INBOUND_EMAIL_FROM=Passport <noreply@yourdomain.com>` (must match verified sender)
+   - `NEXT_PUBLIC_APP_URL=https://your-production-url`
+4. Redeploy, then test:
+
+```bash
+npm run test:sendgrid -- you@example.com
+```
+
+Invite flow: shipment **Share** → email sent → recipient opens `/invitations/{id}` → signup/login → accept.
+
+### Vercel production variables (copy into dashboard)
+
+Set these under **Vercel → Project → Settings → Environment Variables → Production**, then **Redeploy**:
+
+| Variable | Required | Notes |
+|----------|----------|--------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase anon key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes | Server only |
+| `NEXT_PUBLIC_APP_URL` | Yes | `https://passport-one-kappa.vercel.app` (or custom domain) |
+| `OPENAI_API_KEY` | Yes | Document extraction |
+| `UPSTASH_REDIS_REST_URL` | Yes | Rate limiting |
+| `UPSTASH_REDIS_REST_TOKEN` | Yes | Rate limiting |
+| `SENDGRID_API_KEY` | Recommended | Collaboration invite emails |
+| `INBOUND_EMAIL_FROM` | With SendGrid | `Passport <mensahstephen385@gmail.com>` (verified sender) |
+| `SENTRY_DSN` | Recommended | Error monitoring |
+
+**Never set in Production:** `AUTO_CONFIRM_EMAIL`, `FIRST_USER_IS_ADMIN`, `INBOUND_ALLOW_UNVERIFIED`
+
+After deploy, verify:
+
+```bash
+VERIFY_PRODUCTION_URL=https://passport-one-kappa.vercel.app npm run verify-production
 ```
 
 Local production builds without full env can skip validation:
@@ -351,6 +445,8 @@ npm run make-admin -- user@example.com
 npm run validate-env         # Validate production environment
 npm run apply-migrations    # Apply pending SQL migrations
 npm run check-migrations    # Check migration status
+npm run audit-env            # Report which env vars are set (no secret values)
+npm run verify-production    # Launch readiness check against deployed URL
 node scripts/sync_locale_keys.mjs  # Sync i18n keys fr/pt/ar from en
 ```
 
@@ -378,7 +474,7 @@ src/
 ├── messages/               # i18n JSON (en, fr, pt, ar)
 └── types/                  # TypeScript types
 supabase/
-└── migrations/             # SQL migrations (001–017)
+└── migrations/             # SQL migrations (001–023)
 mobile/                     # React Native companion app
 ```
 

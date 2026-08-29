@@ -8,7 +8,9 @@ export interface HealthStatus {
     database: { status: "up" | "down"; latencyMs?: number; error?: string };
     redis: { status: "up" | "down" | "not_configured"; latencyMs?: number };
     ai_provider: { status: "configured" | "not_configured" };
+    email_delivery: { status: "configured" | "not_configured" };
   };
+  app_url: string | null;
   version: string;
 }
 
@@ -18,6 +20,9 @@ export async function getHealthStatus(): Promise<HealthStatus> {
     redis: { status: "not_configured" },
     ai_provider: {
       status: process.env.OPENAI_API_KEY ? "configured" : "not_configured",
+    },
+    email_delivery: {
+      status: process.env.SENDGRID_API_KEY ? "configured" : "not_configured",
     },
   };
 
@@ -45,6 +50,14 @@ export async function getHealthStatus(): Promise<HealthStatus> {
   const redisUrl = process.env.UPSTASH_REDIS_REST_URL ?? process.env.REDIS_URL;
   const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.REDIS_TOKEN;
 
+  if (checks.ai_provider.status === "not_configured" && overall === "healthy") {
+    overall = "degraded";
+  }
+
+  if (checks.email_delivery.status === "not_configured" && overall === "healthy") {
+    overall = "degraded";
+  }
+
   if (redisUrl && redisToken) {
     const redisStart = Date.now();
     try {
@@ -67,6 +80,7 @@ export async function getHealthStatus(): Promise<HealthStatus> {
     status: overall,
     timestamp: new Date().toISOString(),
     checks,
+    app_url: process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ?? null,
     version: process.env.npm_package_version ?? "0.1.0",
   };
 }

@@ -36,6 +36,34 @@ const admin = createClient(url, service, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
+const dbUrl =
+  process.env.SUPABASE_DB_URL ??
+  process.env.DATABASE_URL ??
+  process.env.POSTGRES_URL;
+
+let pgClient = null;
+if (dbUrl) {
+  try {
+    const pg = await import("pg");
+    pgClient = new pg.default.Client({
+      connectionString: dbUrl,
+      ssl: dbUrl.includes("localhost") ? false : { rejectUnauthorized: false },
+    });
+    await pgClient.connect();
+  } catch {
+    pgClient = null;
+  }
+}
+
+async function triggerExists(name) {
+  if (!pgClient) return false;
+  const { rows } = await pgClient.query(
+    "SELECT 1 FROM pg_trigger WHERE tgname = $1 LIMIT 1",
+    [name]
+  );
+  return rows.length > 0;
+}
+
 const MIGRATION_CHECKS = [
   {
     id: "002/010",
@@ -44,9 +72,14 @@ const MIGRATION_CHECKS = [
     check: async () => {
       const anon = getSupabaseAnonKey();
       if (!anon) return false;
+      const email = process.env.MIGRATION_CHECK_EMAIL;
+      const password = process.env.MIGRATION_CHECK_PASSWORD;
+      if (!email || !password) {
+        console.warn("     (skipped auth probe — set MIGRATION_CHECK_EMAIL + MIGRATION_CHECK_PASSWORD to verify RLS login)");
+        const { error } = await admin.from("users").select("id").limit(1);
+        return !error;
+      }
       const client = createClient(url, anon);
-      const email = process.argv[2] ?? "trotroosapp@gmail.com";
-      const password = process.argv[3] ?? "Mensdom24.";
       const { error: signErr } = await client.auth.signInWithPassword({ email, password });
       if (signErr) return false;
       const { data } = await client.from("users").select("id").maybeSingle();
@@ -173,6 +206,12 @@ const MIGRATION_CHECKS = [
     file: "20240820000022_external_collaborator_invites.sql",
     check: async () => columnExists("shipment_collaborators", "invitee_email"),
   },
+  {
+    id: "023",
+    label: "Platform admin flag protection",
+    file: "20240820000023_protect_platform_admin_flag.sql",
+    check: async () => triggerExists("users_guard_platform_admin"),
+  },
 ];
 
 async function tableExists(table) {
@@ -212,7 +251,10 @@ if (pending.length) {
       console.log(`     supabase/migrations/${migration.file}  (${migration.id})`);
     }
   }
+  if (pgClient) await pgClient.end();
   process.exit(1);
 }
+
+if (pgClient) await pgClient.end();
 
 console.log("\n✅ All migrations appear applied.");

@@ -1970,3 +1970,314 @@ ALTER TABLE public.users
 CREATE INDEX IF NOT EXISTS idx_users_preferred_language
   ON public.users(preferred_language);
 
+-- ===== 20240820000018_compliance_enhancements.sql =====
+-- Party sanctions screening + user notification preferences
+
+CREATE TABLE IF NOT EXISTS public.party_screenings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  shipment_id UUID NOT NULL REFERENCES public.shipments(id) ON DELETE CASCADE,
+  party_id UUID NOT NULL REFERENCES public.parties(id) ON DELETE CASCADE,
+  organization_id UUID NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
+  screened_name TEXT NOT NULL,
+  match_status TEXT NOT NULL CHECK (match_status IN ('clear', 'potential_match', 'confirmed_match')),
+  match_score NUMERIC(5,2) NOT NULL DEFAULT 0,
+  list_source TEXT NOT NULL DEFAULT 'passport_watchlist',
+  match_details JSONB NOT NULL DEFAULT '{}',
+  screened_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (party_id, list_source)
+);
+
+CREATE INDEX IF NOT EXISTS idx_party_screenings_shipment ON public.party_screenings(shipment_id);
+CREATE INDEX IF NOT EXISTS idx_party_screenings_org ON public.party_screenings(organization_id);
+CREATE INDEX IF NOT EXISTS idx_party_screenings_status ON public.party_screenings(match_status);
+
+ALTER TABLE public.party_screenings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "party_screenings_select"
+  ON public.party_screenings FOR SELECT TO authenticated
+  USING (organization_id = public.get_user_organization_id());
+
+CREATE POLICY "party_screenings_insert"
+  ON public.party_screenings FOR INSERT TO authenticated
+  WITH CHECK (organization_id = public.get_user_organization_id());
+
+CREATE POLICY "party_screenings_update"
+  ON public.party_screenings FOR UPDATE TO authenticated
+  USING (organization_id = public.get_user_organization_id())
+  WITH CHECK (organization_id = public.get_user_organization_id());
+
+CREATE POLICY "party_screenings_delete"
+  ON public.party_screenings FOR DELETE TO authenticated
+  USING (organization_id = public.get_user_organization_id());
+
+ALTER TABLE public.users
+  ADD COLUMN IF NOT EXISTS notification_preferences JSONB NOT NULL DEFAULT '{
+    "email_alerts": true,
+    "tracking_updates": true,
+    "compliance_alerts": true,
+    "weekly_digest": false
+  }'::jsonb;
+
+-- ===== 20240820000019_data_governance.sql =====
+-- Data governance: provenance lineage, trusted sources, trust metrics
+
+CREATE TABLE IF NOT EXISTS public.trusted_sources (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  source_type TEXT NOT NULL CHECK (
+    source_type IN ('sanctions', 'tariff', 'regulatory', 'hs_reference', 'ai', 'human', 'system', 'tracking')
+  ),
+  authority TEXT,
+  base_url TEXT,
+  description TEXT,
+  reliability_score NUMERIC(5,2) NOT NULL DEFAULT 80 CHECK (reliability_score >= 0 AND reliability_score <= 100),
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  metadata JSONB NOT NULL DEFAULT '{}',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+INSERT INTO public.trusted_sources (id, name, source_type, authority, base_url, description, reliability_score, metadata) VALUES
+  ('opensanctions', 'OpenSanctions', 'sanctions', 'OpenSanctions.org', 'https://www.opensanctions.org/', 'Consolidated sanctions and PEP datasets', 92, '{"connector":"opensanctions"}'),
+  ('ofac-sdn', 'OFAC SDN List', 'sanctions', 'US Treasury OFAC', 'https://sanctionssearch.ofac.treas.gov/', 'US Specially Designated Nationals list', 98, '{"connector":"static_watchlist"}'),
+  ('un-sanctions', 'UN Security Council Sanctions', 'sanctions', 'United Nations', 'https://www.un.org/securitycouncil/sanctions/', 'UN consolidated sanctions lists', 97, '{"connector":"static_watchlist"}'),
+  ('wco-hs', 'WCO Harmonized System', 'hs_reference', 'World Customs Organization', 'https://www.wcoomd.org/', 'International HS nomenclature reference', 99, '{"connector":"static_hs"}'),
+  ('gra-ghana', 'Ghana Revenue Authority Customs', 'tariff', 'GRA Customs', 'https://gra.gov.gh/', 'Ghana import duty and tariff schedules', 95, '{"connector":"static_tariff"}'),
+  ('unctad-trains', 'UNCTAD TRAINS', 'tariff', 'UNCTAD', 'https://trainsonline.unctad.org/', 'Trade analysis and tariff intelligence', 90, '{"connector":"static_tariff"}'),
+  ('passport-regulations', 'Passport Regulation KB', 'regulatory', 'Passport Platform', NULL, 'Curated regulatory rules with source citations', 88, '{"connector":"internal"}'),
+  ('openai', 'OpenAI', 'ai', 'OpenAI', 'https://openai.com/', 'Document classification and field extraction', 85, '{"connector":"openai"}'),
+  ('passport-arbiter', 'Passport Arbiter', 'system', 'Passport Platform', NULL, 'Deterministic validation and normalization rules', 96, '{"connector":"internal"}'),
+  ('human-analyst', 'Human Analyst', 'human', 'Organization User', NULL, 'Manual review and field confirmation', 99, '{"connector":"internal"}'),
+  ('vesselfinder', 'VesselFinder', 'tracking', 'VesselFinder', 'https://www.vesselfinder.com/', 'Vessel and container tracking data', 82, '{"connector":"vesselfinder"}'),
+  ('passport-watchlist', 'Passport High-Risk Watchlist', 'sanctions', 'Passport Platform', NULL, 'Curated high-risk entity patterns', 75, '{"connector":"static_watchlist"}')
+ON CONFLICT (id) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS public.data_provenance_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organization_id UUID NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
+  shipment_id UUID REFERENCES public.shipments(id) ON DELETE CASCADE,
+  entity_type TEXT NOT NULL,
+  entity_id UUID NOT NULL,
+  field_path TEXT,
+  value_snapshot JSONB,
+  source_id TEXT NOT NULL REFERENCES public.trusted_sources(id),
+  source_record_ref TEXT,
+  confidence NUMERIC(5,4) CHECK (confidence IS NULL OR (confidence >= 0 AND confidence <= 1)),
+  transformation TEXT,
+  recorded_by UUID REFERENCES public.users(id) ON DELETE SET NULL,
+  recorded_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  metadata JSONB NOT NULL DEFAULT '{}'
+);
+
+CREATE INDEX IF NOT EXISTS idx_provenance_shipment ON public.data_provenance_events(shipment_id);
+CREATE INDEX IF NOT EXISTS idx_provenance_org ON public.data_provenance_events(organization_id);
+CREATE INDEX IF NOT EXISTS idx_provenance_entity ON public.data_provenance_events(entity_type, entity_id);
+CREATE INDEX IF NOT EXISTS idx_provenance_source ON public.data_provenance_events(source_id);
+
+CREATE TABLE IF NOT EXISTS public.shipment_trust_snapshots (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  shipment_id UUID NOT NULL REFERENCES public.shipments(id) ON DELETE CASCADE,
+  organization_id UUID NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
+  trust_score NUMERIC(5,2) NOT NULL CHECK (trust_score >= 0 AND trust_score <= 100),
+  data_quality_score NUMERIC(5,2) NOT NULL CHECK (data_quality_score >= 0 AND data_quality_score <= 100),
+  lineage_completeness NUMERIC(5,2) NOT NULL DEFAULT 0,
+  source_reliability_avg NUMERIC(5,2) NOT NULL DEFAULT 0,
+  human_override_rate NUMERIC(5,4) NOT NULL DEFAULT 0,
+  metrics JSONB NOT NULL DEFAULT '{}',
+  calculated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_trust_snapshots_shipment ON public.shipment_trust_snapshots(shipment_id, calculated_at DESC);
+
+ALTER TABLE public.ai_provider_logs
+  ADD COLUMN IF NOT EXISTS extraction_id UUID REFERENCES public.document_extractions(id) ON DELETE SET NULL;
+
+ALTER TABLE public.data_provenance_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.trusted_sources ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.shipment_trust_snapshots ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "trusted_sources_select"
+  ON public.trusted_sources FOR SELECT TO authenticated
+  USING (true);
+
+CREATE POLICY "provenance_select"
+  ON public.data_provenance_events FOR SELECT TO authenticated
+  USING (organization_id = public.get_user_organization_id());
+
+CREATE POLICY "provenance_insert"
+  ON public.data_provenance_events FOR INSERT TO authenticated
+  WITH CHECK (organization_id = public.get_user_organization_id());
+
+CREATE POLICY "trust_snapshots_select"
+  ON public.shipment_trust_snapshots FOR SELECT TO authenticated
+  USING (organization_id = public.get_user_organization_id());
+
+CREATE POLICY "trust_snapshots_insert"
+  ON public.shipment_trust_snapshots FOR INSERT TO authenticated
+  WITH CHECK (organization_id = public.get_user_organization_id());
+
+-- ===== 20240820000020_additional_corridors.sql =====
+-- Additional import corridors: Nigeria and Kenya
+
+INSERT INTO public.jurisdictions (code, name)
+VALUES
+  ('NG', 'Nigeria'),
+  ('KE', 'Kenya')
+ON CONFLICT (code) DO NOTHING;
+
+-- Nigeria import regulations (curated, source-backed templates)
+INSERT INTO public.regulations (
+  jurisdiction_id, product_category_id, title, description, rule_type,
+  required_document_type, authority, source_url, source_text,
+  effective_date, confidence
+)
+SELECT
+  j.id, pc.id, r.title, r.description, r.rule_type,
+  r.required_document_type, r.authority, r.source_url, r.source_text,
+  r.effective_date::date, r.confidence
+FROM public.jurisdictions j
+CROSS JOIN (VALUES
+  ('food', 'NAFDAC Registration Required', 'Food products imported into Nigeria require NAFDAC product registration.', 'registration_required', 'nafdac_registration', 'NAFDAC', 'https://nafdac.gov.ng/', 'Imported food products must be registered with NAFDAC before clearance.', '2024-01-01', 1.0),
+  ('food', 'Health Certificate', 'Food imports require a health certificate from the exporting country.', 'document_required', 'health_certificate', 'NAFDAC', 'https://nafdac.gov.ng/', 'Health certificate required for food imports.', '2024-01-01', 0.9),
+  ('pharmaceuticals', 'NAFDAC Drug Registration', 'Pharmaceutical products must be registered with NAFDAC before import.', 'registration_required', 'nafdac_registration', 'NAFDAC', 'https://nafdac.gov.ng/', 'All pharmaceutical products require NAFDAC registration.', '2024-01-01', 1.0),
+  ('pharmaceuticals', 'Import Permit for Pharmaceuticals', 'Each pharmaceutical shipment requires an import permit.', 'permit_required', 'import_permit', 'NAFDAC', 'https://nafdac.gov.ng/', 'Import permit required per consignment of pharmaceutical products.', '2024-01-01', 1.0),
+  ('electronics', 'SONCAP Certificate', 'Regulated products require Standards Organisation of Nigeria Conformity Assessment Programme certificate.', 'document_required', 'soncap_certificate', 'SON', 'https://son.gov.ng/', 'SONCAP certification required for regulated product categories.', '2024-01-01', 0.95),
+  ('general_consumer_goods', 'Form M / Import Documentation', 'Commercial imports require Form M and valid import documentation.', 'document_required', 'import_declaration', 'CBN / NCS', 'https://www.customs.gov.ng/', 'Form M and supporting import documents required for commercial imports.', '2024-01-01', 1.0),
+  ('general_consumer_goods', 'Bill of Lading', 'All sea freight imports require a bill of lading.', 'document_required', 'bill_of_lading', 'Nigeria Customs Service', 'https://www.customs.gov.ng/', 'Bill of lading required for customs clearance.', '2024-01-01', 1.0),
+  ('general_consumer_goods', 'HS Code Classification', 'All imported goods must carry correct HS classification.', 'registration_required', 'hs_code', 'Nigeria Customs Service', 'https://www.customs.gov.ng/', 'Correct HS code classification required for duty assessment.', '2024-01-01', 1.0),
+  ('agricultural_products', 'Phytosanitary Certificate', 'Plant and agricultural imports require phytosanitary certification.', 'document_required', 'phytosanitary_certificate', 'Nigeria Agricultural Quarantine Service', 'https://naqs.gov.ng/', 'Phytosanitary certificate required for agricultural imports.', '2024-01-01', 0.95),
+  ('chemicals', 'NAFDAC / Environmental Clearance', 'Chemical imports may require NAFDAC or environmental clearance.', 'permit_required', 'chemical_import_permit', 'NAFDAC', 'https://nafdac.gov.ng/', 'Chemical imports subject to regulatory clearance.', '2024-01-01', 0.9)
+) AS r(category_code, title, description, rule_type, required_document_type, authority, source_url, source_text, effective_date, confidence)
+JOIN public.product_categories pc ON pc.code = r.category_code
+WHERE j.code = 'NG';
+
+-- Kenya import regulations (curated, source-backed templates)
+INSERT INTO public.regulations (
+  jurisdiction_id, product_category_id, title, description, rule_type,
+  required_document_type, authority, source_url, source_text,
+  effective_date, confidence
+)
+SELECT
+  j.id, pc.id, r.title, r.description, r.rule_type,
+  r.required_document_type, r.authority, r.source_url, r.source_text,
+  r.effective_date::date, r.confidence
+FROM public.jurisdictions j
+CROSS JOIN (VALUES
+  ('food', 'KEBS Food Import Standards', 'Food imports must comply with Kenya Bureau of Standards requirements.', 'document_required', 'kebs_certificate', 'KEBS', 'https://kebs.org/', 'Food products must meet KEBS standards and certification requirements.', '2024-01-01', 0.95),
+  ('pharmaceuticals', 'PPB Product Registration', 'Pharmaceutical products must be registered with the Pharmacy and Poisons Board.', 'registration_required', 'ppb_registration', 'Pharmacy and Poisons Board', 'https://ppb.go.ke/', 'All pharmaceutical products require PPB registration before import.', '2024-01-01', 1.0),
+  ('pharmaceuticals', 'Import Permit for Medicines', 'Medicine imports require an import permit from PPB.', 'permit_required', 'import_permit', 'Pharmacy and Poisons Board', 'https://ppb.go.ke/', 'Import permit required for each medicine consignment.', '2024-01-01', 1.0),
+  ('electronics', 'KEBS PVoC Certificate', 'Regulated goods require Pre-Export Verification of Conformity certificate.', 'document_required', 'pvoc_certificate', 'KEBS', 'https://kebs.org/', 'PVoC certificate required for regulated product categories.', '2024-01-01', 0.95),
+  ('general_consumer_goods', 'Customs Entry Documentation', 'Commercial imports require customs entry and IDF documentation.', 'document_required', 'import_declaration', 'Kenya Revenue Authority', 'https://www.kra.go.ke/', 'Import declaration and customs entry documents required.', '2024-01-01', 1.0),
+  ('general_consumer_goods', 'Bill of Lading or Air Waybill', 'All commercial imports require transport documentation.', 'document_required', 'bill_of_lading', 'Kenya Revenue Authority', 'https://www.kra.go.ke/', 'Bill of lading or air waybill required for clearance.', '2024-01-01', 1.0),
+  ('general_consumer_goods', 'HS Code Classification', 'All imported goods must be classified with the correct HS code.', 'registration_required', 'hs_code', 'Kenya Revenue Authority', 'https://www.kra.go.ke/', 'Correct HS classification required for duty assessment.', '2024-01-01', 1.0),
+  ('agricultural_products', 'Phytosanitary Certificate', 'Plant products require phytosanitary certification.', 'document_required', 'phytosanitary_certificate', 'Kenya Plant Health Inspectorate Service', 'https://www.kephis.org/', 'Phytosanitary certificate required for plant and agricultural imports.', '2024-01-01', 0.95),
+  ('cosmetics', 'KEBS / PPB Registration', 'Cosmetic products may require KEBS or PPB registration depending on classification.', 'registration_required', 'product_registration', 'KEBS', 'https://kebs.org/', 'Cosmetic and personal care products subject to registration requirements.', '2024-01-01', 0.9)
+) AS r(category_code, title, description, rule_type, required_document_type, authority, source_url, source_text, effective_date, confidence)
+JOIN public.product_categories pc ON pc.code = r.category_code
+WHERE j.code = 'KE';
+
+-- ===== 20240820000021_billing.sql =====
+-- Organization billing (Stripe-ready)
+
+ALTER TABLE public.organizations
+  ADD COLUMN IF NOT EXISTS subscription_tier TEXT NOT NULL DEFAULT 'free'
+    CHECK (subscription_tier IN ('free', 'pro', 'enterprise')),
+  ADD COLUMN IF NOT EXISTS subscription_status TEXT NOT NULL DEFAULT 'active'
+    CHECK (subscription_status IN ('active', 'trialing', 'past_due', 'canceled')),
+  ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT,
+  ADD COLUMN IF NOT EXISTS stripe_subscription_id TEXT,
+  ADD COLUMN IF NOT EXISTS billing_email TEXT,
+  ADD COLUMN IF NOT EXISTS trial_ends_at TIMESTAMPTZ;
+
+CREATE INDEX IF NOT EXISTS idx_organizations_stripe_customer
+  ON public.organizations(stripe_customer_id)
+  WHERE stripe_customer_id IS NOT NULL;
+
+-- ===== 20240820000022_external_collaborator_invites.sql =====
+-- Allow inviting collaborators who do not yet have a Passport account
+
+ALTER TABLE public.shipment_collaborators
+  ADD COLUMN IF NOT EXISTS invitee_email TEXT,
+  ALTER COLUMN user_id DROP NOT NULL,
+  ALTER COLUMN organization_id DROP NOT NULL;
+
+ALTER TABLE public.shipment_collaborators
+  DROP CONSTRAINT IF EXISTS shipment_collaborators_shipment_id_user_id_key;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_shipment_collaborators_shipment_user
+  ON public.shipment_collaborators(shipment_id, user_id)
+  WHERE user_id IS NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_shipment_collaborators_shipment_invitee_email
+  ON public.shipment_collaborators(shipment_id, lower(invitee_email))
+  WHERE invitee_email IS NOT NULL AND status IN ('pending', 'active');
+
+ALTER TABLE public.shipment_collaborators
+  ADD CONSTRAINT shipment_collaborators_invitee_or_user_chk CHECK (
+    user_id IS NOT NULL OR invitee_email IS NOT NULL
+  );
+
+CREATE OR REPLACE FUNCTION public.invitation_email_matches_auth_user(p_invitee_email TEXT)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT p_invitee_email IS NOT NULL
+    AND lower(p_invitee_email) = lower(
+      (SELECT email FROM public.users WHERE id = auth.uid())
+    );
+$$;
+
+GRANT EXECUTE ON FUNCTION public.invitation_email_matches_auth_user(TEXT) TO authenticated;
+
+DROP POLICY IF EXISTS "shipment_collaborators_select" ON public.shipment_collaborators;
+CREATE POLICY "shipment_collaborators_select"
+  ON public.shipment_collaborators FOR SELECT TO authenticated
+  USING (
+    user_id = auth.uid()
+    OR public.is_shipment_owner(shipment_id)
+    OR public.invitation_email_matches_auth_user(invitee_email)
+  );
+
+DROP POLICY IF EXISTS "shipment_collaborators_update_self" ON public.shipment_collaborators;
+CREATE POLICY "shipment_collaborators_update_self"
+  ON public.shipment_collaborators FOR UPDATE TO authenticated
+  USING (
+    user_id = auth.uid()
+    OR public.invitation_email_matches_auth_user(invitee_email)
+  )
+  WITH CHECK (
+    user_id = auth.uid()
+    OR public.invitation_email_matches_auth_user(invitee_email)
+  );
+
+-- Reload PostgREST schema cache so invitee_email is visible immediately
+NOTIFY pgrst, 'reload schema';
+
+-- ===== 20240820000023_protect_platform_admin_flag.sql =====
+-- Prevent authenticated users from self-granting platform admin via profile updates.
+
+CREATE OR REPLACE FUNCTION public.guard_platform_admin_column()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF NEW.is_platform_admin IS DISTINCT FROM OLD.is_platform_admin THEN
+    IF auth.uid() IS NOT NULL THEN
+      RAISE EXCEPTION 'Platform admin status cannot be changed through the app';
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS users_guard_platform_admin ON public.users;
+CREATE TRIGGER users_guard_platform_admin
+  BEFORE UPDATE ON public.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.guard_platform_admin_column();
+

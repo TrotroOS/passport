@@ -369,6 +369,17 @@ test("estimateShipmentDuty calculates Ghana import", () => {
   );
   assert.ok(estimate.grandTotal > estimate.subtotalCif);
   assert.ok(estimate.totalDuty > 0);
+  assert.equal(estimate.corridorSupported, true);
+});
+test("estimateShipmentDuty skips unsupported corridors", () => {
+  const estimate = estimateShipmentDuty(
+    [{ id: "p1", shipment_id: "s", name: "Widget", description: null, hs_code: "847130", quantity: 10, unit_price: 100, total_value: 1000, currency: "USD", category_id: null, hs_code_status: "verified", created_at: "" }],
+    "US",
+    "DE"
+  );
+  assert.equal(estimate.corridorSupported, false);
+  assert.equal(estimate.products.length, 0);
+  assert.equal(estimate.grandTotal, 0);
 });
 
 console.log("\nAll unit tests passed.");

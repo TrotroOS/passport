@@ -431,7 +431,7 @@ export default async function ShipmentDetailPage({
 
           <DocumentChecklistPanel checklist={documentChecklist} shipmentId={id} />
 
-          {dutyEstimate.products.length > 0 ? (
+          {(products ?? []).length > 0 ? (
             <div className="lg:col-span-2">
               <DutyEstimateCard estimate={dutyEstimate} />
             </div>

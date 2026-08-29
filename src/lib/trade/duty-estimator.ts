@@ -1,4 +1,5 @@
 import type { Product } from "@/types/database";
+import { isGhanaDestination } from "@/lib/regulatory/jurisdiction";
 
 /** Ghana CIF duty rates by HS chapter (first 2 digits) — illustrative rates. */
 const GHANA_DUTY_BY_CHAPTER: Record<string, number> = {
@@ -60,6 +61,7 @@ export interface ProductDutyEstimate {
 export interface ShipmentDutyEstimate {
   originCountry: string | null;
   destinationCountry: string | null;
+  corridorSupported: boolean;
   currency: string;
   products: ProductDutyEstimate[];
   subtotalCif: number;
@@ -103,18 +105,34 @@ export function estimateShipmentDuty(
   originCountry: string | null,
   destinationCountry: string | null
 ): ShipmentDutyEstimate {
-  const dest = destinationCountry?.trim().toUpperCase().slice(0, 2) ?? "";
-  const isGhanaImport = dest === "GH" || dest.includes("GHANA");
+  const isGhanaImport = isGhanaDestination(destinationCountry);
+
+  if (!isGhanaImport) {
+    return {
+      originCountry,
+      destinationCountry,
+      corridorSupported: false,
+      currency: "USD",
+      products: [],
+      subtotalCif: 0,
+      totalDuty: 0,
+      totalVat: 0,
+      totalLevies: 0,
+      grandTotal: 0,
+      disclaimer:
+        "Landed cost estimates are available for Ghana import corridors only. Regulatory checks may still apply for Nigeria, Kenya, and other supported destinations.",
+    };
+  }
 
   const originMult = originMultiplier(originCountry);
   const productEstimates: ProductDutyEstimate[] = products.map((p) => {
     const cifValue = parseProductValue(p);
-    const baseRate = isGhanaImport ? dutyRateForHs(p.hs_code) : DEFAULT_DUTY_RATE * 0.5;
+    const baseRate = dutyRateForHs(p.hs_code);
     const dutyRate = Math.min(baseRate * originMult, 0.5);
     const dutyAmount = cifValue * dutyRate;
     const vatBase = cifValue + dutyAmount;
-    const vatAmount = isGhanaImport ? vatBase * VAT_RATE : 0;
-    const leviesAmount = isGhanaImport ? cifValue * NHIL_GETFUND_RATE : 0;
+    const vatAmount = vatBase * VAT_RATE;
+    const leviesAmount = cifValue * NHIL_GETFUND_RATE;
     const totalLanded = cifValue + dutyAmount + vatAmount + leviesAmount;
 
     return {
@@ -138,6 +156,7 @@ export function estimateShipmentDuty(
   return {
     originCountry,
     destinationCountry,
+    corridorSupported: true,
     currency: "USD",
     products: productEstimates,
     subtotalCif: Math.round(subtotalCif * 100) / 100,

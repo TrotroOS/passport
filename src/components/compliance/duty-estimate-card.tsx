@@ -13,6 +13,25 @@ interface DutyEstimateCardProps {
 }
 
 export function DutyEstimateCard({ estimate }: DutyEstimateCardProps) {
+  if (!estimate.corridorSupported) {
+    return (
+      <Card className="min-w-0 overflow-hidden">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calculator className="h-5 w-5" />
+            Landed cost estimate
+          </CardTitle>
+          <CardDescription>
+            {estimate.originCountry ?? "—"} → {estimate.destinationCountry ?? "—"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">{estimate.disclaimer}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (estimate.products.length === 0) return null;
 
   return (

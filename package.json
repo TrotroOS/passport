@@ -2,6 +2,9 @@
   "name": "passport",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.19.0 || >=22.13.0"
+  },
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/validate_env.mjs",
@@ -14,6 +17,7 @@
     "confirm-user": "node scripts/confirm_user.mjs",
     "check-db": "node scripts/check_db.mjs",
     "check-migrations": "node scripts/check_migrations.mjs",
+    "audit-env": "node scripts/audit_env.mjs",
     "apply-migrations": "node scripts/apply_migrations.mjs",
     "apply-migration-022": "node scripts/apply_single_migration.mjs 20240820000022_external_collaborator_invites.sql",
     "apply-rls-fix": "node scripts/apply_rls_fix.mjs",
@@ -21,6 +25,8 @@
     "test:integration": "node scripts/test_integration.mjs",
     "test": "node scripts/test_all.mjs",
     "smoke-test": "node scripts/smoke_test.mjs",
+    "test:sendgrid": "node scripts/test_sendgrid.mjs",
+    "verify-production": "node scripts/verify_production.mjs",
     "mobile": "npm --prefix mobile start",
     "mobile:install": "npm --prefix mobile install"
   },
@@ -49,7 +55,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "20.17.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.5.4",
@@ -59,7 +65,7 @@
     "postcss": "^8.5.26",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.23.12",
-    "typescript": "^5"
+    "typescript": "5.8.2"
   },
   "overrides": {
     "glob": "^10.4.6",

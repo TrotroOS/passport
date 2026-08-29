@@ -1,23 +1,43 @@
 #!/usr/bin/env node
-/** Smoke test key routes against a running Passport dev server. */
-const baseUrl = process.env.SMOKE_TEST_URL ?? "http://localhost:3000";
+/** Smoke test key routes against a running Passport server (dev or production). */
+const baseUrl = (process.env.SMOKE_TEST_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
 const routes = [
-  { path: "/api/health", expect: 200 },
-  { path: "/login", expect: 200 },
-  { path: "/signup", expect: 200 },
-  { path: "/legal", expect: 200 },
-  { path: "/dashboard", expect: [307, 302] },
-  { path: "/readiness", expect: [307, 302] },
-  { path: "/compliance/calendar", expect: [307, 302] },
-  { path: "/settings/billing", expect: [307, 302] },
+  { path: "/", expect: 200, label: "Homepage" },
+  { path: "/api/health", expect: 200, label: "Health API", json: true },
+  { path: "/login", expect: 200, label: "Login" },
+  { path: "/signup", expect: 200, label: "Signup" },
+  { path: "/legal", expect: 200, label: "Legal hub" },
+  { path: "/legal/privacy-policy", expect: 200, label: "Privacy policy" },
+  { path: "/legal/terms-of-service", expect: 200, label: "Terms" },
+  { path: "/dashboard", expect: [307, 302], label: "Dashboard (auth redirect)" },
+  { path: "/readiness", expect: [307, 302], label: "Readiness (auth redirect)" },
+  { path: "/compliance/calendar", expect: [307, 302], label: "Compliance calendar (auth redirect)" },
+  { path: "/settings/billing", expect: [307, 302], label: "Billing settings (auth redirect)" },
 ];
 
-async function checkRoute(path, expect) {
+async function checkRoute(path, expect, options = {}) {
   const expected = Array.isArray(expect) ? expect : [expect];
   const res = await fetch(`${baseUrl}${path}`, { redirect: "manual" });
   const ok = expected.includes(res.status);
-  return { path, status: res.status, ok, expected };
+  const result = { path, status: res.status, ok, expected };
+
+  if (options.json && res.ok) {
+    try {
+      const body = await res.json();
+      result.healthStatus = body.status;
+      result.dbUp = body.checks?.database?.status === "up";
+      if (body.status === "unhealthy") {
+        result.ok = false;
+        result.detail = "health status unhealthy";
+      }
+    } catch {
+      result.ok = false;
+      result.detail = "invalid JSON from /api/health";
+    }
+  }
+
+  return result;
 }
 
 async function main() {
@@ -26,12 +46,20 @@ async function main() {
 
   for (const route of routes) {
     try {
-      const result = await checkRoute(route.path, route.expect);
+      const result = await checkRoute(route.path, route.expect, route);
       const mark = result.ok ? "✓" : "✗";
-      console.log(`${mark} ${result.path} → ${result.status} (expected ${result.expected.join("|")})`);
+      const extra =
+        result.healthStatus != null
+          ? ` (${result.healthStatus}, db=${result.dbUp ? "up" : "down"})`
+          : result.detail
+            ? ` (${result.detail})`
+            : "";
+      console.log(
+        `${mark} ${route.label ?? route.path} → ${result.status} (expected ${result.expected.join("|")})${extra}`
+      );
       if (!result.ok) failed++;
     } catch (err) {
-      console.log(`✗ ${route.path} → ERROR (${err.message})`);
+      console.log(`✗ ${route.label ?? route.path} → ERROR (${err.message})`);
       failed++;
     }
   }

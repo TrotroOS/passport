@@ -53,6 +53,7 @@ const APPLY_ORDER = [
   "20240820000020_additional_corridors.sql",
   "20240820000021_billing.sql",
   "20240820000022_external_collaborator_invites.sql",
+  "20240820000023_protect_platform_admin_flag.sql",
 ];
 
 let pg;

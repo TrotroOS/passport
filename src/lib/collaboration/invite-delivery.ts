@@ -15,6 +15,7 @@ export interface InviteDeliveryResult {
   email_sent: boolean;
   email_configured: boolean;
   invitation_url: string;
+  email_error?: string;
 }
 
 export async function deliverCollaborationInvite(params: {
@@ -46,11 +47,13 @@ export async function deliverCollaborationInvite(params: {
       invitation_url: invitationUrl,
     };
   } catch (err) {
+    const emailError = err instanceof Error ? err.message : "Email delivery failed";
     console.error("[Collaboration] Invite email failed:", err);
     return {
       email_sent: false,
       email_configured: true,
       invitation_url: invitationUrl,
+      email_error: emailError,
     };
   }
 }
