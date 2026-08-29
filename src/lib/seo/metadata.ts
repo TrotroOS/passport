@@ -68,6 +68,21 @@ export function buildRootMetadata(): Metadata {
     alternates: {
       canonical: siteUrl,
     },
+    ...(getGoogleSiteVerificationMetadata()),
+  };
+}
+
+function getGoogleSiteVerificationMetadata(): Pick<Metadata, "verification"> | Record<string, never> {
+  // HTML tag method: set GOOGLE_SITE_VERIFICATION in Vercel to the content= value from Search Console.
+  const token =
+    process.env.GOOGLE_SITE_VERIFICATION?.trim() ?? "google67e218557784b354";
+
+  return {
+    verification: {
+      other: {
+        "google-site-verification": token,
+      },
+    },
   };
 }
 
