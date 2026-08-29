@@ -79,9 +79,7 @@ function getGoogleSiteVerificationMetadata(): Pick<Metadata, "verification"> | R
 
   return {
     verification: {
-      other: {
-        "google-site-verification": token,
-      },
+      google: token,
     },
   };
 }

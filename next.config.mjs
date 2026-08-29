@@ -23,10 +23,6 @@ const nextConfig = {
         source: "/google67e218557784b354.html",
         headers: [
           {
-            key: "Content-Type",
-            value: "text/plain; charset=utf-8",
-          },
-          {
             key: "Cache-Control",
             value: "public, max-age=0, must-revalidate",
           },
