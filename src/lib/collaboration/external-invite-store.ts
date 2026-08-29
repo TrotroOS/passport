@@ -1,5 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { CollaboratorRole, CollaboratorStatus, ShipmentCollaborator } from "@/types/database";
+import type {
+  CollaboratorParticipantType,
+  CollaboratorRole,
+  CollaboratorStatus,
+  ShipmentCollaborator,
+} from "@/types/database";
 
 const ENTITY_TYPE = "external_collaborator_invite";
 const ACTION = "collaborator.external_invited";
@@ -10,6 +15,7 @@ export interface StoredExternalInvite {
   organization_id: string;
   invitee_email: string;
   role: CollaboratorRole;
+  participant_type: CollaboratorParticipantType;
   status: CollaboratorStatus;
   invited_by: string | null;
   invited_at: string;
@@ -37,6 +43,9 @@ function fromAuditRow(row: AuditInviteRow): StoredExternalInvite | null {
     organization_id: row.organization_id,
     invitee_email: email.toLowerCase(),
     role: (metadata.role as CollaboratorRole) ?? "viewer",
+    participant_type:
+      (metadata.participant_type as CollaboratorParticipantType) ??
+      "collaborator",
     status: (metadata.status as CollaboratorStatus) ?? "pending",
     invited_by: typeof metadata.invited_by === "string" ? metadata.invited_by : row.user_id,
     invited_at:
@@ -75,6 +84,7 @@ export function toShipmentCollaborator(invite: StoredExternalInvite): ShipmentCo
     user_id: null,
     invitee_email: invite.invitee_email,
     role: invite.role,
+    participant_type: invite.participant_type,
     status: invite.status,
     invited_by: invite.invited_by,
     invited_at: invite.invited_at,
@@ -95,6 +105,7 @@ export async function createExternalInvite(
     invitedBy: string;
     email: string;
     role: CollaboratorRole;
+    participantType?: CollaboratorParticipantType;
   }
 ): Promise<StoredExternalInvite> {
   const id = crypto.randomUUID();
@@ -111,6 +122,7 @@ export async function createExternalInvite(
     metadata: {
       invitee_email: email,
       role: params.role,
+      participant_type: params.participantType ?? "collaborator",
       status: "pending",
       invited_at: invitedAt,
       invited_by: params.invitedBy,
@@ -127,6 +139,7 @@ export async function createExternalInvite(
     organization_id: params.organizationId,
     invitee_email: email,
     role: params.role,
+    participant_type: params.participantType ?? "collaborator",
     status: "pending",
     invited_by: params.invitedBy,
     invited_at: invitedAt,
@@ -199,6 +212,7 @@ export async function updateExternalInviteStatus(
   const metadata = {
     invitee_email: existing.invitee_email,
     role: existing.role,
+    participant_type: existing.participant_type,
     status,
     invited_at: existing.invited_at,
     invited_by: existing.invited_by,

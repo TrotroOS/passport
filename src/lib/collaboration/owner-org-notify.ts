@@ -1,6 +1,15 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { formatNotificationMessage } from "@/lib/i18n/messages";
 import { resolveEmailAppUrl } from "@/lib/app-url";
+import {
+  emailSubjectHeading,
+  TRANSACTIONAL_EMAIL_FOOTER,
+  TRANSACTIONAL_EMAIL_SIGNOFF,
+} from "@/lib/notifications/email-copy";
+import {
+  buildTransactionalEmailHtml,
+  paragraphsToEmailHtml,
+} from "@/lib/notifications/invite-email-html";
 import { sendEmail } from "@/lib/notifications/email";
 
 export interface OwnerOrgRecipient {
@@ -26,6 +35,26 @@ export async function listOwnerOrgEmailRecipients(
   );
 }
 
+function buildOwnerNotificationHtml(
+  subject: string,
+  body: string,
+  link: string,
+  linkLabel: string
+): string {
+  const paragraphs = body
+    .split("\n\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith("—"));
+
+  return buildTransactionalEmailHtml({
+    heading: emailSubjectHeading(subject),
+    bodyHtml: paragraphsToEmailHtml(paragraphs),
+    link,
+    linkLabel,
+    footer: TRANSACTIONAL_EMAIL_FOOTER,
+  });
+}
+
 export async function notifyOwnerOrgMembers(
   admin: SupabaseClient,
   params: {
@@ -36,6 +65,7 @@ export async function notifyOwnerOrgMembers(
     subjectKey: "invitationViewedSubject" | "collaborationCommentSubject";
     bodyKey: "invitationViewedBody" | "collaborationCommentBody";
     bodyParams: Record<string, string>;
+    linkLabel?: string;
   }
 ): Promise<number> {
   const recipients = await listOwnerOrgEmailRecipients(
@@ -47,6 +77,7 @@ export async function notifyOwnerOrgMembers(
   if (recipients.length === 0) return 0;
 
   const link = `${resolveEmailAppUrl()}/shipments/${params.shipmentId}`;
+  const linkLabel = params.linkLabel ?? "View shipment";
   let sent = 0;
 
   for (const recipient of recipients) {
@@ -61,10 +92,13 @@ export async function notifyOwnerOrgMembers(
       ...params.bodyParams,
     });
 
+    const html = buildOwnerNotificationHtml(subject, body, link, linkLabel);
+
     const ok = await sendEmail({
       to: recipient.email,
       subject,
       text: body,
+      html,
       category: "email_alerts",
       userId: recipient.id,
     });
@@ -73,3 +107,5 @@ export async function notifyOwnerOrgMembers(
 
   return sent;
 }
+
+export { TRANSACTIONAL_EMAIL_SIGNOFF };

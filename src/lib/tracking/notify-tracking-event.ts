@@ -3,6 +3,14 @@ import {
   translateEventType,
 } from "@/lib/i18n/messages";
 import { resolveEmailAppUrl } from "@/lib/app-url";
+import {
+  emailSubjectHeading,
+  TRANSACTIONAL_EMAIL_FOOTER,
+} from "@/lib/notifications/email-copy";
+import {
+  buildTransactionalEmailHtml,
+  paragraphsToEmailHtml,
+} from "@/lib/notifications/invite-email-html";
 import { sendEmail } from "@/lib/notifications/email";
 
 export interface TrackingNotificationPayload {
@@ -36,10 +44,24 @@ export async function sendTrackingEventNotification(
     link,
   });
 
+  const paragraphs = body
+    .split("\n\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith("—"));
+
+  const html = buildTransactionalEmailHtml({
+    heading: emailSubjectHeading(subject),
+    bodyHtml: paragraphsToEmailHtml(paragraphs),
+    link,
+    linkLabel: "View shipment",
+    footer: TRANSACTIONAL_EMAIL_FOOTER,
+  });
+
   await sendEmail({
     to: payload.recipientEmail,
     subject,
     text: body,
+    html,
     category: "tracking_updates",
     userId: payload.userId,
   });

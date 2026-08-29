@@ -43,6 +43,29 @@ export const SUPPORTED_IMPORT_CORRIDORS = [
   { code: "KE", label: "Kenya" },
 ] as const;
 
+export type SupportedCorridorCode = (typeof SUPPORTED_IMPORT_CORRIDORS)[number]["code"];
+
+export const SUPPORTED_DESTINATION_OPTIONS = SUPPORTED_IMPORT_CORRIDORS.map((corridor) => ({
+  value: corridor.label,
+  label: `${corridor.label} (${corridor.code})`,
+  code: corridor.code,
+}));
+
+/** Canonical display label for a supported destination, or null if unsupported. */
+export function normalizeDestinationCountry(
+  destination: string | null | undefined
+): string | null {
+  const code = resolveDestinationJurisdiction(destination);
+  if (!code) return null;
+  return SUPPORTED_IMPORT_CORRIDORS.find((corridor) => corridor.code === code)?.label ?? null;
+}
+
+export function isPlaceholderDestination(destination: string | null | undefined): boolean {
+  if (!destination?.trim()) return true;
+  const normalized = destination.trim().toLowerCase();
+  return ["test", "testing", "demo", "sample", "tbd", "n/a", "na", "none"].includes(normalized);
+}
+
 export function supportedCorridorLabels(): string {
   return SUPPORTED_IMPORT_CORRIDORS.map((c) => c.label).join(", ");
 }

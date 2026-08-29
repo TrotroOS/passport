@@ -81,6 +81,18 @@
       "conference": "Conference or event",
       "colleague": "Colleague or word of mouth",
       "other": "Other"
+    },
+    "oauthOrContinueWith": "Or continue with",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "oauthTermsRequired": "Accept the terms above to use Google or Apple sign-up.",
+    "oauthErrors": {
+      "denied": "Sign-in was cancelled. Please try again.",
+      "exchange": "We could not complete sign-in. Please try again.",
+      "profile": "We could not finish setting up your account. Please contact support.",
+      "terms": "Please accept the terms before continuing with Google or Apple.",
+      "start": "Could not start social sign-in. Confirm Google and Apple are enabled in Supabase.",
+      "generic": "Social sign-in failed. Please try again or use email and password."
     }
   },
   "dashboard": {
@@ -115,7 +127,21 @@
     "collaboratingAs": "Vous collaborez sur cet envoi en tant que",
     "share": "Partager",
     "incoterm": "Incoterm",
-    "createdAt": "Créé"
+    "createdAt": "Créé",
+    "route": {
+      "title": "Edit trade route",
+      "editRoute": "Edit route",
+      "originLabel": "Origin country",
+      "destinationLabel": "Import corridor",
+      "originPlaceholder": "China, United States, UAE…",
+      "destinationPlaceholder": "Select corridor",
+      "destinationRequired": "Select a supported import corridor",
+      "saveRoute": "Save route",
+      "saving": "Saving…",
+      "saved": "Trade route updated",
+      "saveFailed": "Could not update trade route",
+      "cancel": "Cancel"
+    }
   },
   "score": {
     "title": "Score Passport",
@@ -207,7 +233,8 @@
     "notApplicable": "Non applicable",
     "descriptionSupported": "Applicable {corridor} import regulations and pass/fail status",
     "unsupportedCorridor": "Destination “{destination}” is outside supported import corridors ({corridors}). Verification and documents still apply; regulatory rule packs are not available for this route yet.",
-    "unknownDestination": "Not set"
+    "unknownDestination": "Not set",
+    "fixCorridorPrompt": "Set the import corridor to enable regulatory checks:"
   },
   "tasks": {
     "title": "Tâches de workflow",
@@ -547,7 +574,17 @@
     "inviteSentExternal": "Invitation email sent — they can create a Passport account to join",
     "inviteCreated": "Invitation created",
     "inviteEmailFailed": "Email could not be delivered. Copy the invite link and send it manually.",
-    "inviteEmailNotConfigured": "Email is not configured. Copy the invite link and send it to your collaborator."
+    "inviteEmailNotConfigured": "Email is not configured. Copy the invite link and send it to your collaborator.",
+    "inviteMultiHint": "Add one or more email addresses — each person gets their own invitation.",
+    "inviteEmailsLabel": "Email addresses",
+    "inviteEmailsPlaceholder": "broker@example.com\nforwarder@example.com",
+    "inviteParticipantTypeLabel": "Participant type",
+    "participantCustomsBroker": "Customs broker",
+    "participantFreightForwarder": "Freight forwarder",
+    "participantCollaborator": "Other collaborator",
+    "sendInvitations": "Send invitations",
+    "batchInviteSuccess": "{count, plural, one {# invitation sent} other {# invitations sent}}",
+    "batchInvitePartialFailure": "{count, plural, one {# invitation failed} other {# invitations failed}}"
   },
   "legal": {
     "hubTitle": "Legal",

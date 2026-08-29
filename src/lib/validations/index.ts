@@ -1,5 +1,9 @@
 import { z } from "zod";
 import { isValidApiScope } from "@/lib/api/api-key-scopes";
+import {
+  isSupportedImportDestination,
+  normalizeDestinationCountry,
+} from "@/lib/regulatory/jurisdiction";
 import { sanitizeUserText } from "@/lib/security/sanitize-text";
 import {
   ALLOWED_MIME_TYPES,
@@ -51,16 +55,25 @@ export const signupServerSchema = signupSchema.refine(
   }
 );
 
+const supportedDestinationSchema = z
+  .string()
+  .min(1, "Destination corridor is required")
+  .max(100)
+  .refine((value) => isSupportedImportDestination(value), {
+    message: "Choose a supported import corridor: Ghana, Nigeria, or Kenya",
+  })
+  .transform((value) => normalizeDestinationCountry(value) ?? value.trim());
+
 export const createShipmentSchema = z.object({
   shipment_ref: z.string().min(1, "Reference is required").max(50),
   origin_country: z.string().max(100).optional().nullable(),
-  destination_country: z.string().max(100).optional().nullable(),
+  destination_country: supportedDestinationSchema,
 });
 
 export const updateShipmentSchema = z.object({
   shipment_ref: z.string().min(1).max(50).optional(),
   origin_country: z.string().max(100).optional().nullable(),
-  destination_country: z.string().max(100).optional().nullable(),
+  destination_country: supportedDestinationSchema.optional(),
   status: z.enum(SHIPMENT_STATUSES).optional(),
 });
 
@@ -191,9 +204,22 @@ export const updateDocumentAbbreviationSchema = z.object({
   is_active: z.boolean().optional(),
 });
 
+export const collaboratorParticipantTypes = [
+  "customs_broker",
+  "freight_forwarder",
+  "collaborator",
+] as const;
+
 export const inviteCollaboratorSchema = z.object({
   email: z.string().email("Valid email required"),
   role: z.enum(["viewer", "commenter", "editor"]).default("viewer"),
+  participant_type: z
+    .enum(collaboratorParticipantTypes)
+    .default("collaborator"),
+});
+
+export const inviteCollaboratorsBatchSchema = z.object({
+  invites: z.array(inviteCollaboratorSchema).min(1).max(20),
 });
 
 export const createShipmentCommentSchema = z.object({

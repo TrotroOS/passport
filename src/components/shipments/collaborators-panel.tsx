@@ -15,6 +15,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ShareCollaboratorDialog } from "@/components/shipments/share-collaborator-dialog";
+import type { CollaboratorParticipantType } from "@/types/database";
 
 interface CollaboratorsPanelProps {
   shipmentId: string;
@@ -85,13 +87,27 @@ export function CollaboratorsPanel({
     router.refresh();
   }
 
+  function participantLabel(type: CollaboratorParticipantType | undefined) {
+    switch (type ?? "collaborator") {
+      case "customs_broker":
+        return t("participantCustomsBroker");
+      case "freight_forwarder":
+        return t("participantFreightForwarder");
+      default:
+        return t("participantCollaborator");
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">{t("title")}</CardTitle>
         <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        {canManage ? (
+          <ShareCollaboratorDialog shipmentId={shipmentId} inline />
+        ) : null}
         {collaborators.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t("noCollaborators")}</p>
         ) : (
@@ -118,6 +134,9 @@ export function CollaboratorsPanel({
                         : t("externalOrg"))}
                   </p>
                   <div className="mt-2 flex flex-wrap gap-2">
+                    <Badge variant="secondary">
+                      {participantLabel(collaborator.participant_type)}
+                    </Badge>
                     <Badge variant="outline">
                       {localizedStatus(collaborator.role)}
                     </Badge>

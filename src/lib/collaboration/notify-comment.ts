@@ -25,6 +25,7 @@ export async function notifyCollaborationComment(
       excludeUserId: params.commenterUserId,
       subjectKey: "collaborationCommentSubject",
       bodyKey: "collaborationCommentBody",
+      linkLabel: "View conversation",
       bodyParams: {
         commenter: params.commenterName,
         comment: preview,

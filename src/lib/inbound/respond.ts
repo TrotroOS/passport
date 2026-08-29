@@ -1,5 +1,13 @@
 import { getInboundConfig } from "@/lib/inbound/config";
 import { resolveEmailAppUrl } from "@/lib/app-url";
+import {
+  emailSubjectHeading,
+  TRANSACTIONAL_EMAIL_FOOTER,
+} from "@/lib/notifications/email-copy";
+import {
+  buildTransactionalEmailHtml,
+  paragraphsToEmailHtml,
+} from "@/lib/notifications/invite-email-html";
 
 export interface InboundResponsePayload {
   channel: "email" | "whatsapp";
@@ -32,8 +40,9 @@ async function sendEmailResponse(payload: InboundResponsePayload): Promise<void>
     `Passport <noreply@${getInboundConfig().inboundEmailDomain}>`;
 
   const link = dashboardUrl(payload.shipmentId);
-  const subject = `Passport: Documents received for ${payload.shipmentRef}`;
+  const subject = `Passport — Documents received for ${payload.shipmentRef}`;
   const body = buildEmailBody(payload, link);
+  const html = buildInboundEmailHtml(subject, body, link);
 
   if (!apiKey) {
     console.info("[Inbound] Email response skipped (SENDGRID_API_KEY not set)", {
@@ -55,7 +64,7 @@ async function sendEmailResponse(payload: InboundResponsePayload): Promise<void>
       subject,
       content: [
         { type: "text/plain", value: body },
-        { type: "text/html", value: body.replace(/\n/g, "<br>") },
+        { type: "text/html", value: html },
       ],
     }),
   });
@@ -121,15 +130,19 @@ export async function sendUnknownSenderReply(
     const from =
       process.env.INBOUND_EMAIL_FROM ??
       `Passport <noreply@${getInboundConfig().inboundEmailDomain}>`;
-    const subject = "Passport: Account not found";
+    const subject = "Passport — Account not found";
     const body = [
       "Hello,",
       "",
-      "We received your email but could not match it to a Passport account.",
-      `Please sign up at ${signupUrl}/signup and forward documents from your registered email address.`,
+      "We received your email but could not match the sender address to a Passport account.",
+      "",
+      `To submit trade documents by email, please register at ${signupUrl}/signup and forward messages from your registered email address.`,
+      "",
+      "If you believe this is an error, please contact your organization administrator.",
       "",
       "— Passport Trade Compliance",
     ].join("\n");
+    const html = buildInboundEmailHtml(subject, body);
 
     if (!apiKey) {
       console.info("[Inbound] Unknown sender email skipped (SENDGRID_API_KEY not set)");
@@ -146,7 +159,10 @@ export async function sendUnknownSenderReply(
         personalizations: [{ to: [{ email: recipient }] }],
         from: { email: parseFromEmail(from), name: parseFromName(from) },
         subject,
-        content: [{ type: "text/plain", value: body }],
+        content: [
+          { type: "text/plain", value: body },
+          { type: "text/html", value: html },
+        ],
       }),
     });
     return;
@@ -183,23 +199,33 @@ function buildEmailBody(payload: InboundResponsePayload, link: string): string {
     return payload.processingNote;
   }
 
-  const lines = [
+  const paragraphs = [
     "Hello,",
-    "",
-    `We received ${payload.documentCount} document(s) for shipment ${payload.shipmentRef}.`,
+    `We have received ${payload.documentCount} document(s) for shipment ${payload.shipmentRef}.`,
     payload.shipmentCreated
-      ? "A new draft shipment was created because no matching reference was found."
-      : "",
-    "Your documents are being processed.",
-    "",
-    `View in Passport: ${link}`,
-    "",
-    payload.processingNote ?? "",
-    "",
-    "— Passport Trade Compliance",
-  ].filter(Boolean);
+      ? "A new draft shipment was created because no matching reference was found in your account."
+      : null,
+    "Your documents are now queued for processing. We will notify you when extraction and verification are complete.",
+    `View shipment details: ${link}`,
+    payload.processingNote?.trim() || null,
+  ].filter(Boolean) as string[];
 
-  return lines.join("\n");
+  return `${paragraphs.join("\n\n")}\n\n— Passport Trade Compliance`;
+}
+
+function buildInboundEmailHtml(subject: string, body: string, link?: string): string {
+  const paragraphs = body
+    .split("\n\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0 && !line.startsWith("—"));
+
+  return buildTransactionalEmailHtml({
+    heading: emailSubjectHeading(subject),
+    bodyHtml: paragraphsToEmailHtml(paragraphs),
+    link,
+    linkLabel: link ? "View shipment" : undefined,
+    footer: TRANSACTIONAL_EMAIL_FOOTER,
+  });
 }
 
 function buildWhatsAppBody(payload: InboundResponsePayload, link: string): string {

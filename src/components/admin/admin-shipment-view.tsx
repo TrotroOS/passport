@@ -164,6 +164,7 @@ export function AdminShipmentView({ shipmentId, detail }: AdminShipmentViewProps
             shipmentId={shipmentId}
             checks={detail.regulatoryChecks}
             destinationCountry={shipment.destination_country}
+            originCountry={shipment.origin_country}
             readOnly
           />
         </div>

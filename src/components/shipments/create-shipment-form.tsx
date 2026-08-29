@@ -27,6 +27,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { CorridorCountrySelect } from "@/components/shipments/corridor-country-select";
 
 const initialState: ActionResult = { success: false };
 
@@ -62,7 +63,8 @@ export function CreateShipmentForm() {
       <CardHeader>
         <CardTitle>New Shipment</CardTitle>
         <CardDescription>
-          Enter basic shipment details to get started
+          Enter shipment details. Destination must be a supported import corridor
+          (Ghana, Nigeria, or Kenya) for regulatory checks.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -89,7 +91,11 @@ export function CreateShipmentForm() {
                   <FormItem>
                     <FormLabel>Origin country</FormLabel>
                     <FormControl>
-                      <Input placeholder="United States" {...field} value={field.value ?? ""} />
+                      <Input
+                        placeholder="China, United States, UAE…"
+                        {...field}
+                        value={field.value ?? ""}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -100,9 +106,15 @@ export function CreateShipmentForm() {
                 name="destination_country"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Destination country</FormLabel>
+                    <FormLabel>Import corridor (destination)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Germany" {...field} value={field.value ?? ""} />
+                      <>
+                        <CorridorCountrySelect
+                          value={field.value ?? ""}
+                          onChange={field.onChange}
+                        />
+                        <input type="hidden" name="destination_country" value={field.value ?? ""} />
+                      </>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

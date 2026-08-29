@@ -22,6 +22,7 @@ import {
   insertShipmentForUser,
   ORG_NOT_FOUND_MESSAGE,
 } from "@/lib/auth/get-organization-id";
+import { getAuthCallbackUrl, resolvePostAuthPath } from "@/lib/auth/auth-redirect";
 import {
   formatShipmentInsertError,
   isDuplicateShipmentRefError,
@@ -43,6 +44,7 @@ import {
 export type ActionResult = {
   success: boolean;
   error?: string;
+  redirectTo?: string;
 };
 
 function resolvePostAuthRedirect(formData: FormData): string {
@@ -50,7 +52,7 @@ function resolvePostAuthRedirect(formData: FormData): string {
   if (typeof next === "string" && isSafeRedirectPath(next)) {
     return next;
   }
-  return "/dashboard";
+  return resolvePostAuthPath(null);
 }
 
 export async function loginAction(
@@ -117,7 +119,13 @@ export async function loginAction(
     await linkPendingInvitationsForUser(userId, parsed.data.email);
   }
 
-  redirect(resolvePostAuthRedirect(formData));
+  revalidatePath("/", "layout");
+  revalidatePath("/dashboard");
+
+  return {
+    success: true,
+    redirectTo: resolvePostAuthRedirect(formData),
+  };
 }
 
 export async function signupAction(
@@ -186,9 +194,15 @@ export async function signupAction(
 
     userId = created.user.id;
   } else {
+    const nextField = formData.get("next");
+    const nextPath = typeof nextField === "string" ? nextField : null;
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: getAuthCallbackUrl(nextPath),
+        data: { full_name: fullName },
+      },
     });
 
     if (authError) {
@@ -294,7 +308,13 @@ export async function signupAction(
 
   await linkPendingInvitationsForUser(userId, email);
 
-  redirect(resolvePostAuthRedirect(formData));
+  revalidatePath("/", "layout");
+  revalidatePath("/dashboard");
+
+  return {
+    success: true,
+    redirectTo: resolvePostAuthRedirect(formData),
+  };
 }
 
 export async function logoutAction() {

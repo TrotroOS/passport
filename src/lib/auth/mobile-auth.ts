@@ -7,6 +7,7 @@ import {
   findAuthUserByEmail,
   shouldAutoConfirmEmail,
 } from "@/lib/auth/admin-auth";
+import { getAuthCallbackUrl } from "@/lib/auth/auth-redirect";
 import {
   organizationNameFromEmail,
   uniqueSlug,
@@ -134,6 +135,10 @@ export async function mobileSignup(
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: getAuthCallbackUrl(),
+        data: { full_name: fullName },
+      },
     });
 
     if (authError) {

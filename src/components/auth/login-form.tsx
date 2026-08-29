@@ -3,12 +3,13 @@
 import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { LegalFooter } from "@/components/legal/legal-footer";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { PassportLogo } from "@/components/brand/passport-logo";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { loginAction, type ActionResult } from "@/lib/actions/auth";
@@ -45,10 +46,12 @@ function SubmitButton() {
 }
 
 export function LoginForm() {
+  const router = useRouter();
   const [state, formAction] = useActionState(loginAction, initialState);
   const t = useTranslations("auth");
   const searchParams = useSearchParams();
   const next = searchParams.get("next");
+  const oauthError = searchParams.get("error");
   const signupHref = next
     ? `/signup?next=${encodeURIComponent(next)}`
     : "/signup";
@@ -64,6 +67,26 @@ export function LoginForm() {
     }
   }, [state]);
 
+  useEffect(() => {
+    if (state.success && state.redirectTo) {
+      router.replace(state.redirectTo);
+      router.refresh();
+    }
+  }, [state.success, state.redirectTo, router]);
+
+  useEffect(() => {
+    if (!oauthError) return;
+    const message = searchParams.get("message");
+    const errors: Record<string, string> = {
+      oauth_denied: t("oauthErrors.denied"),
+      oauth_exchange: t("oauthErrors.exchange"),
+      oauth_profile: message ?? t("oauthErrors.profile"),
+      oauth_terms: t("oauthErrors.terms"),
+      oauth_start: t("oauthErrors.start"),
+    };
+    toast.error(errors[oauthError] ?? t("oauthErrors.generic"));
+  }, [oauthError, searchParams, t]);
+
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4 py-8">
       <div className="absolute end-4 top-4">
@@ -77,7 +100,8 @@ export function LoginForm() {
           <CardTitle>{t("welcomeBack")}</CardTitle>
           <CardDescription>{t("signInDescription")}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <OAuthButtons next={next} intent="login" />
           <Form {...form}>
             <form action={formAction} className="space-y-4">
               {next ? <input type="hidden" name="next" value={next} /> : null}

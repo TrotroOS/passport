@@ -31,6 +31,8 @@ const SECRET_VARS = ["SENDGRID_API_KEY", "UPSTASH_REDIS_REST_TOKEN"];
 const CONFIG_VARS = [
   "INBOUND_EMAIL_FROM",
   "NEXT_PUBLIC_APP_URL",
+  "NEXT_PUBLIC_SUPABASE_URL",
+  "NEXT_PUBLIC_SUPABASE_ANON_KEY",
   "UPSTASH_REDIS_REST_URL",
 ];
 
@@ -75,8 +77,14 @@ for (const name of SECRET_VARS) {
   upsert(name, env[name], { secret: true });
 }
 for (const name of CONFIG_VARS) {
-  const value =
-    name === "NEXT_PUBLIC_APP_URL" ? PRODUCTION_URL : env[name];
+  let value = env[name];
+  if (name === "NEXT_PUBLIC_APP_URL") {
+    value = PRODUCTION_URL;
+  } else if (name === "NEXT_PUBLIC_SUPABASE_URL") {
+    value = env.NEXT_PUBLIC_SUPABASE_URL ?? env.SUPABASE_URL;
+  } else if (name === "NEXT_PUBLIC_SUPABASE_ANON_KEY") {
+    value = env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? env.SUPABASE_ANON_KEY;
+  }
   upsert(name, value, { secret: false });
 }
 

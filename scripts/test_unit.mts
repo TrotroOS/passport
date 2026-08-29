@@ -206,6 +206,33 @@ test("extractIncotermFromData reads invoice field", () => {
   assert.equal(extractIncotermFromData({ incoterm: "CIF" }), "CIF");
 });
 
+console.log("\nImport corridor jurisdiction");
+import {
+  isPlaceholderDestination,
+  isSupportedImportDestination,
+  normalizeDestinationCountry,
+  resolveDestinationJurisdiction,
+} from "../src/lib/regulatory/jurisdiction.ts";
+
+test("resolveDestinationJurisdiction accepts corridor labels and codes", () => {
+  assert.equal(resolveDestinationJurisdiction("Ghana"), "GH");
+  assert.equal(resolveDestinationJurisdiction("gh"), "GH");
+  assert.equal(resolveDestinationJurisdiction("Nigeria"), "NG");
+  assert.equal(resolveDestinationJurisdiction("KE"), "KE");
+  assert.equal(resolveDestinationJurisdiction("kenya"), "KE");
+});
+
+test("unsupported destinations are rejected", () => {
+  assert.equal(resolveDestinationJurisdiction("Test"), null);
+  assert.equal(isSupportedImportDestination("Test"), false);
+  assert.equal(isPlaceholderDestination("Test"), true);
+});
+
+test("normalizeDestinationCountry stores canonical labels", () => {
+  assert.equal(normalizeDestinationCountry("GH"), "Ghana");
+  assert.equal(normalizeDestinationCountry("nigeria"), "Nigeria");
+});
+
 console.log("\nShipment collaboration permissions");
 import { hasPermission } from "../src/lib/shipments/shipment-access.ts";
 
@@ -450,6 +477,41 @@ test("resolveEmailAppUrl ignores localhost browser origin", () => {
   else process.env.NEXT_PUBLIC_APP_URL = prevUrl;
   if (prevEmail === undefined) delete process.env.EMAIL_PUBLIC_APP_URL;
   else process.env.EMAIL_PUBLIC_APP_URL = prevEmail;
+});
+
+console.log("\nAuth redirect helpers");
+import {
+  getAuthCallbackUrl,
+  resolvePostAuthPath,
+} from "../src/lib/auth/auth-redirect.ts";
+
+test("getAuthCallbackUrl uses production app URL", () => {
+  const prevUrl = process.env.NEXT_PUBLIC_APP_URL;
+  process.env.NEXT_PUBLIC_APP_URL = "https://passport-one-kappa.vercel.app";
+  assert.equal(
+    getAuthCallbackUrl(),
+    "https://passport-one-kappa.vercel.app/auth/callback?next=%2Fdashboard"
+  );
+  if (prevUrl === undefined) delete process.env.NEXT_PUBLIC_APP_URL;
+  else process.env.NEXT_PUBLIC_APP_URL = prevUrl;
+});
+test("getAuthCallbackUrl rejects unsafe next paths", () => {
+  const prevUrl = process.env.NEXT_PUBLIC_APP_URL;
+  process.env.NEXT_PUBLIC_APP_URL = "https://passport-one-kappa.vercel.app";
+  assert.equal(
+    getAuthCallbackUrl("//evil.com"),
+    "https://passport-one-kappa.vercel.app/auth/callback?next=%2Fdashboard"
+  );
+  assert.equal(
+    getAuthCallbackUrl("/shipments/abc-123"),
+    "https://passport-one-kappa.vercel.app/auth/callback?next=%2Fshipments%2Fabc-123"
+  );
+  if (prevUrl === undefined) delete process.env.NEXT_PUBLIC_APP_URL;
+  else process.env.NEXT_PUBLIC_APP_URL = prevUrl;
+});
+test("resolvePostAuthPath defaults to dashboard", () => {
+  assert.equal(resolvePostAuthPath(null), "/dashboard");
+  assert.equal(resolvePostAuthPath("/dashboard"), "/dashboard");
 });
 
 console.log("\nAll unit tests passed.");

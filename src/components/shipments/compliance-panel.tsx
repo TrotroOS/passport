@@ -19,6 +19,7 @@ import {
 import { isSafeHttpUrl } from "@/lib/security/sanitize-text";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { EditShipmentRouteForm } from "@/components/shipments/edit-shipment-route-form";
 import {
   Card,
   CardContent,
@@ -31,6 +32,7 @@ interface CompliancePanelProps {
   shipmentId: string;
   checks: RegulatoryCheckWithRegulation[];
   destinationCountry?: string | null;
+  originCountry?: string | null;
   readOnly?: boolean;
 }
 
@@ -62,6 +64,7 @@ export function CompliancePanel({
   shipmentId,
   checks,
   destinationCountry = null,
+  originCountry = null,
   readOnly = false,
 }: CompliancePanelProps) {
   const t = useTranslations("compliance");
@@ -105,7 +108,7 @@ export function CompliancePanel({
               variant="outline"
               size="sm"
               onClick={runRegulatory}
-              disabled={isRunning}
+              disabled={isRunning || !corridor.supported}
               className="w-full shrink-0 sm:w-auto"
             >
               {isRunning ? (
@@ -132,12 +135,25 @@ export function CompliancePanel({
       </CardHeader>
       <CardContent>
         {!corridor.supported ? (
-          <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
-            {t("unsupportedCorridor", {
-              destination: corridor.destination ?? t("unknownDestination"),
-              corridors,
-            })}
-          </p>
+          <div className="space-y-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-amber-950">
+            <p>
+              {t("unsupportedCorridor", {
+                destination: corridor.destination ?? t("unknownDestination"),
+                corridors,
+              })}
+            </p>
+            {!readOnly ? (
+              <div>
+                <p className="mb-2 font-medium">{t("fixCorridorPrompt")}</p>
+                <EditShipmentRouteForm
+                  shipmentId={shipmentId}
+                  originCountry={originCountry}
+                  destinationCountry={destinationCountry}
+                  compact
+                />
+              </div>
+            ) : null}
+          </div>
         ) : checks.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             {t("noChecksYet", { corridor: corridor.label ?? corridors })}

@@ -1,4 +1,5 @@
 import type { Document, Shipment } from "@/types/database";
+import { resolveDestinationJurisdiction } from "@/lib/regulatory/jurisdiction";
 
 export type ChecklistItemStatus = "complete" | "missing" | "optional";
 
@@ -44,11 +45,7 @@ const CORRIDOR_EXTRAS: Record<string, string[]> = {
 
 function destCode(country: string | null): string {
   if (!country) return "DEFAULT";
-  const upper = country.trim().toUpperCase();
-  if (upper.includes("GHANA") || upper === "GH") return "GH";
-  if (upper.includes("NIGERIA") || upper === "NG") return "NG";
-  if (upper.includes("KENYA") || upper === "KE") return "KE";
-  return upper.slice(0, 2) || "DEFAULT";
+  return resolveDestinationJurisdiction(country) ?? "DEFAULT";
 }
 
 function originCode(country: string | null): string {

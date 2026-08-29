@@ -61,11 +61,11 @@ export function TradeGraphVisual({ graph }: TradeGraphVisualProps) {
 
     const centerId = `shipment:${String((graph.shipment as { id?: string }).id ?? "")}`;
     const others = Array.from(nodeIds).filter((id) => id !== centerId);
-    const width = 520;
-    const height = 360;
+    const width = 400;
+    const height = 240;
     const cx = width / 2;
     const cy = height / 2;
-    const radius = Math.min(width, height) * 0.38;
+    const radius = Math.min(width, height) * 0.34;
 
     const positions = new Map<string, { x: number; y: number }>();
     positions.set(centerId, { x: cx, y: cy });
@@ -84,10 +84,10 @@ export function TradeGraphVisual({ graph }: TradeGraphVisualProps) {
   const { positions, width, height, centerId } = layout;
 
   return (
-    <div className="app-contained-scroll rounded-md border bg-slate-50 p-2">
+    <div className="mx-auto max-w-sm rounded-md border bg-slate-50 p-2">
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="mx-auto h-auto w-full max-w-full"
+        className="mx-auto h-auto w-full"
         role="img"
         aria-label="Trade relationship graph"
       >
@@ -110,16 +110,16 @@ export function TradeGraphVisual({ graph }: TradeGraphVisualProps) {
         {Array.from(positions.entries()).map(([id, pos]) => {
           const type = nodeType(id);
           const isCenter = id === centerId;
-          const r = isCenter ? 22 : 14;
+          const r = isCenter ? 16 : 10;
           const fill = NODE_COLORS[type] ?? "#94a3b8";
           return (
             <g key={id}>
               <circle cx={pos.x} cy={pos.y} r={r} fill={fill} opacity={0.9} />
               <text
                 x={pos.x}
-                y={pos.y + r + 12}
+                y={pos.y + r + 10}
                 textAnchor="middle"
-                fontSize={isCenter ? 11 : 9}
+                fontSize={isCenter ? 10 : 8}
                 fill="#334155"
               >
                 {nodeLabel(id, graph)}
@@ -128,7 +128,7 @@ export function TradeGraphVisual({ graph }: TradeGraphVisualProps) {
           );
         })}
       </svg>
-      <div className="mt-2 flex flex-wrap justify-center gap-3 text-xs text-muted-foreground">
+      <div className="mt-1.5 flex flex-wrap justify-center gap-2 text-[10px] text-muted-foreground">
         {Object.entries(NODE_COLORS)
           .slice(0, 5)
           .map(([type, color]) => (

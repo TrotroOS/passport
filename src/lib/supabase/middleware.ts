@@ -57,12 +57,18 @@ async function runUpdateSession(
 
   const { pathname } = request.nextUrl;
   const isAuthRoute = pathname === "/login" || pathname === "/signup";
+  const isAuthCallback = pathname.startsWith("/auth/callback");
   const isApiRoute = pathname.startsWith("/api/");
   const isLegalRoute = pathname === "/legal" || pathname.startsWith("/legal/");
   const isHelpRoute = pathname === "/help" || pathname.startsWith("/help/");
   const isInvitationRoute = pathname.startsWith("/invitations");
   const isPublicRoute =
-    isAuthRoute || isLegalRoute || isHelpRoute || isInvitationRoute || pathname === "/";
+    isAuthRoute ||
+    isAuthCallback ||
+    isLegalRoute ||
+    isHelpRoute ||
+    isInvitationRoute ||
+    pathname === "/";
 
   if (!user && !isPublicRoute && !isApiRoute) {
     const url = request.nextUrl.clone();

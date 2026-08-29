@@ -75,6 +75,10 @@ export interface Shipment {
 
 export type CollaboratorRole = "viewer" | "commenter" | "editor";
 export type CollaboratorStatus = "pending" | "active" | "revoked" | "declined";
+export type CollaboratorParticipantType =
+  | "customs_broker"
+  | "freight_forwarder"
+  | "collaborator";
 
 export interface ShipmentCollaborator {
   id: string;
@@ -83,6 +87,7 @@ export interface ShipmentCollaborator {
   user_id: string | null;
   invitee_email: string | null;
   role: CollaboratorRole;
+  participant_type: CollaboratorParticipantType;
   status: CollaboratorStatus;
   invited_by: string | null;
   invited_at: string;

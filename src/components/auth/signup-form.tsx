@@ -1,9 +1,9 @@
 "use client";
 
-import { Suspense, useActionState, useEffect } from "react";
+import { Suspense, useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -13,6 +13,7 @@ import { PassportLogo } from "@/components/brand/passport-logo";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { signupAction, type ActionResult } from "@/lib/actions/auth";
 import { SignupAttributionFields } from "@/components/auth/signup-attribution-fields";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import { signupSchema, type SignupInput } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,22 +36,24 @@ import {
 
 const initialState: ActionResult = { success: false };
 
-function SubmitButton() {
+function SubmitButton({ disabled = false }: { disabled?: boolean }) {
   const { pending } = useFormStatus();
   const t = useTranslations("auth");
   return (
-    <Button type="submit" className="w-full" disabled={pending}>
+    <Button type="submit" className="w-full" disabled={pending || disabled}>
       {pending ? t("creatingAccount") : t("createAccount")}
     </Button>
   );
 }
 
 export function SignupForm() {
+  const router = useRouter();
   const [state, formAction] = useActionState(signupAction, initialState);
   const t = useTranslations("auth");
   const searchParams = useSearchParams();
   const next = searchParams.get("next");
   const loginHref = next ? `/login?next=${encodeURIComponent(next)}` : "/login";
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const form = useForm<SignupInput>({
     resolver: zodResolver(signupSchema),
@@ -67,6 +70,13 @@ export function SignupForm() {
     }
   }, [state]);
 
+  useEffect(() => {
+    if (state.success && state.redirectTo) {
+      router.replace(state.redirectTo);
+      router.refresh();
+    }
+  }, [state.success, state.redirectTo, router]);
+
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4 py-8">
       <div className="absolute end-4 top-4">
@@ -80,7 +90,43 @@ export function SignupForm() {
           <CardTitle>{t("createAccount")}</CardTitle>
           <CardDescription>{t("signupDescription")}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <label className="flex items-start gap-2 text-sm text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={termsAccepted}
+              onChange={(event) => setTermsAccepted(event.target.checked)}
+              className="mt-1 h-4 w-4 rounded border-input"
+            />
+            <span>
+              {t("acceptTermsPrefix")}{" "}
+              <Link
+                href="/legal/terms-of-service"
+                className="text-primary hover:underline"
+                target="_blank"
+              >
+                {t("termsOfService")}
+              </Link>
+              {", "}
+              <Link
+                href="/legal/privacy-policy"
+                className="text-primary hover:underline"
+                target="_blank"
+              >
+                {t("privacyPolicy")}
+              </Link>
+              {", "}
+              <Link
+                href="/legal/acceptable-use"
+                className="text-primary hover:underline"
+                target="_blank"
+              >
+                {t("acceptableUse")}
+              </Link>
+              .
+            </span>
+          </label>
+          <OAuthButtons next={next} intent="signup" acceptTerms={termsAccepted} />
           <Form {...form}>
             <form action={formAction} className="space-y-4">
               {next ? <input type="hidden" name="next" value={next} /> : null}
@@ -130,42 +176,8 @@ export function SignupForm() {
               <Suspense fallback={null}>
                 <SignupAttributionFields />
               </Suspense>
-              <label className="flex items-start gap-2 text-sm text-muted-foreground">
-                <input
-                  type="checkbox"
-                  name="acceptTerms"
-                  required
-                  className="mt-1 h-4 w-4 rounded border-input"
-                />
-                <span>
-                  {t("acceptTermsPrefix")}{" "}
-                  <Link
-                    href="/legal/terms-of-service"
-                    className="text-primary hover:underline"
-                    target="_blank"
-                  >
-                    {t("termsOfService")}
-                  </Link>
-                  {", "}
-                  <Link
-                    href="/legal/privacy-policy"
-                    className="text-primary hover:underline"
-                    target="_blank"
-                  >
-                    {t("privacyPolicy")}
-                  </Link>
-                  {", "}
-                  <Link
-                    href="/legal/acceptable-use"
-                    className="text-primary hover:underline"
-                    target="_blank"
-                  >
-                    {t("acceptableUse")}
-                  </Link>
-                  .
-                </span>
-              </label>
-              <SubmitButton />
+              <input type="hidden" name="acceptTerms" value={termsAccepted ? "on" : ""} />
+              <SubmitButton disabled={!termsAccepted} />
             </form>
           </Form>
         </CardContent>

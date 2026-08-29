@@ -22,6 +22,7 @@ import { PassportScoreCard } from "@/components/shipments/passport-score-card";
 import { DiscrepanciesPanel } from "@/components/shipments/discrepancies-panel";
 import { VerificationChecksPanel } from "@/components/shipments/verification-checks-panel";
 import { CompliancePanel } from "@/components/shipments/compliance-panel";
+import { EditShipmentRouteForm } from "@/components/shipments/edit-shipment-route-form";
 import { WorkflowTasksPanel } from "@/components/shipments/workflow-tasks-panel";
 import { RiskPanel } from "@/components/shipments/risk-panel";
 import { TradeGraphPanel } from "@/components/shipments/trade-graph-panel";
@@ -299,6 +300,13 @@ export default async function ShipmentDetailPage({
               <span className="text-sm text-muted-foreground">
                 {shipment.origin_country ?? "—"} → {shipment.destination_country ?? "—"}
               </span>
+              {isOwner ? (
+                <EditShipmentRouteForm
+                  shipmentId={id}
+                  originCountry={shipment.origin_country}
+                  destinationCountry={shipment.destination_country}
+                />
+              ) : null}
               {shipment.incoterm ? (
                 <span className="inline-flex items-center rounded-md bg-slate-200 px-2 py-0.5 text-xs font-semibold text-slate-800">
                   {t("incoterm")} {shipment.incoterm}
@@ -470,6 +478,7 @@ export default async function ShipmentDetailPage({
             <CompliancePanel
               shipmentId={id}
               destinationCountry={shipment.destination_country}
+              originCountry={shipment.origin_country}
               checks={(regulatoryChecks ?? []) as RegulatoryCheckWithRegulation[]}
               readOnly={!isOwner}
             />

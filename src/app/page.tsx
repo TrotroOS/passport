@@ -3,6 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { MarketingLanding } from "@/components/marketing/marketing-landing";
 import { createClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("marketing");
   return {

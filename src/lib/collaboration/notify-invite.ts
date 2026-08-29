@@ -1,8 +1,13 @@
 import { formatNotificationMessage } from "@/lib/i18n/messages";
 import { getInvitationUrl } from "@/lib/app-url";
 import {
+  emailSubjectHeading,
+  formatCollaboratorRoleForEmail,
+  TRANSACTIONAL_EMAIL_FOOTER,
+} from "@/lib/notifications/email-copy";
+import {
   buildInviteEmailBodyHtml,
-  buildInviteEmailHtml,
+  buildTransactionalEmailHtml,
 } from "@/lib/notifications/invite-email-html";
 import { sendEmail } from "@/lib/notifications/email";
 
@@ -22,6 +27,7 @@ export async function sendCollaborationInvite(
 ): Promise<boolean> {
   const locale = payload.locale ?? "en";
   const link = getInvitationUrl(payload.invitationId, payload.appOrigin);
+  const roleLabel = formatCollaboratorRoleForEmail(payload.role);
   const subject = formatNotificationMessage(locale, "collaborationInviteSubject", {
     shipmentRef: payload.shipmentRef,
   });
@@ -31,22 +37,21 @@ export async function sendCollaborationInvite(
   const body = formatNotificationMessage(locale, bodyKey, {
     shipmentRef: payload.shipmentRef,
     orgName: payload.ownerOrganizationName,
-    role: payload.role,
+    role: roleLabel,
     link,
   });
 
-  const html = buildInviteEmailHtml({
-    heading: subject.replace(/^Passport:\s*/i, ""),
+  const html = buildTransactionalEmailHtml({
+    heading: emailSubjectHeading(subject),
     bodyHtml: buildInviteEmailBodyHtml({
       shipmentRef: payload.shipmentRef,
       orgName: payload.ownerOrganizationName,
-      role: payload.role,
+      role: roleLabel,
       isExternal: Boolean(payload.isExternal),
     }),
     link,
-    linkLabel: payload.isExternal ? "Create account & accept" : "Review invitation",
-    footer:
-      "Passport provides assistive trade compliance tools — not legal or customs clearance advice.",
+    linkLabel: payload.isExternal ? "Accept invitation" : "Review invitation",
+    footer: TRANSACTIONAL_EMAIL_FOOTER,
   });
 
   return sendEmail({
