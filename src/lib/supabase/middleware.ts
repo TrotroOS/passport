@@ -62,12 +62,14 @@ async function runUpdateSession(
   const isLegalRoute = pathname === "/legal" || pathname.startsWith("/legal/");
   const isHelpRoute = pathname === "/help" || pathname.startsWith("/help/");
   const isInvitationRoute = pathname.startsWith("/invitations");
+  const isVerificationFile = pathname.endsWith(".html");
   const isPublicRoute =
     isAuthRoute ||
     isAuthCallback ||
     isLegalRoute ||
     isHelpRoute ||
     isInvitationRoute ||
+    isVerificationFile ||
     pathname === "/";
 
   if (!user && !isPublicRoute && !isApiRoute) {
