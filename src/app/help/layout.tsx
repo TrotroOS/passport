@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { PassportLogo } from "@/components/brand/passport-logo";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { LegalFooter } from "@/components/legal/legal-footer";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("help");
+
+  return buildPageMetadata({
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    path: "/help",
+  });
+}
 
 export default async function HelpLayout({
   children,

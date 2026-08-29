@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Inter, Cairo } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -6,6 +5,7 @@ import { Toaster } from "sonner";
 import { isRtlLocale, type Locale } from "@/i18n/config";
 import { AppProviders } from "@/components/providers/app-providers";
 import { KeyboardShortcutsProvider } from "@/components/layout/keyboard-shortcuts";
+import { buildRootMetadata } from "@/lib/seo/metadata";
 import "./globals.css";
 
 const inter = Inter({
@@ -18,11 +18,7 @@ const cairo = Cairo({
   variable: "--font-cairo",
 });
 
-export const metadata: Metadata = {
-  title: "Passport — Trade Compliance Platform",
-  description:
-    "Trade document verification, regulatory checks, shipment collaboration, and compliance reporting.",
-};
+export const metadata = buildRootMetadata();
 
 export default async function RootLayout({
   children,

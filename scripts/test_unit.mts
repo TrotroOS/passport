@@ -551,4 +551,27 @@ test("isMissingParticipantTypeError detects schema cache message", () => {
   );
 });
 
+console.log("\nSEO helpers");
+import { absoluteUrl, getPublicSitemapPaths } from "../src/lib/seo/site.ts";
+
+test("getPublicSitemapPaths includes home, help, and legal docs", () => {
+  const paths = getPublicSitemapPaths();
+  assert.ok(paths.includes("/"));
+  assert.ok(paths.includes("/help"));
+  assert.ok(paths.includes("/legal"));
+  assert.ok(paths.some((path) => path.startsWith("/legal/")));
+  assert.equal(paths.includes("/dashboard"), false);
+});
+test("absoluteUrl joins base and path", () => {
+  const original = process.env.NEXT_PUBLIC_APP_URL;
+  process.env.NEXT_PUBLIC_APP_URL = "https://example.com";
+  try {
+    assert.equal(absoluteUrl("/help"), "https://example.com/help");
+    assert.equal(absoluteUrl("/"), "https://example.com");
+  } finally {
+    if (original === undefined) delete process.env.NEXT_PUBLIC_APP_URL;
+    else process.env.NEXT_PUBLIC_APP_URL = original;
+  }
+});
+
 console.log("\nAll unit tests passed.");

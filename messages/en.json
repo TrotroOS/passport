@@ -197,6 +197,10 @@
     "referralSource": "How did you hear about us?",
     "referralSourcePlaceholder": "Select an option (optional)",
     "referralSourceHint": "Helps us understand which channels work — optional.",
+    "loginMetaTitle": "Sign in — Passport",
+    "loginMetaDescription": "Sign in to Passport to manage trade compliance shipments, documents, and broker collaboration.",
+    "signupMetaTitle": "Create account — Passport",
+    "signupMetaDescription": "Create a free Passport account for trade document verification, regulatory checks, and shipment readiness scoring.",
     "referralSources": {
       "search": "Search engine",
       "broker": "Broker or forwarder referral",
@@ -220,6 +224,8 @@
     }
   },
   "legal": {
+    "metaTitle": "Legal & policies — Passport",
+    "metaDescription": "Terms of service, privacy policy, compliance disclaimers, and data processing agreements for Passport trade compliance software.",
     "hubTitle": "Legal",
     "hubDescription": "Policies and agreements for {entity}.",
     "lastUpdated": "Last updated",
@@ -664,6 +670,8 @@
     "attentionRequired": "Discrepancies / tasks"
   },
   "help": {
+    "metaTitle": "Help & troubleshooting — Passport",
+    "metaDescription": "Passport user guide and troubleshooting for sign-in, document uploads, shipment readiness, broker invites, and API integrations.",
     "nav": "Help",
     "eyebrow": "User guide",
     "pageTitle": "Help & troubleshooting",

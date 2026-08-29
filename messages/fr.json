@@ -94,7 +94,11 @@
       "start": "Could not start social sign-in. Confirm Google and Apple are enabled in Supabase.",
       "generic": "Social sign-in failed. Please try again or use email and password.",
       "notConfigured": "Google and Apple sign-in are not configured yet. Add OAuth credentials and run npm run configure-supabase-auth."
-    }
+    },
+    "loginMetaTitle": "Sign in — Passport",
+    "loginMetaDescription": "Sign in to Passport to manage trade compliance shipments, documents, and broker collaboration.",
+    "signupMetaTitle": "Create account — Passport",
+    "signupMetaDescription": "Create a free Passport account for trade document verification, regulatory checks, and shipment readiness scoring."
   },
   "dashboard": {
     "title": "Envois",
@@ -595,7 +599,9 @@
     "footerNotice": "These policies govern use of Passport. For legal questions, contact the address shown in each document. Qualified counsel review is recommended before production reliance.",
     "settingsLink": "Legal & policies",
     "customerSupport": "Customer support:",
-    "helpLink": "Help & troubleshooting"
+    "helpLink": "Help & troubleshooting",
+    "metaTitle": "Legal & policies — Passport",
+    "metaDescription": "Terms of service, privacy policy, compliance disclaimers, and data processing agreements for Passport trade compliance software."
   },
   "search": {
     "placeholder": "Search shipments…",
@@ -864,7 +870,9 @@
           "Rate limits may apply — backoff and retry on 429 responses."
         ]
       }
-    }
+    },
+    "metaTitle": "Help & troubleshooting — Passport",
+    "metaDescription": "Passport user guide and troubleshooting for sign-in, document uploads, shipment readiness, broker invites, and API integrations."
   },
   "marketing": {
     "metaTitle": "Passport — Trade Compliance & Shipment Intelligence",

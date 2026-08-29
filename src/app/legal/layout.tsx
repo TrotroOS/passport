@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { PassportLogo } from "@/components/brand/passport-logo";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { LegalFooter } from "@/components/legal/legal-footer";
 import { LegalSidebar } from "@/components/legal/legal-sidebar";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("legal");
+
+  return buildPageMetadata({
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    path: "/legal",
+  });
+}
 
 export default async function LegalLayout({
   children,
