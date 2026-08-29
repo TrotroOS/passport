@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import type { ReadinessPartyConfirmation } from "@/lib/shipments/readiness-confirmation";
+import { formatReadinessTimestamp } from "@/lib/shipments/readiness-confirmation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,14 +20,41 @@ interface ReadinessPanelProps {
   shipmentId: string;
   ownerConfirmed: boolean;
   brokerConfirmed: boolean;
+  ownerDetails: ReadinessPartyConfirmation;
+  brokerDetails: ReadinessPartyConfirmation;
+  allConfirmed: boolean;
   canOwnerConfirm: boolean;
   canBrokerConfirm: boolean;
+}
+
+function ConfirmationMeta({
+  detail,
+}: {
+  detail: ReadinessPartyConfirmation;
+}) {
+  const t = useTranslations("readinessConfirmation");
+
+  if (!detail.confirmed) return null;
+
+  return (
+    <div className="mt-2 space-y-1 text-xs text-muted-foreground">
+      {detail.confirmedBy ? (
+        <p>{t("confirmedBy", { name: detail.confirmedBy })}</p>
+      ) : null}
+      {detail.confirmedAt ? (
+        <p>{t("confirmedAt", { date: formatReadinessTimestamp(detail.confirmedAt) })}</p>
+      ) : null}
+    </div>
+  );
 }
 
 export function ReadinessPanel({
   shipmentId,
   ownerConfirmed,
   brokerConfirmed,
+  ownerDetails,
+  brokerDetails,
+  allConfirmed,
   canOwnerConfirm,
   canBrokerConfirm,
 }: ReadinessPanelProps) {
@@ -57,6 +86,9 @@ export function ReadinessPanel({
         <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        <p className="text-sm text-muted-foreground">
+          {allConfirmed ? t("overallComplete") : t("overallPending")}
+        </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-md border p-3">
             <div className="mb-2 flex items-center justify-between">
@@ -65,8 +97,9 @@ export function ReadinessPanel({
                 {ownerConfirmed ? tc("yes") : tc("pending")}
               </Badge>
             </div>
+            <ConfirmationMeta detail={ownerDetails} />
             {canOwnerConfirm && !ownerConfirmed ? (
-              <Button size="sm" onClick={() => confirm("owner")}>
+              <Button size="sm" className="mt-3" onClick={() => confirm("owner")}>
                 <CheckCircle2 className="me-2 h-4 w-4" />
                 {t("confirmOwnerReady")}
               </Button>
@@ -79,8 +112,9 @@ export function ReadinessPanel({
                 {brokerConfirmed ? tc("yes") : tc("pending")}
               </Badge>
             </div>
+            <ConfirmationMeta detail={brokerDetails} />
             {canBrokerConfirm && !brokerConfirmed ? (
-              <Button size="sm" onClick={() => confirm("broker")}>
+              <Button size="sm" className="mt-3" onClick={() => confirm("broker")}>
                 <CheckCircle2 className="me-2 h-4 w-4" />
                 {t("confirmBrokerReady")}
               </Button>

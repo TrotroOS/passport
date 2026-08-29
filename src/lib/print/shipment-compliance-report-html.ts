@@ -19,6 +19,10 @@ import type {
 } from "@/types/database";
 import { formatDate, formatStatus } from "@/lib/utils";
 import { escapeHtml } from "@/lib/print/compliance-report-document";
+import {
+  formatReadinessTimestamp,
+  type ReadinessConfirmationDetails,
+} from "@/lib/shipments/readiness-confirmation";
 
 export interface ShipmentPrintLabels {
   title: string;
@@ -38,6 +42,14 @@ export interface ShipmentPrintLabels {
   createdAt: string;
   readiness: string;
   readinessIntro: string;
+  readinessOverall: string;
+  readinessComplete: string;
+  readinessPending: string;
+  readinessRole: string;
+  readinessStatus: string;
+  confirmedBy: string;
+  confirmedAt: string;
+  pending: string;
   ownerConfirmed: string;
   brokerConfirmed: string;
   yes: string;
@@ -107,6 +119,7 @@ export interface ShipmentComplianceReportInput {
   openTasks: WorkflowTask[];
   auditEvents: AuditEvent[];
   organizationName?: string;
+  readiness: ReadinessConfirmationDetails;
   labels: ShipmentPrintLabels;
   statusLabel: (status: string) => string;
   roleLabel: (role: string) => string;
@@ -147,6 +160,23 @@ function section(title: string, intro: string, body: string): string {
     <p class="section-intro">${escapeHtml(intro)}</p>
     ${body}
   </section>`;
+}
+
+function readinessStatusLabel(confirmed: boolean, yes: string, pending: string): string {
+  return confirmed ? yes : pending;
+}
+
+function readinessRow(
+  role: string,
+  detail: { confirmed: boolean; confirmedBy: string | null; confirmedAt: string | null },
+  labels: Pick<ShipmentPrintLabels, "yes" | "pending" | "confirmedBy" | "confirmedAt">
+): string[] {
+  return [
+    role,
+    readinessStatusLabel(detail.confirmed, labels.yes, labels.pending),
+    detail.confirmed ? detail.confirmedBy ?? "—" : "—",
+    detail.confirmed ? formatReadinessTimestamp(detail.confirmedAt) : "—",
+  ];
 }
 
 export function buildShipmentComplianceReportHtml(input: ShipmentComplianceReportInput): string {
@@ -236,9 +266,19 @@ export function buildShipmentComplianceReportHtml(input: ShipmentComplianceRepor
       t.readiness,
       t.readinessIntro,
       `<table class="data-table"><tbody>
-        ${dataRow(t.ownerConfirmed, shipment.owner_confirmed_ready ? t.yes : t.no)}
-        ${dataRow(t.brokerConfirmed, shipment.broker_confirmed_ready ? t.yes : t.no)}
-      </tbody></table>`
+        ${dataRow(
+          t.readinessOverall,
+          input.readiness.allConfirmed ? t.readinessComplete : t.readinessPending
+        )}
+      </tbody></table>
+      ${table(
+        [t.readinessRole, t.readinessStatus, t.confirmedBy, t.confirmedAt],
+        [
+          readinessRow(t.ownerConfirmed, input.readiness.owner, t),
+          readinessRow(t.brokerConfirmed, input.readiness.broker, t),
+        ],
+        "—"
+      )}`
     )}
 
     ${section(

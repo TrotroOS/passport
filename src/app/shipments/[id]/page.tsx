@@ -10,6 +10,7 @@ import {
   hasPermission,
   listCollaboratorsForShipment,
 } from "@/lib/shipments/shipment-access";
+import { resolveReadinessConfirmationDetails } from "@/lib/shipments/readiness-confirmation";
 import { AppPageShell } from "@/components/layout/app-page-shell";
 import { AddPartyForm } from "@/components/shipments/add-party-form";
 import { AddProductForm } from "@/components/shipments/add-product-form";
@@ -257,6 +258,26 @@ export default async function ShipmentDetailPage({
       ? (profile.organizations as { name: string }).name
       : undefined;
 
+  type AuditEventWithUser = AuditEvent & {
+    users?: { full_name: string | null; email: string | null } | null;
+  };
+
+  const readinessUserNames = new Map<string, string>();
+  for (const event of (auditEvents ?? []) as AuditEventWithUser[]) {
+    if (event.user_id && event.users) {
+      readinessUserNames.set(
+        event.user_id,
+        event.users.full_name?.trim() || event.users.email || event.user_id
+      );
+    }
+  }
+
+  const readinessDetails = resolveReadinessConfirmationDetails(
+    shipment,
+    (auditEvents ?? []) as AuditEvent[],
+    readinessUserNames
+  );
+
   return (
     <AppPageShell organizationName={orgName} userEmail={profile?.email}>
       <main className="no-print mx-auto w-full max-w-7xl min-w-0 overflow-x-hidden px-4 py-6 print:hidden sm:px-6 sm:py-8 lg:px-8">
@@ -308,6 +329,9 @@ export default async function ShipmentDetailPage({
             shipmentId={id}
             ownerConfirmed={shipment.owner_confirmed_ready}
             brokerConfirmed={shipment.broker_confirmed_ready}
+            ownerDetails={readinessDetails.owner}
+            brokerDetails={readinessDetails.broker}
+            allConfirmed={readinessDetails.allConfirmed}
             canOwnerConfirm={canOwnerConfirm}
             canBrokerConfirm={canBrokerConfirm}
           />

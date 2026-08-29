@@ -3,6 +3,10 @@ import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireShipmentPermission } from "@/lib/shipments/shipment-access";
+import {
+  loadUserNamesForAuditEvents,
+  resolveReadinessConfirmationDetails,
+} from "@/lib/shipments/readiness-confirmation";
 import { buildComplianceReportDocument } from "@/lib/print/compliance-report-document";
 import { buildShipmentComplianceReportHtml } from "@/lib/print/shipment-compliance-report-html";
 import type {
@@ -14,6 +18,7 @@ import type {
   Product,
   RegulatoryCheckWithRegulation,
   RiskAssessment,
+  Shipment,
   VerificationCheck,
   WorkflowTask,
 } from "@/types/database";
@@ -39,9 +44,9 @@ export async function GET(_request: Request, { params }: RouteParams) {
   }
 
   const admin = createAdminClient();
-  const shipment = access.shipment;
 
   const [
+    { data: freshShipment },
     { data: scoreRow },
     { data: organization },
     { data: parties },
@@ -52,8 +57,10 @@ export async function GET(_request: Request, { params }: RouteParams) {
     { data: allDiscrepancies },
     { data: workflowTasks },
     { data: auditEvents },
+    { data: readinessAuditEvents },
     { data: riskRow },
   ] = await Promise.all([
+    admin.from("shipments").select("*").eq("id", shipmentId).single(),
     admin
       .from("passport_scores")
       .select("*")
@@ -85,6 +92,12 @@ export async function GET(_request: Request, { params }: RouteParams) {
       .order("created_at", { ascending: false })
       .limit(15),
     admin
+      .from("audit_events")
+      .select("*")
+      .eq("shipment_id", shipmentId)
+      .in("action", ["shipment.owner_confirmed_ready", "shipment.broker_confirmed_ready"])
+      .order("created_at", { ascending: false }),
+    admin
       .from("risk_assessments")
       .select("*")
       .eq("shipment_id", shipmentId)
@@ -95,6 +108,15 @@ export async function GET(_request: Request, { params }: RouteParams) {
 
   const t = await getTranslations("print");
   const ts = await getTranslations("status");
+
+  const shipment = (freshShipment ?? access.shipment) as Shipment;
+  const readinessEvents = (readinessAuditEvents ?? []) as AuditEvent[];
+  const userNamesById = await loadUserNamesForAuditEvents(admin, readinessEvents);
+  const readiness = resolveReadinessConfirmationDetails(
+    shipment,
+    readinessEvents,
+    userNamesById
+  );
 
   const openDiscrepancies = ((allDiscrepancies ?? []) as Discrepancy[]).filter(
     (item) => item.status === "open"
@@ -116,6 +138,7 @@ export async function GET(_request: Request, { params }: RouteParams) {
     openTasks,
     auditEvents: (auditEvents ?? []) as AuditEvent[],
     organizationName: organization?.name ?? undefined,
+    readiness,
     statusLabel: (status) => ts(status as "draft"),
     roleLabel: (role) => ts(role as "seller"),
     labels: {
@@ -136,6 +159,14 @@ export async function GET(_request: Request, { params }: RouteParams) {
       createdAt: t("createdAt"),
       readiness: t("readiness"),
       readinessIntro: t("readinessIntro"),
+      readinessOverall: t("readinessOverall"),
+      readinessComplete: t("readinessComplete"),
+      readinessPending: t("readinessPending"),
+      readinessRole: t("readinessRole"),
+      readinessStatus: t("readinessStatus"),
+      confirmedBy: t("confirmedBy"),
+      confirmedAt: t("confirmedAt"),
+      pending: t("pending"),
       ownerConfirmed: t("ownerConfirmed"),
       brokerConfirmed: t("brokerConfirmed"),
       yes: t("yes"),

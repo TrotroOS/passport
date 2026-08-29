@@ -423,7 +423,15 @@
     "discrepanciesIntro": "Cross-document inconsistencies and issues that remain unresolved.",
     "tasksIntro": "Recommended next steps based on verification and regulatory findings.",
     "taskPriority": "Priority",
-    "auditIntro": "Activity history for this shipment, most recent events first."
+    "auditIntro": "Activity history for this shipment, most recent events first.",
+    "readinessOverall": "Overall clearance readiness",
+    "readinessComplete": "Complete — both parties confirmed",
+    "readinessPending": "Pending — awaiting confirmation",
+    "readinessRole": "Role",
+    "readinessStatus": "Status",
+    "confirmedBy": "Confirmed by",
+    "confirmedAt": "Confirmed at",
+    "pending": "Pending"
   },
   "notifications": {
     "collaborationInviteSubject": "Passport: دعوة تعاون لـ {shipmentRef}",
@@ -663,7 +671,11 @@
     "confirmBrokerReady": "Confirm broker ready",
     "confirmFailed": "Failed to confirm readiness",
     "ownerConfirmedToast": "Owner readiness confirmed",
-    "brokerConfirmedToast": "Broker readiness confirmed"
+    "brokerConfirmedToast": "Broker readiness confirmed",
+    "confirmedBy": "Confirmed by {name}",
+    "confirmedAt": "Confirmed on {date}",
+    "overallComplete": "Both parties confirmed — shipment may proceed to ready status.",
+    "overallPending": "Waiting for owner and broker confirmation before the shipment can move to ready."
   },
   "help": {
     "nav": "Help",
