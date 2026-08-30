@@ -14,6 +14,7 @@ const ENDPOINTS = [
   { method: "POST", path: "/api/v1/shipments/:id/documents", scope: "write:document", desc: "Upload document (multipart)" },
   { method: "GET", path: "/api/v1/shipments/:id/documents", scope: "read:document", desc: "List documents" },
   { method: "POST", path: "/api/v1/shipments/:id/verify", scope: "write:verify", desc: "Run verification, regulatory, risk" },
+  { method: "POST", path: "/api/shipments/:id/clearance-autopilot", scope: "write:verify", desc: "Run customs clearance autopilot (classify + clear assistive)" },
   { method: "GET", path: "/api/v1/shipments/:id/verification-checks", scope: "read:analysis", desc: "Verification checks" },
   { method: "GET", path: "/api/v1/shipments/:id/regulatory-checks", scope: "read:analysis", desc: "Regulatory checks" },
   { method: "GET", path: "/api/v1/shipments/:id/risk", scope: "read:analysis", desc: "Risk assessment" },

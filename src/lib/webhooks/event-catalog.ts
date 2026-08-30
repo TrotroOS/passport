@@ -47,6 +47,11 @@ export const WEBHOOK_EVENT_CATALOG: WebhookEventCatalogEntry[] = [
     description: "A workflow task status or assignment changed.",
     payload_hint: "task_id, title, status",
   },
+  {
+    event: "clearance.autopilot.completed",
+    description: "Customs clearance autopilot finished classifying a shipment.",
+    payload_hint: "shipment_id, clearance_stage, overall_score, reasons",
+  },
 ];
 
 export function isWebhookEvent(value: string): value is WebhookEventType {

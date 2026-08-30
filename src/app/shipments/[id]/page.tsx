@@ -19,6 +19,7 @@ import { AddProductForm } from "@/components/shipments/add-product-form";
 import { DocumentUploadForm } from "@/components/shipments/document-upload-form";
 import { DocumentExtractionPanel } from "@/components/shipments/document-extraction-panel";
 import { PassportScoreCard } from "@/components/shipments/passport-score-card";
+import { ClearanceAutopilotPanel } from "@/components/shipments/clearance-autopilot-panel";
 import { DiscrepanciesPanel } from "@/components/shipments/discrepancies-panel";
 import { VerificationChecksPanel } from "@/components/shipments/verification-checks-panel";
 import { CompliancePanel } from "@/components/shipments/compliance-panel";
@@ -353,6 +354,18 @@ export default async function ShipmentDetailPage({
             criticalCount={criticalCount}
             failedRegulatoryCount={failedRegulatoryCount}
             readOnly={!isOwner}
+          />
+        </div>
+
+        <div className="mb-6">
+          <ClearanceAutopilotPanel
+            shipmentId={id}
+            clearanceStage={shipment.clearance_stage ?? null}
+            clearanceAutopilotAt={shipment.clearance_autopilot_at ?? null}
+            clearanceSummary={
+              (shipment.clearance_summary as Record<string, unknown> | null) ?? null
+            }
+            readOnly={!canUpload}
           />
         </div>
 

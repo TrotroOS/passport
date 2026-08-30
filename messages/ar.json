@@ -1095,5 +1095,24 @@
         "context": "Forwarder · multi-corridor"
       }
     }
+  },
+  "clearanceAutopilot": {
+    "title": "Customs clearance autopilot",
+    "description": "Automatically classifies documents and HS codes, runs verification and regulatory checks, and determines assistive clearance readiness.",
+    "disclaimer": "Assistive decision support only — not government clearance or legal advice. Confirm with your licensed customs broker before filing.",
+    "runButton": "Run clearance autopilot",
+    "running": "Classifying and clearing…",
+    "runComplete": "Clearance status: {stage}",
+    "runFailed": "Clearance autopilot failed",
+    "notRunYet": "Run autopilot after uploading documents to classify the shipment and check customs readiness.",
+    "lastRun": "Last run: {date}",
+    "nextSteps": "Recommended next steps",
+    "stage": {
+      "pending": "Pending",
+      "classifying": "Classifying",
+      "review_required": "Review required",
+      "cleared_assistive": "Assistive clearance ready",
+      "blocked": "Blocked"
+    }
   }
 }

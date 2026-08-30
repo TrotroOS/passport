@@ -8,6 +8,13 @@ export type ShipmentStatus =
   | "blocked"
   | "archived";
 
+export type ClearanceStage =
+  | "pending"
+  | "classifying"
+  | "review_required"
+  | "cleared_assistive"
+  | "blocked";
+
 export type PartyRole =
   | "seller"
   | "buyer"
@@ -68,6 +75,9 @@ export interface Shipment {
   owner_confirmed_ready: boolean;
   broker_confirmed_ready: boolean;
   status: ShipmentStatus;
+  clearance_stage: ClearanceStage | null;
+  clearance_autopilot_at: string | null;
+  clearance_summary: Record<string, unknown>;
   created_by: string | null;
   created_at: string;
   updated_at: string;

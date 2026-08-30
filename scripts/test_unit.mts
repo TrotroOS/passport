@@ -574,4 +574,65 @@ test("absoluteUrl joins base and path", () => {
   }
 });
 
+console.log("\nCustoms clearance classification");
+import {
+  classifyClearanceStage,
+  mapClearanceStageToShipmentStatus,
+} from "../src/lib/customs/classify-clearance.ts";
+
+test("cleared_assistive when all checks pass", () => {
+  const result = classifyClearanceStage({
+    documentCount: 3,
+    pendingDocuments: 0,
+    productsTotal: 2,
+    productsWithoutHs: 0,
+    openDiscrepancies: 0,
+    criticalDiscrepancies: 0,
+    pendingTasks: 0,
+    failedRegulatoryChecks: 0,
+    overallScore: 82,
+    riskLevel: "low",
+    destinationSupported: true,
+  });
+  assert.equal(result.stage, "cleared_assistive");
+});
+
+test("blocked when no documents", () => {
+  const result = classifyClearanceStage({
+    documentCount: 0,
+    pendingDocuments: 0,
+    productsTotal: 0,
+    productsWithoutHs: 0,
+    openDiscrepancies: 0,
+    criticalDiscrepancies: 0,
+    pendingTasks: 0,
+    failedRegulatoryChecks: 0,
+    overallScore: null,
+    riskLevel: null,
+    destinationSupported: true,
+  });
+  assert.equal(result.stage, "blocked");
+});
+
+test("classifying while documents pending", () => {
+  const result = classifyClearanceStage({
+    documentCount: 2,
+    pendingDocuments: 1,
+    productsTotal: 1,
+    productsWithoutHs: 0,
+    openDiscrepancies: 0,
+    criticalDiscrepancies: 0,
+    pendingTasks: 0,
+    failedRegulatoryChecks: 0,
+    overallScore: null,
+    riskLevel: null,
+    destinationSupported: true,
+  });
+  assert.equal(result.stage, "classifying");
+});
+
+test("maps cleared_assistive to ready shipment status", () => {
+  assert.equal(mapClearanceStageToShipmentStatus("cleared_assistive"), "ready");
+});
+
 console.log("\nAll unit tests passed.");

@@ -10,6 +10,7 @@ export const WEBHOOK_EVENTS = [
   "regulatory.completed",
   "risk.completed",
   "workflow.task_updated",
+  "clearance.autopilot.completed",
 ] as const;
 
 export type WebhookEventType = (typeof WEBHOOK_EVENTS)[number];

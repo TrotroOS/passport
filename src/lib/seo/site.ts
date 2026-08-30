@@ -6,7 +6,7 @@ export const SITE_NAME = "Passport";
 export const DEFAULT_TITLE = "Passport — Trade Compliance & Shipment Intelligence";
 
 export const DEFAULT_DESCRIPTION =
-  "Upload trade documents, verify cross-document consistency, run regulatory checks, and collaborate with brokers — before customs filing.";
+  "Automatically classify trade documents and HS codes, run customs clearance checks, and score shipment readiness — before filing with authorities.";
 
 export const SITE_KEYWORDS = [
   "trade compliance",

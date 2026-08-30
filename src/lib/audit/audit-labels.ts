@@ -22,6 +22,7 @@ const ACTION_LABELS: Record<string, string> = {
   "collaborator.revoked": "Collaborator access revoked",
   "collaborator.comment_added": "Comment added",
   "verification.completed": "Verification checks completed",
+  "clearance.autopilot.completed": "Customs clearance autopilot completed",
   "passport_score.calculated": "Passport score calculated",
   "regulatory.completed": "Regulatory checks completed",
   "risk.completed": "Risk assessment completed",

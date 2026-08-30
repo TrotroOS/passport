@@ -342,11 +342,12 @@ export async function processDocument(
       .eq("id", document.shipment_id)
       .in("status", ["draft"]);
 
-    const { runVerificationAndScore } = await import(
-      "@/lib/verification/verification-engine"
-    );
-    runVerificationAndScore(document.shipment_id, userId).catch((err) => {
-      console.error("[Verification] Auto-run failed:", err);
+    const { runClearanceAutopilot } = await import("@/lib/customs/clearance-autopilot");
+    runClearanceAutopilot(document.shipment_id, userId, {
+      processPendingDocuments: false,
+      autoClassifyHs: true,
+    }).catch((err) => {
+      console.error("[ClearanceAutopilot] Auto-run failed:", err);
     });
   }
 
