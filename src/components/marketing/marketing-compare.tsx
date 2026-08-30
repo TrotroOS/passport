@@ -24,7 +24,7 @@ export async function MarketingCompare() {
   return (
     <section
       id="compare"
-      className="scroll-mt-16 border-y bg-muted/30 py-14 sm:scroll-mt-20 sm:py-24"
+      className="scroll-mt-16 border-y bg-white py-14 sm:scroll-mt-20 sm:py-24"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="max-w-2xl sm:mx-auto sm:text-center">

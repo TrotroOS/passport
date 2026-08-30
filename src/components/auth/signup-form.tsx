@@ -78,7 +78,7 @@ export function SignupForm() {
   }, [state.success, state.redirectTo, router]);
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4 py-8">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-white px-4 py-8">
       <div className="absolute end-4 top-4">
         <LanguageSwitcher />
       </div>

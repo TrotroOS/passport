@@ -12,7 +12,7 @@ export function AppPageShell({
   organizationName,
   userEmail,
   children,
-  className = "bg-slate-50",
+  className = "bg-white",
 }: AppPageShellProps) {
   return (
     <div className={`no-print min-h-screen overflow-x-hidden print:hidden ${className}`}>

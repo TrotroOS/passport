@@ -25,7 +25,7 @@ export default async function LegalLayout({
   const t = await getTranslations("legal");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <header className="border-b bg-background">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center">

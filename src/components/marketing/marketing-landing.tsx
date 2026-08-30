@@ -69,29 +69,12 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
   ];
 
   return (
-    <div className="min-h-screen bg-background pb-20 text-foreground md:pb-0">
+    <div className="min-h-screen bg-white pb-20 text-foreground md:pb-0">
       <MarketingHeader isAuthenticated={isAuthenticated} />
       <MarketingStickyCta isAuthenticated={isAuthenticated} />
 
       {/* Hero */}
-      <section className="relative overflow-hidden border-b">
-        <div
-          aria-hidden
-          className="marketing-orb pointer-events-none absolute -left-20 top-0 h-64 w-64 rounded-full bg-primary/15 blur-3xl"
-        />
-        <div
-          aria-hidden
-          className="marketing-orb-delayed pointer-events-none absolute -right-16 top-32 h-48 w-48 rounded-full bg-sky-400/10 blur-3xl"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,hsl(var(--primary)/0.1),transparent_55%)]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border)/0.35)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border)/0.35)_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_at_center,black_15%,transparent_70%)] sm:bg-[size:4rem_4rem]"
-        />
-
+      <section className="relative overflow-hidden border-b bg-white">
         <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-24 lg:py-28">
           <div className="mx-auto max-w-3xl text-center lg:max-w-none lg:text-left">
             <div className="lg:grid lg:grid-cols-2 lg:items-center lg:gap-12">
@@ -150,7 +133,7 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
       <MarketingAudiences />
 
       {/* Features */}
-      <section id="features" className="scroll-mt-16 border-b bg-muted/30 py-14 sm:scroll-mt-20 sm:py-24">
+      <section id="features" className="scroll-mt-16 border-b bg-white py-14 sm:scroll-mt-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <MarketingReveal>
             <div className="max-w-2xl sm:mx-auto sm:text-center">
@@ -187,7 +170,7 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="scroll-mt-16 py-14 sm:scroll-mt-20 sm:py-24">
+      <section id="how-it-works" className="scroll-mt-16 bg-white py-14 sm:scroll-mt-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="max-w-2xl sm:mx-auto sm:text-center">
             <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">{t("howItWorks.title")}</h2>
@@ -228,7 +211,7 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
       {/* Corridors */}
       <section
         id="corridors"
-        className="scroll-mt-16 border-y bg-gradient-to-b from-muted/40 to-muted/20 py-14 sm:scroll-mt-20 sm:py-24"
+        className="scroll-mt-16 border-y bg-white py-14 sm:scroll-mt-20 sm:py-24"
       >
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="max-w-2xl sm:mx-auto sm:text-center">

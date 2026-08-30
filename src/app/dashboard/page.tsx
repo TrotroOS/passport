@@ -53,7 +53,7 @@ export default async function DashboardPage() {
       : undefined;
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-background">
+    <div className="min-h-screen overflow-x-hidden bg-white">
       <AppHeader organizationName={orgName} userEmail={profile?.email} />
       <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <div className="mb-8 flex min-w-0 flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">

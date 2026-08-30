@@ -30,7 +30,7 @@ export default async function HelpLayout({
   } = await supabase.auth.getUser();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <header className="border-b bg-background">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4 sm:px-6">
           <Link href={user ? "/dashboard" : "/"} className="flex items-center">
