@@ -20,6 +20,7 @@ import { DocumentUploadForm } from "@/components/shipments/document-upload-form"
 import { DocumentExtractionPanel } from "@/components/shipments/document-extraction-panel";
 import { PassportScoreCard } from "@/components/shipments/passport-score-card";
 import { ClearanceAutopilotPanel } from "@/components/shipments/clearance-autopilot-panel";
+import { CorridorMoatPanel } from "@/components/shipments/corridor-moat-panel";
 import { DiscrepanciesPanel } from "@/components/shipments/discrepancies-panel";
 import { VerificationChecksPanel } from "@/components/shipments/verification-checks-panel";
 import { CompliancePanel } from "@/components/shipments/compliance-panel";
@@ -357,7 +358,7 @@ export default async function ShipmentDetailPage({
           />
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 grid min-w-0 gap-6 lg:grid-cols-2">
           <ClearanceAutopilotPanel
             shipmentId={id}
             clearanceStage={shipment.clearance_stage ?? null}
@@ -367,6 +368,7 @@ export default async function ShipmentDetailPage({
             }
             readOnly={!canUpload}
           />
+          <CorridorMoatPanel shipmentId={id} />
         </div>
 
         <div className="grid min-w-0 gap-6 lg:grid-cols-2">

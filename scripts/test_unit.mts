@@ -635,4 +635,51 @@ test("maps cleared_assistive to ready shipment status", () => {
   assert.equal(mapClearanceStageToShipmentStatus("cleared_assistive"), "ready");
 });
 
+console.log("\nCorridor intelligence moat");
+import {
+  computeMoatStrength,
+  mergeDiscrepancyCounts,
+  normalizePartyName,
+  partyRiskSignal,
+  scoreVsBenchmark,
+} from "../src/lib/moat/corridor-intelligence-utils.ts";
+
+test("normalizePartyName lowercases and trims", () => {
+  assert.equal(normalizePartyName("  Acme Trading Ltd.  "), "acme trading ltd.");
+});
+
+test("strong moat at sufficient history", () => {
+  const result = computeMoatStrength({
+    orgShipmentsOnCorridor: 12,
+    orgClearedOnCorridor: 6,
+    partyMemoryCount: 10,
+  });
+  assert.equal(result.tier, "strong");
+  assert.ok(result.score >= 70);
+});
+
+test("party high risk at high block rate", () => {
+  assert.equal(
+    partyRiskSignal({ shipmentCount: 5, blockedCount: 2, clearedCount: 2 }),
+    "watch"
+  );
+  assert.equal(
+    partyRiskSignal({ shipmentCount: 4, blockedCount: 3, clearedCount: 0 }),
+    "high_risk"
+  );
+});
+
+test("mergeDiscrepancyCounts aggregates", () => {
+  const merged = mergeDiscrepancyCounts(
+    [{ type: "quantity_mismatch", count: 2 }],
+    ["quantity_mismatch", "hs_code_missing"]
+  );
+  assert.equal(merged[0].type, "quantity_mismatch");
+  assert.equal(merged[0].count, 3);
+});
+
+test("scoreVsBenchmark detects above", () => {
+  assert.equal(scoreVsBenchmark(85, 78), "above");
+});
+
 console.log("\nAll unit tests passed.");

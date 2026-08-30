@@ -1114,5 +1114,28 @@
       "cleared_assistive": "Assistive clearance ready",
       "blocked": "Blocked"
     }
+  },
+  "corridorMoat": {
+    "title": "Corridor intelligence",
+    "description": "Proprietary moat — your organization's compounding trade memory vs platform corridor benchmarks.",
+    "loading": "Loading corridor intelligence…",
+    "corridor": "Import corridor",
+    "benchmark": "Platform benchmark",
+    "yourAvg": "Your org average",
+    "counterpartyMemory": "Counterparty memory",
+    "playbook": "Corridor playbook",
+    "moatAdvantage": "Your competitive moat",
+    "comparison": {
+      "above": "This shipment scores {score} — above the {benchmark} corridor benchmark.",
+      "at": "This shipment scores {score} — in line with the {benchmark} corridor benchmark.",
+      "below": "This shipment scores {score} — below the {benchmark} corridor benchmark.",
+      "unknown": "Run verification to compare against corridor benchmarks."
+    },
+    "partySignal": {
+      "trusted": "Trusted",
+      "watch": "Watch",
+      "high_risk": "High risk",
+      "new": "New"
+    }
   }
 }

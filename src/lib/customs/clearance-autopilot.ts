@@ -237,6 +237,32 @@ async function persistClearanceOutcome(
   }).catch((err) =>
     console.error("[Webhook] clearance.autopilot.completed failed:", err)
   );
+
+  const [{ data: shipmentRow }, { data: parties }, { data: discrepancies }] =
+    await Promise.all([
+      admin
+        .from("shipments")
+        .select("destination_country")
+        .eq("id", shipmentId)
+        .single(),
+      admin.from("parties").select("id, name, role").eq("shipment_id", shipmentId),
+      admin
+        .from("discrepancies")
+        .select("discrepancy_type")
+        .eq("shipment_id", shipmentId)
+        .eq("status", "open"),
+    ]);
+
+  const { recordCorridorOutcome } = await import("@/lib/moat/corridor-intelligence");
+  recordCorridorOutcome({
+    organizationId,
+    shipmentId,
+    destinationCountry: shipmentRow?.destination_country ?? null,
+    clearanceStage: classification.stage,
+    passportScore: metrics.overallScore,
+    parties: parties ?? [],
+    openDiscrepancyTypes: (discrepancies ?? []).map((d) => d.discrepancy_type),
+  }).catch((err) => console.warn("[Moat] recordCorridorOutcome failed:", err));
 }
 
 export async function runClearanceAutopilot(
