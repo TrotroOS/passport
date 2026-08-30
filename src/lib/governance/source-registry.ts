@@ -6,6 +6,7 @@ export const SOURCE_ALIASES: Record<string, string> = {
   passport_watchlist: "passport-watchlist",
   "OFAC-SDN": "ofac-sdn",
   "UN-Sanctions": "un-sanctions",
+  opensanctions: "opensanctions",
   openai: "openai",
   user: "human-analyst",
   ai: "openai",

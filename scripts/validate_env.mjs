@@ -119,6 +119,18 @@ if (!process.env.STRIPE_SECRET_KEY) {
   warnings.push("STRIPE_SECRET_KEY is not set — billing checkout disabled");
 }
 
+if (process.env.OPENSANCTIONS_ENABLED === "true" && !process.env.OPENSANCTIONS_API_KEY?.trim()) {
+  warnings.push("OPENSANCTIONS_ENABLED=true but OPENSANCTIONS_API_KEY is missing — live screening disabled");
+}
+
+if (
+  process.env.OPENSANCTIONS_ENABLED === "true" &&
+  process.env.OPENSANCTIONS_API_KEY?.trim() &&
+  !process.env.OPENSANCTIONS_API_URL?.trim()
+) {
+  warnings.push("OPENSANCTIONS_API_URL not set — using default https://api.opensanctions.org/match/default");
+}
+
 for (const w of warnings) {
   console.warn(`validate-env warning: ${w}`);
 }

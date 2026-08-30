@@ -122,6 +122,8 @@ export async function screenPartyName(partyName: string): Promise<ScreeningResul
         list: bestExternal.listName,
         risk_category: bestExternal.riskCategory,
         source_url: bestExternal.sourceUrl,
+        entity_id: bestExternal.entityId,
+        datasets: bestExternal.datasets,
         screened_at: new Date().toISOString(),
       },
     };

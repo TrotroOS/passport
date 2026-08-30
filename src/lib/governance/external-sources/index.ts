@@ -3,63 +3,15 @@
  * Production deployments wire API keys via env; static fallbacks keep dev working.
  */
 
-export interface SanctionsMatch {
-  entityName: string;
-  listId: string;
-  listName: string;
-  matchScore: number;
-  riskCategory: string;
-  sourceUrl?: string;
-}
-
-const OPENSANCTIONS_URL =
-  process.env.OPENSANCTIONS_API_URL ?? "https://api.opensanctions.org/match/default";
-
-/** Query OpenSanctions API when configured; returns empty on failure. */
-export async function queryOpenSanctions(partyName: string): Promise<SanctionsMatch[]> {
-  if (process.env.OPENSANCTIONS_ENABLED !== "true") {
-    return [];
-  }
-
-  try {
-    const res = await fetch(OPENSANCTIONS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        queries: {
-          q1: { schema: "Company", properties: { name: [partyName] } },
-        },
-      }),
-      signal: AbortSignal.timeout(8000),
-    });
-
-    if (!res.ok) return [];
-
-    const data = (await res.json()) as {
-      responses?: {
-        q1?: {
-          results?: Array<{
-            caption?: string;
-            score?: number;
-            datasets?: string[];
-          }>;
-        };
-      };
-    };
-
-    const results = data.responses?.q1?.results ?? [];
-    return results.slice(0, 3).map((r) => ({
-      entityName: r.caption ?? partyName,
-      listId: "opensanctions",
-      listName: "OpenSanctions",
-      matchScore: Math.round((r.score ?? 0.5) * 100),
-      riskCategory: "sanctions",
-      sourceUrl: "https://www.opensanctions.org/",
-    }));
-  } catch {
-    return [];
-  }
-}
+export type { SanctionsMatch } from "@/lib/governance/external-sources/opensanctions";
+export { queryOpenSanctions } from "@/lib/governance/external-sources/opensanctions";
+export {
+  getOpenSanctionsApiKey,
+  getOpenSanctionsMatchUrl,
+  getOpenSanctionsThreshold,
+  isOpenSanctionsConfigured,
+  isOpenSanctionsEnabled,
+} from "@/lib/governance/external-sources/opensanctions-config";
 
 /** HS code reference lookup (WCO chapter metadata — static). */
 export function lookupHsReference(hsCode: string): {

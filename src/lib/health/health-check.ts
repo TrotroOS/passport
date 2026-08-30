@@ -1,3 +1,4 @@
+import { isOpenSanctionsConfigured, isOpenSanctionsEnabled } from "@/lib/governance/external-sources";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { logger } from "@/lib/logging/logger";
 
@@ -12,6 +13,9 @@ export interface HealthStatus {
     tracking: {
       provider: string;
       status: "live" | "mock" | "missing_api_key";
+    };
+    opensanctions: {
+      status: "live" | "disabled" | "missing_api_key";
     };
   };
   app_url: string | null;
@@ -28,6 +32,13 @@ export async function getHealthStatus(): Promise<HealthStatus> {
         ? "live"
         : "missing_api_key";
 
+  const opensanctionsStatus: HealthStatus["checks"]["opensanctions"]["status"] =
+    isOpenSanctionsConfigured()
+      ? "live"
+      : isOpenSanctionsEnabled()
+        ? "missing_api_key"
+        : "disabled";
+
   const checks: HealthStatus["checks"] = {
     database: { status: "down" },
     redis: { status: "not_configured" },
@@ -40,6 +51,9 @@ export async function getHealthStatus(): Promise<HealthStatus> {
     tracking: {
       provider: trackingProvider,
       status: trackingStatus,
+    },
+    opensanctions: {
+      status: opensanctionsStatus,
     },
   };
 

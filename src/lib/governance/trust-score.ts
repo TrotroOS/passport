@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isOpenSanctionsConfigured } from "@/lib/governance/external-sources";
 import { calculateDataQuality } from "./data-quality";
 import { buildShipmentLineage } from "./lineage-builder";
 import { getActiveSourcesForShipment, listTrustedSources } from "./source-registry";
@@ -241,7 +242,7 @@ function getConnectorStatus(): ConnectorStatus[] {
     {
       id: "opensanctions",
       name: "OpenSanctions",
-      connected: process.env.OPENSANCTIONS_ENABLED === "true",
+      connected: isOpenSanctionsConfigured(),
       description: "Live sanctions and PEP screening",
     },
     {

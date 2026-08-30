@@ -313,7 +313,8 @@ Use this before opening signup to the public or running a paid pilot.
 - [ ] **Upstash Redis** — `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` (required for rate limiting)
 - [ ] **Never set in production:** `AUTO_CONFIRM_EMAIL`, `FIRST_USER_IS_ADMIN`, `INBOUND_ALLOW_UNVERIFIED`
 - [ ] Recommended: `SENDGRID_API_KEY`, `SENTRY_DSN`, `TRACKING_WEBHOOK_SECRET`
-- [ ] Optional: `STRIPE_SECRET_KEY` + price IDs, `OPENSANCTIONS_ENABLED=true`
+- [ ] Optional: `STRIPE_SECRET_KEY` + price IDs
+- [ ] Optional: OpenSanctions live screening — set `OPENSANCTIONS_ENABLED=true`, `OPENSANCTIONS_API_KEY`, then `npm run test:opensanctions`
 
 Validate before deploy:
 

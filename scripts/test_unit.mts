@@ -418,6 +418,110 @@ test("screenPartyName flags watchlist entity", async () => {
   assert.ok(result);
   assert.notEqual(result.match_status, "clear");
 });
+
+console.log("\nOpenSanctions connector");
+import {
+  isOpenSanctionsConfigured,
+  isOpenSanctionsEnabled,
+  queryOpenSanctions,
+} from "../src/lib/governance/external-sources/index.ts";
+
+test("isOpenSanctionsConfigured requires enabled flag and API key", () => {
+  const prevEnabled = process.env.OPENSANCTIONS_ENABLED;
+  const prevKey = process.env.OPENSANCTIONS_API_KEY;
+  process.env.OPENSANCTIONS_ENABLED = "true";
+  delete process.env.OPENSANCTIONS_API_KEY;
+  assert.equal(isOpenSanctionsEnabled(), true);
+  assert.equal(isOpenSanctionsConfigured(), false);
+  process.env.OPENSANCTIONS_API_KEY = "test-key";
+  assert.equal(isOpenSanctionsConfigured(), true);
+  if (prevEnabled === undefined) delete process.env.OPENSANCTIONS_ENABLED;
+  else process.env.OPENSANCTIONS_ENABLED = prevEnabled;
+  if (prevKey === undefined) delete process.env.OPENSANCTIONS_API_KEY;
+  else process.env.OPENSANCTIONS_API_KEY = prevKey;
+});
+
+test("queryOpenSanctions maps API matches when configured", async () => {
+  const prevEnabled = process.env.OPENSANCTIONS_ENABLED;
+  const prevKey = process.env.OPENSANCTIONS_API_KEY;
+  process.env.OPENSANCTIONS_ENABLED = "true";
+  process.env.OPENSANCTIONS_API_KEY = "test-key";
+
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () =>
+    new Response(
+      JSON.stringify({
+        responses: {
+          q1: {
+            results: [
+              {
+                id: "NK-test",
+                caption: "Rosneft Oil Company",
+                score: 0.92,
+                match: true,
+                datasets: ["us_ofac_sdn"],
+              },
+            ],
+          },
+        },
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    ) as Response;
+
+  try {
+    const matches = await queryOpenSanctions("Rosneft Oil Company");
+    assert.equal(matches.length, 1);
+    assert.equal(matches[0].entityName, "Rosneft Oil Company");
+    assert.equal(matches[0].matchScore, 92);
+    assert.equal(matches[0].listId, "opensanctions");
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (prevEnabled === undefined) delete process.env.OPENSANCTIONS_ENABLED;
+    else process.env.OPENSANCTIONS_ENABLED = prevEnabled;
+    if (prevKey === undefined) delete process.env.OPENSANCTIONS_API_KEY;
+    else process.env.OPENSANCTIONS_API_KEY = prevKey;
+  }
+});
+
+test("screenPartyName prefers OpenSanctions when score is higher", async () => {
+  const prevEnabled = process.env.OPENSANCTIONS_ENABLED;
+  const prevKey = process.env.OPENSANCTIONS_API_KEY;
+  process.env.OPENSANCTIONS_ENABLED = "true";
+  process.env.OPENSANCTIONS_API_KEY = "test-key";
+
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () =>
+    new Response(
+      JSON.stringify({
+        responses: {
+          q1: {
+            results: [
+              {
+                id: "NK-test",
+                caption: "Acme Trading Ltd",
+                score: 0.95,
+                match: true,
+                datasets: ["eu_fsf"],
+              },
+            ],
+          },
+        },
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    ) as Response;
+
+  try {
+    const result = await screenPartyName("Acme Trading Ltd");
+    assert.equal(result.list_source, "opensanctions");
+    assert.equal(result.match_status, "confirmed_match");
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (prevEnabled === undefined) delete process.env.OPENSANCTIONS_ENABLED;
+    else process.env.OPENSANCTIONS_ENABLED = prevEnabled;
+    if (prevKey === undefined) delete process.env.OPENSANCTIONS_API_KEY;
+    else process.env.OPENSANCTIONS_API_KEY = prevKey;
+  }
+});
 test("buildDocumentChecklist tracks missing docs", () => {
   const checklist = buildDocumentChecklist(
     { origin_country: "CN", destination_country: "GH", incoterm: "CIF" },

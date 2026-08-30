@@ -26,6 +26,7 @@
     "test": "node scripts/test_all.mjs",
     "smoke-test": "node scripts/smoke_test.mjs",
     "test:sendgrid": "node scripts/test_sendgrid.mjs",
+    "test:opensanctions": "node scripts/test_opensanctions.mjs",
     "verify-production": "node scripts/verify_production.mjs",
     "sync-vercel-env": "node scripts/sync_vercel_production_env.mjs",
     "configure-supabase-auth": "node scripts/configure_supabase_auth.mjs",
