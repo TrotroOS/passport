@@ -5,6 +5,9 @@ const nextConfig = {
   poweredByHeader: false,
   output: "standalone",
   serverExternalPackages: ["pdf-parse"],
+  experimental: {
+    optimizePackageImports: ["lucide-react", "recharts"],
+  },
   async headers() {
     const csp = [
       "default-src 'self'",

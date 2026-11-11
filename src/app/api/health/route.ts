@@ -1,6 +1,8 @@
 import { getHealthStatus } from "@/lib/health/health-check";
 import { logger } from "@/lib/logging/logger";
 
+export const preferredRegion = ["fra1"];
+
 export async function GET() {
   const health = await getHealthStatus();
   const statusCode =

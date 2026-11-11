@@ -3,10 +3,11 @@ import { getTranslations } from "next-intl/server";
 import { MarketingLanding } from "@/components/marketing/marketing-landing";
 import { MarketingJsonLd } from "@/components/seo/marketing-json-ld";
 import { createClient } from "@/lib/supabase/server";
+import { hasSupabaseAuthCookie } from "@/lib/auth/has-auth-cookie";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { SITE_KEYWORDS } from "@/lib/seo/site";
 
-export const dynamic = "force-dynamic";
+export const preferredRegion = ["fra1"];
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("marketing");
@@ -19,11 +20,16 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const supabase = await createClient();
   const t = await getTranslations("marketing");
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let isAuthenticated = false;
+
+  if (await hasSupabaseAuthCookie()) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    isAuthenticated = Boolean(user);
+  }
 
   return (
     <>
@@ -31,7 +37,7 @@ export default async function HomePage() {
         title={t("metaTitle")}
         description={t("metaDescription")}
       />
-      <MarketingLanding isAuthenticated={Boolean(user)} />
+      <MarketingLanding isAuthenticated={isAuthenticated} />
     </>
   );
 }

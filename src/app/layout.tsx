@@ -22,6 +22,7 @@ const cairo = Cairo({
 });
 
 export const metadata = buildRootMetadata();
+export const preferredRegion = ["fra1"];
 
 export default async function RootLayout({
   children,
