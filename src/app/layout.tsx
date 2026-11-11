@@ -1,12 +1,24 @@
 import { Inter, Cairo } from "next/font/google";
+import { headers } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "sonner";
 import { isRtlLocale, type Locale } from "@/i18n/config";
+import { messagesForPath } from "@/lib/i18n/client-messages";
 import { AppProviders } from "@/components/providers/app-providers";
 import { KeyboardShortcutsProvider } from "@/components/layout/keyboard-shortcuts";
 import { buildRootMetadata } from "@/lib/seo/metadata";
 import "./globals.css";
+
+const supabaseOrigin = (() => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  if (!url) return null;
+  try {
+    return new URL(url).origin;
+  } catch {
+    return null;
+  }
+})();
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,8 +41,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
+  const [locale, messages, headerStore] = await Promise.all([
+    getLocale(),
+    getMessages(),
+    headers(),
+  ]);
   const resolvedLocale = locale as Locale;
+  const pathname = headerStore.get("x-passport-path");
+  const clientMessages = pathname
+    ? messagesForPath(messages as Record<string, unknown>, pathname)
+    : messages;
   const dir = isRtlLocale(resolvedLocale) ? "rtl" : "ltr";
   const fontClass = isRtlLocale(resolvedLocale)
     ? `${cairo.variable} font-[family-name:var(--font-cairo)]`
@@ -39,8 +59,14 @@ export default async function RootLayout({
   return (
     <html lang={resolvedLocale} dir={dir} suppressHydrationWarning>
       <body className={`${fontClass} overflow-x-hidden bg-white text-foreground`}>
+        {supabaseOrigin ? (
+          <>
+            <link rel="preconnect" href={supabaseOrigin} />
+            <link rel="dns-prefetch" href={supabaseOrigin} />
+          </>
+        ) : null}
         <AppProviders>
-          <NextIntlClientProvider locale={resolvedLocale} messages={messages}>
+          <NextIntlClientProvider locale={resolvedLocale} messages={clientMessages}>
             <KeyboardShortcutsProvider>
               <div id="passport-app-shell" className="no-print">
                 {children}

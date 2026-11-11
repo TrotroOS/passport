@@ -64,10 +64,18 @@ export async function getShipmentAccess(
   userId: string,
   shipmentId: string
 ): Promise<ShipmentAccess & { shipment?: Shipment | null }> {
-  const [userOrganizationId, { data: shipment }] = await Promise.all([
-    getOrganizationIdForUser(supabase, userId),
-    supabase.from("shipments").select("*").eq("id", shipmentId).maybeSingle(),
-  ]);
+  const [userOrganizationId, { data: shipment }, { data: collaborator }] =
+    await Promise.all([
+      getOrganizationIdForUser(supabase, userId),
+      supabase.from("shipments").select("*").eq("id", shipmentId).maybeSingle(),
+      supabase
+        .from("shipment_collaborators")
+        .select("*")
+        .eq("shipment_id", shipmentId)
+        .eq("user_id", userId)
+        .eq("status", "active")
+        .maybeSingle(),
+    ]);
 
   if (shipment) {
     if (
@@ -81,14 +89,6 @@ export async function getShipmentAccess(
         shipment,
       };
     }
-
-    const { data: collaborator } = await supabase
-      .from("shipment_collaborators")
-      .select("*")
-      .eq("shipment_id", shipmentId)
-      .eq("user_id", userId)
-      .eq("status", "active")
-      .maybeSingle();
 
     if (collaborator) {
       return {
@@ -122,7 +122,7 @@ export async function getShipmentAccess(
     }
   }
 
-  const { data: collaborator } = await admin
+  const { data: adminCollaborator } = await admin
     .from("shipment_collaborators")
     .select("*, shipments(*)")
     .eq("shipment_id", shipmentId)
@@ -130,12 +130,12 @@ export async function getShipmentAccess(
     .eq("status", "active")
     .maybeSingle();
 
-  if (collaborator?.shipments) {
-    const collabShipment = collaborator.shipments as unknown as Shipment;
+  if (adminCollaborator?.shipments) {
+    const collabShipment = adminCollaborator.shipments as unknown as Shipment;
     return {
       level: "collaborator",
-      role: collaborator.role as CollaboratorRole,
-      collaboratorId: collaborator.id,
+      role: adminCollaborator.role as CollaboratorRole,
+      collaboratorId: adminCollaborator.id,
       shipmentOrganizationId: collabShipment.organization_id,
       userOrganizationId,
       shipment: collabShipment,

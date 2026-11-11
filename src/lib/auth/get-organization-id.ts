@@ -1,14 +1,14 @@
+import { cache } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 
 /**
  * Resolve organization ID for the authenticated user.
  * Falls back to get_user_organization_id() RPC, then admin read (server-only).
  */
-export async function getOrganizationIdForUser(
-  supabase: SupabaseClient,
-  userId: string
-): Promise<string | null> {
+const loadOrganizationId = cache(async (userId: string): Promise<string | null> => {
+  const supabase = await createClient();
   const { data: profile } = await supabase
     .from("users")
     .select("organization_id")
@@ -33,6 +33,13 @@ export async function getOrganizationIdForUser(
     .maybeSingle();
 
   return adminProfile?.organization_id ?? null;
+});
+
+export async function getOrganizationIdForUser(
+  _supabase: SupabaseClient,
+  userId: string
+): Promise<string | null> {
+  return loadOrganizationId(userId);
 }
 
 /**
@@ -85,11 +92,8 @@ export type UserProfileRow = {
   organizations?: { name: string } | { name: string }[] | null;
 };
 
-/** Read the signed-in user's profile, with admin fallback when RLS blocks reads. */
-export async function getUserProfileForUser(
-  supabase: SupabaseClient,
-  userId: string
-): Promise<UserProfileRow | null> {
+const loadUserProfile = cache(async (userId: string): Promise<UserProfileRow | null> => {
+  const supabase = await createClient();
   const { data: profile } = await supabase
     .from("users")
     .select("id, email, phone, organization_id, is_platform_admin, organizations(name)")
@@ -100,7 +104,7 @@ export async function getUserProfileForUser(
     return profile as UserProfileRow;
   }
 
-  const organizationId = await getOrganizationIdForUser(supabase, userId);
+  const organizationId = await loadOrganizationId(userId);
   if (!organizationId) {
     return null;
   }
@@ -113,4 +117,12 @@ export async function getUserProfileForUser(
     .maybeSingle();
 
   return (adminProfile as UserProfileRow | null) ?? null;
+});
+
+/** Read the signed-in user's profile, with admin fallback when RLS blocks reads. */
+export async function getUserProfileForUser(
+  _supabase: SupabaseClient,
+  userId: string
+): Promise<UserProfileRow | null> {
+  return loadUserProfile(userId);
 }

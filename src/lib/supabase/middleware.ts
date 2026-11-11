@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { nextWithPassportContext } from "@/lib/http/passport-request";
 import { getSupabaseAnonKey, getSupabaseUrl } from "@/lib/supabase/env";
 
 export async function updateSession(
@@ -9,7 +10,7 @@ export async function updateSession(
   try {
     return await runUpdateSession(request, baseResponse);
   } catch {
-    return NextResponse.next({ request });
+    return nextWithPassportContext(request);
   }
 }
 
@@ -21,10 +22,10 @@ async function runUpdateSession(
   const supabaseAnonKey = getSupabaseAnonKey();
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    return NextResponse.next({ request });
+    return nextWithPassportContext(request);
   }
 
-  let supabaseResponse = baseResponse ?? NextResponse.next({ request });
+  let supabaseResponse = baseResponse ?? nextWithPassportContext(request);
 
   const supabase = createServerClient(
     supabaseUrl,
@@ -38,7 +39,7 @@ async function runUpdateSession(
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
-          supabaseResponse = NextResponse.next({ request });
+          supabaseResponse = nextWithPassportContext(request);
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           );

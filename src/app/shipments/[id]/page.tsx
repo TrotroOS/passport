@@ -204,7 +204,8 @@ async function ShipmentDetailContent({
       .from("audit_events")
       .select("*, users(full_name, email)")
       .eq("shipment_id", id)
-      .order("created_at", { ascending: false }),
+      .order("created_at", { ascending: false })
+      .limit(40),
     supabase
       .from("verification_checks")
       .select("*")
