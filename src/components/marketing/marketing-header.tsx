@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { PassportLogo } from "@/components/brand/passport-logo";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Button } from "@/components/ui/button";
+import { useHasSupabaseAuthCookie } from "@/components/marketing/use-has-auth-cookie";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -19,12 +20,9 @@ const NAV_LINKS = [
   { href: "/help", key: "help" as const, external: true },
 ];
 
-interface MarketingHeaderProps {
-  isAuthenticated: boolean;
-}
-
-export function MarketingHeader({ isAuthenticated }: MarketingHeaderProps) {
+export function MarketingHeader() {
   const t = useTranslations("marketing.nav");
+  const isAuthenticated = useHasSupabaseAuthCookie();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {

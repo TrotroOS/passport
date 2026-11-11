@@ -18,15 +18,20 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
+
+  const isAuthRoute = pathname === "/login" || pathname === "/signup";
   const isPublicRoute =
     pathname === "/" ||
-    pathname === "/login" ||
-    pathname === "/signup" ||
+    isAuthRoute ||
     pathname.startsWith("/legal") ||
     pathname.startsWith("/help") ||
     pathname.startsWith("/invitations");
 
-  if (isPublicRoute && !hasSupabaseAuthCookie(request)) {
+  // Public pages skip Auth. Login/signup still refresh so signed-in users bounce to the app.
+  if (isPublicRoute && (!isAuthRoute || !hasSupabaseAuthCookie(request))) {
     return NextResponse.next();
   }
 
@@ -35,6 +40,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|google67e218557784b354\\.html|robots\\.txt|sitemap\\.xml|manifest\\.webmanifest|opengraph-image|logo\\.png|api/health).*)",
+    "/((?!_next/static|_next/image|favicon.ico|google67e218557784b354\\.html|robots\\.txt|sitemap\\.xml|manifest\\.webmanifest|opengraph-image|logo\\.png|api/).*)",
   ],
 };

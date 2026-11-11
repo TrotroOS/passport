@@ -1,8 +1,12 @@
 import { Suspense } from "react";
-import { createClient } from "@/lib/supabase/server";
-import { getUserProfileForUser } from "@/lib/auth/get-organization-id";
-import { AppHeader } from "@/components/layout/app-header";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { DashboardMain } from "@/components/dashboard/dashboard-main";
+import { getSessionUser } from "@/lib/auth/get-session-user";
+
+function HeaderFallback() {
+  return <div className="h-14 border-b bg-white sm:h-16" />;
+}
+
 function DashboardMainFallback() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
@@ -19,33 +23,19 @@ function DashboardMainFallback() {
 export const preferredRegion = ["fra1"];
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
 
   if (!user) {
     return null;
   }
 
-  const profile = await getUserProfileForUser(supabase, user.id);
-  const organizationId = profile?.organization_id ?? null;
-  const orgName =
-    profile?.organizations &&
-    typeof profile.organizations === "object" &&
-    "name" in profile.organizations
-      ? (profile.organizations as { name: string }).name
-      : undefined;
-
   return (
     <div className="min-h-screen overflow-x-hidden bg-white">
-      <AppHeader
-        organizationName={orgName}
-        userEmail={profile?.email}
-        isPlatformAdmin={profile?.is_platform_admin === true}
-      />
+      <Suspense fallback={<HeaderFallback />}>
+        <DashboardHeader userId={user.id} />
+      </Suspense>
       <Suspense fallback={<DashboardMainFallback />}>
-        <DashboardMain userId={user.id} organizationId={organizationId} />
+        <DashboardMain userId={user.id} organizationId={null} />
       </Suspense>
     </div>
   );

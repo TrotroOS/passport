@@ -2,6 +2,9 @@ import { isOpenSanctionsConfigured, isOpenSanctionsEnabled } from "@/lib/governa
 import { createAdminClient } from "@/lib/supabase/admin";
 import { logger } from "@/lib/logging/logger";
 
+let redisSkipUntil = 0;
+const REDIS_SKIP_MS = 60_000;
+
 export interface HealthStatus {
   status: "healthy" | "degraded" | "unhealthy";
   timestamp: string;
@@ -85,18 +88,27 @@ export async function getHealthStatus(): Promise<HealthStatus> {
 
   const redisCheck = (async () => {
     if (!redisUrl || !redisToken) return;
+    if (Date.now() < redisSkipUntil) {
+      checks.redis = { status: "down", latencyMs: 0 };
+      if (overall === "healthy") overall = "degraded";
+      return;
+    }
     const redisStart = Date.now();
     try {
       const response = await fetch(`${redisUrl}/ping`, {
         headers: { Authorization: `Bearer ${redisToken}` },
-        signal: AbortSignal.timeout(800),
+        signal: AbortSignal.timeout(300),
       });
       checks.redis = {
         status: response.ok ? "up" : "down",
         latencyMs: Date.now() - redisStart,
       };
-      if (!response.ok && overall === "healthy") overall = "degraded";
+      if (!response.ok) {
+        redisSkipUntil = Date.now() + REDIS_SKIP_MS;
+        if (overall === "healthy") overall = "degraded";
+      }
     } catch {
+      redisSkipUntil = Date.now() + REDIS_SKIP_MS;
       checks.redis = { status: "down", latencyMs: Date.now() - redisStart };
       if (overall === "healthy") overall = "degraded";
     }

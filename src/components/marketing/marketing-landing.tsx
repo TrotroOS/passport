@@ -12,6 +12,10 @@ import {
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { LegalFooter } from "@/components/legal/legal-footer";
+import {
+  MarketingAuthHref,
+  MarketingGuestOnly,
+} from "@/components/marketing/marketing-auth-href";
 import { MarketingAudiences } from "@/components/marketing/marketing-audiences";
 import { MarketingCompare } from "@/components/marketing/marketing-compare";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
@@ -36,11 +40,7 @@ import { BILLING_PLANS } from "@/lib/billing/plans";
 import { SUPPORT_CONTACT_EMAIL } from "@/lib/legal/types";
 import { cn } from "@/lib/utils";
 
-interface MarketingLandingProps {
-  isAuthenticated: boolean;
-}
-
-export async function MarketingLanding({ isAuthenticated }: MarketingLandingProps) {
+export async function MarketingLanding() {
   const t = await getTranslations("marketing");
 
   const features = [
@@ -70,8 +70,8 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
 
   return (
     <div className="min-h-screen bg-white pb-20 text-foreground md:pb-0">
-      <MarketingHeader isAuthenticated={isAuthenticated} />
-      <MarketingStickyCta isAuthenticated={isAuthenticated} />
+      <MarketingHeader />
+      <MarketingStickyCta />
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b bg-white">
@@ -93,12 +93,16 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
                     size="lg"
                     className="marketing-cta-glow h-12 w-full text-base sm:min-w-[160px] sm:w-auto"
                   >
-                    <Link href={isAuthenticated ? "/dashboard" : "/signup"}>
-                      {isAuthenticated ? t("nav.dashboard") : t("hero.primaryCta")}
+                    <MarketingAuthHref
+                      memberHref="/dashboard"
+                      guestHref="/signup"
+                      memberLabel={t("nav.dashboard")}
+                      guestLabel={t("hero.primaryCta")}
+                    >
                       <ChevronRight className="ml-1 h-4 w-4" aria-hidden />
-                    </Link>
+                    </MarketingAuthHref>
                   </Button>
-                  {!isAuthenticated ? (
+                  <MarketingGuestOnly>
                     <Button
                       asChild
                       variant="outline"
@@ -107,7 +111,7 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
                     >
                       <Link href="/login">{t("hero.secondaryCta")}</Link>
                     </Button>
-                  ) : null}
+                  </MarketingGuestOnly>
                 </div>
                 <p className="mt-4 text-xs leading-relaxed text-muted-foreground sm:mt-6">
                   {t("hero.disclaimer")}
@@ -309,21 +313,24 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
                       className="h-11 w-full"
                       variant={popular ? "default" : "outline"}
                     >
-                      <Link
-                        href={
-                          tier === "enterprise"
-                            ? `mailto:${SUPPORT_CONTACT_EMAIL}?subject=Passport%20Enterprise`
-                            : isAuthenticated
-                              ? "/settings/billing"
-                              : "/signup"
-                        }
-                      >
-                        {tier === "free"
-                          ? t("pricing.ctaFree")
-                          : tier === "pro"
-                            ? t("pricing.ctaPro")
-                            : t("pricing.ctaEnterprise")}
-                      </Link>
+                      {tier === "enterprise" ? (
+                        <Link
+                          href={`mailto:${SUPPORT_CONTACT_EMAIL}?subject=Passport%20Enterprise`}
+                        >
+                          {t("pricing.ctaEnterprise")}
+                        </Link>
+                      ) : (
+                        <MarketingAuthHref
+                          memberHref="/settings/billing"
+                          guestHref="/signup"
+                          memberLabel={
+                            tier === "free" ? t("pricing.ctaFree") : t("pricing.ctaPro")
+                          }
+                          guestLabel={
+                            tier === "free" ? t("pricing.ctaFree") : t("pricing.ctaPro")
+                          }
+                        />
+                      )}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -345,7 +352,12 @@ export async function MarketingLanding({ isAuthenticated }: MarketingLandingProp
             {t("cta.subtitle")}
           </p>
           <Button asChild size="lg" variant="secondary" className="mt-8 h-12 w-full sm:w-auto">
-            <Link href={isAuthenticated ? "/dashboard" : "/signup"}>{t("cta.button")}</Link>
+            <MarketingAuthHref
+              memberHref="/dashboard"
+              guestHref="/signup"
+              memberLabel={t("cta.button")}
+              guestLabel={t("cta.button")}
+            />
           </Button>
           <p className="mt-6 text-xs leading-relaxed text-primary-foreground/80 sm:text-sm">
             {t("cta.contact", { email: SUPPORT_CONTACT_EMAIL })}

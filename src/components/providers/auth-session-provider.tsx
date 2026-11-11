@@ -11,6 +11,13 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
   useEffect(() => {
     let subscription: { unsubscribe: () => void } | undefined;
 
+    const hasAuthCookie = document.cookie
+      .split(";")
+      .some((part) => part.trim().startsWith("sb-"));
+    if (!hasAuthCookie) {
+      return;
+    }
+
     try {
       const supabase = createClient();
       const result = supabase.auth.onAuthStateChange((event) => {

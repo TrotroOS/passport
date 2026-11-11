@@ -29,22 +29,22 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = (await getLocale()) as Locale;
-  const messages = await getMessages();
-  const dir = isRtlLocale(locale) ? "rtl" : "ltr";
-  const fontClass = isRtlLocale(locale)
+  const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
+  const resolvedLocale = locale as Locale;
+  const dir = isRtlLocale(resolvedLocale) ? "rtl" : "ltr";
+  const fontClass = isRtlLocale(resolvedLocale)
     ? `${cairo.variable} font-[family-name:var(--font-cairo)]`
     : `${inter.variable} font-[family-name:var(--font-inter)]`;
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning>
+    <html lang={resolvedLocale} dir={dir} suppressHydrationWarning>
       <body className={`${fontClass} overflow-x-hidden bg-white text-foreground`}>
         <AppProviders>
-          <NextIntlClientProvider locale={locale} messages={messages}>
+          <NextIntlClientProvider locale={resolvedLocale} messages={messages}>
             <KeyboardShortcutsProvider>
               <div id="passport-app-shell" className="no-print">
                 {children}
-                <Toaster richColors position={isRtlLocale(locale) ? "top-left" : "top-right"} />
+                <Toaster richColors position={isRtlLocale(resolvedLocale) ? "top-left" : "top-right"} />
               </div>
             </KeyboardShortcutsProvider>
           </NextIntlClientProvider>

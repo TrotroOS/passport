@@ -35,7 +35,7 @@ const memoryStore = new Map<string, MemoryEntry>();
 let memoryFallbackLogged = false;
 let redisDownUntil = 0;
 const REDIS_TIMEOUT_MS = 800;
-const REDIS_CIRCUIT_MS = 15_000;
+const REDIS_CIRCUIT_MS = 60_000;
 
 function checkMemoryLimit(
   key: string,

@@ -4,9 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import { listShipmentsForUser } from "@/lib/shipments/list-shipments";
 import { enrichShipmentsWithSummaries } from "@/lib/shipments/dashboard-summaries";
 import { listSharedShipmentsForUser } from "@/lib/shipments/shipment-access";
+import { DashboardChartsLazy } from "@/components/analytics/dashboard-charts-lazy";
 import { DashboardPageToolbar } from "@/components/dashboard/dashboard-page-toolbar";
 import { ShipmentsList } from "@/components/shipments/shipments-list";
-import { DashboardCharts } from "@/components/analytics/dashboard-charts";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -82,7 +82,7 @@ export async function DashboardMain({ userId, organizationId }: DashboardMainPro
         </div>
       ) : null}
 
-      {shipments.length > 0 ? <DashboardCharts /> : null}
+      {shipments.length > 0 ? <DashboardChartsLazy /> : null}
 
       <ShipmentsList shipments={shipments} />
 

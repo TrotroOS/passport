@@ -4,14 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { useHasSupabaseAuthCookie } from "@/components/marketing/use-has-auth-cookie";
 import { cn } from "@/lib/utils";
 
-interface MarketingStickyCtaProps {
-  isAuthenticated: boolean;
-}
-
-export function MarketingStickyCta({ isAuthenticated }: MarketingStickyCtaProps) {
+export function MarketingStickyCta() {
   const t = useTranslations("marketing");
+  const isAuthenticated = useHasSupabaseAuthCookie();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
