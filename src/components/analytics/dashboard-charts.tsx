@@ -57,24 +57,17 @@ export function DashboardCharts() {
   const [tracking, setTracking] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
-    const q = "dateRange=90d";
-    Promise.all([
-      fetch(`/api/analytics/summary?${q}`),
-      fetch(`/api/analytics/compliance-trend?${q}`),
-      fetch(`/api/analytics/shipment-status?${q}`),
-      fetch(`/api/analytics/tracking-summary?${q}`),
-    ])
-      .then(async ([summaryRes, complianceRes, statusRes, trackingRes]) => {
-        if (!summaryRes.ok) return;
-        const [summaryData, complianceData, statusData, trackingData] = await Promise.all([
-          summaryRes.json(),
-          complianceRes.json(),
-          statusRes.json(),
-          trackingRes.json(),
-        ]);
-        setSummary(summaryData);
-        const points =
-          (complianceData.compliance as { points?: Array<Record<string, unknown>> })?.points ?? [];
+    fetch("/api/analytics/dashboard?dateRange=90d")
+      .then(async (res) => {
+        if (!res.ok) return;
+        const payload = (await res.json()) as {
+          summary?: Record<string, unknown>;
+          compliance?: { compliance?: { points?: Array<Record<string, unknown>> } };
+          status?: { breakdown?: Array<{ status: string; count: number }> };
+          tracking?: Record<string, unknown>;
+        };
+        setSummary(payload.summary ?? null);
+        const points = payload.compliance?.compliance?.points ?? [];
         setCompliance(
           points.slice(-6).map((p) => ({
             label: formatMonthLabel(String(p.month)),
@@ -82,14 +75,12 @@ export function DashboardCharts() {
           }))
         );
         setStatusBreakdown(
-          ((statusData.breakdown as Array<{ status: string; count: number }>) ?? []).map(
-            (row) => ({
-              ...row,
-              name: localizedStatus(row.status),
-            })
-          )
+          (payload.status?.breakdown ?? []).map((row) => ({
+            ...row,
+            name: localizedStatus(row.status),
+          }))
         );
-        setTracking(trackingData);
+        setTracking(payload.tracking ?? null);
       })
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- load once on mount

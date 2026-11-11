@@ -10,10 +10,14 @@ export default async function SettingsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { organizationName, userEmail } = await getSettingsContext();
+  const { organizationName, userEmail, isPlatformAdmin } = await getSettingsContext();
 
   return (
-    <AppPageShell organizationName={organizationName} userEmail={userEmail}>
+    <AppPageShell
+      organizationName={organizationName}
+      userEmail={userEmail}
+      isPlatformAdmin={isPlatformAdmin}
+    >
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-0 px-4 py-4 sm:px-6 sm:py-6 md:flex-row md:items-start md:gap-6 lg:px-8">
         <SettingsNav />
 

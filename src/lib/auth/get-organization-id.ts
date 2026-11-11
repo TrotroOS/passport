@@ -81,6 +81,7 @@ export type UserProfileRow = {
   email: string;
   phone?: string | null;
   organization_id: string | null;
+  is_platform_admin?: boolean | null;
   organizations?: { name: string } | { name: string }[] | null;
 };
 
@@ -91,7 +92,7 @@ export async function getUserProfileForUser(
 ): Promise<UserProfileRow | null> {
   const { data: profile } = await supabase
     .from("users")
-    .select("id, email, phone, organization_id, organizations(name)")
+    .select("id, email, phone, organization_id, is_platform_admin, organizations(name)")
     .eq("id", userId)
     .maybeSingle();
 
@@ -107,7 +108,7 @@ export async function getUserProfileForUser(
   const admin = createAdminClient();
   const { data: adminProfile } = await admin
     .from("users")
-    .select("id, email, phone, organization_id, organizations(name)")
+    .select("id, email, phone, organization_id, is_platform_admin, organizations(name)")
     .eq("id", userId)
     .maybeSingle();
 

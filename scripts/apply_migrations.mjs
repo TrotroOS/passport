@@ -54,6 +54,11 @@ const APPLY_ORDER = [
   "20240820000021_billing.sql",
   "20240820000022_external_collaborator_invites.sql",
   "20240820000023_protect_platform_admin_flag.sql",
+  "20240820000024_shipment_counterparty_visibility.sql",
+  "20240820000025_container_tracking_provider.sql",
+  "20240820000026_collaborator_participant_type.sql",
+  "20240820000027_clearance_autopilot.sql",
+  "20240820000028_corridor_intelligence_moat.sql",
 ];
 
 let pg;

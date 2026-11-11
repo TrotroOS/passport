@@ -5,7 +5,6 @@ import { ArrowLeft, FileText, Package, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserProfileForUser } from "@/lib/auth/get-organization-id";
-import { getShipmentForUser } from "@/lib/shipments/list-shipments";
 import {
   getShipmentAccess,
   hasPermission,
@@ -107,14 +106,16 @@ export default async function ShipmentDetailPage({
     notFound();
   }
 
-  const profile = await getUserProfileForUser(supabase, user.id);
-  const shipment = await getShipmentForUser(supabase, user.id, id);
+  const [profile, access] = await Promise.all([
+    getUserProfileForUser(supabase, user.id),
+    getShipmentAccess(supabase, user.id, id),
+  ]);
+  const shipment = access.shipment ?? null;
 
   if (!shipment) {
     notFound();
   }
 
-  const access = await getShipmentAccess(supabase, user.id, id);
   const trackingConfig = getTrackingConfig();
   const isOwner = access.level === "owner";
   const isCollaborator = access.level === "collaborator";
@@ -126,7 +127,15 @@ export default async function ShipmentDetailPage({
 
   const admin = createAdminClient();
 
-  const [{ data: ownerOrg }, collaborators, comments] = await Promise.all([
+  const [
+    { data: ownerOrg },
+    collaborators,
+    comments,
+    { data: parties },
+    { data: products },
+    { data: documents },
+    { data: auditEvents },
+  ] = await Promise.all([
     supabase
       .from("organizations")
       .select("name")
@@ -134,19 +143,15 @@ export default async function ShipmentDetailPage({
       .single(),
     listCollaboratorsForShipment(supabase, id),
     loadShipmentComments(admin, id),
+    supabase.from("parties").select("*").eq("shipment_id", id).order("created_at"),
+    supabase.from("products").select("*").eq("shipment_id", id).order("created_at"),
+    supabase.from("documents").select("*").eq("shipment_id", id).order("created_at", { ascending: false }),
+    supabase
+      .from("audit_events")
+      .select("*, users(full_name, email)")
+      .eq("shipment_id", id)
+      .order("created_at", { ascending: false }),
   ]);
-
-  const [{ data: parties }, { data: products }, { data: documents }, { data: auditEvents }] =
-    await Promise.all([
-      supabase.from("parties").select("*").eq("shipment_id", id).order("created_at"),
-      supabase.from("products").select("*").eq("shipment_id", id).order("created_at"),
-      supabase.from("documents").select("*").eq("shipment_id", id).order("created_at", { ascending: false }),
-      supabase
-        .from("audit_events")
-        .select("*, users(full_name, email)")
-        .eq("shipment_id", id)
-        .order("created_at", { ascending: false }),
-    ]);
 
   const documentIds = (documents ?? []).map((d) => d.id);
 
@@ -274,7 +279,11 @@ export default async function ShipmentDetailPage({
   );
 
   return (
-    <AppPageShell organizationName={orgName} userEmail={profile?.email}>
+    <AppPageShell
+      organizationName={orgName}
+      userEmail={profile?.email}
+      isPlatformAdmin={profile?.is_platform_admin === true}
+    >
       <main className="no-print mx-auto w-full max-w-7xl min-w-0 overflow-x-hidden px-4 py-6 print:hidden sm:px-6 sm:py-8 lg:px-8">
         <Button variant="ghost" size="sm" asChild className="no-print mb-6 print:hidden">
           <Link href="/dashboard">

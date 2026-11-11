@@ -14,23 +14,31 @@ import { Button } from "@/components/ui/button";
 interface AppHeaderProps {
   organizationName?: string;
   userEmail?: string;
+  isPlatformAdmin?: boolean;
 }
 
-export async function AppHeader({ organizationName, userEmail }: AppHeaderProps) {
+export async function AppHeader({
+  organizationName,
+  userEmail,
+  isPlatformAdmin,
+}: AppHeaderProps) {
   const t = await getTranslations("nav");
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let showAdmin = isPlatformAdmin === true;
 
-  let showAdmin = false;
-  if (user) {
-    const { data: profile, error } = await supabase
-      .from("users")
-      .select("is_platform_admin")
-      .eq("id", user.id)
-      .maybeSingle();
-    showAdmin = !error && profile?.is_platform_admin === true;
+  if (isPlatformAdmin === undefined) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      const { data: profile, error } = await supabase
+        .from("users")
+        .select("is_platform_admin")
+        .eq("id", user.id)
+        .maybeSingle();
+      showAdmin = !error && profile?.is_platform_admin === true;
+    }
   }
 
   return (

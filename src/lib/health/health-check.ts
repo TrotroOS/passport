@@ -59,27 +59,50 @@ export async function getHealthStatus(): Promise<HealthStatus> {
 
   let overall: HealthStatus["status"] = "healthy";
 
-  const dbStart = Date.now();
-  try {
-    const admin = createAdminClient();
-    const { error } = await admin.from("organizations").select("id").limit(1);
-    checks.database = {
-      status: error ? "down" : "up",
-      latencyMs: Date.now() - dbStart,
-      ...(error ? { error: error.message } : {}),
-    };
-    if (error) overall = "unhealthy";
-  } catch (err) {
-    checks.database = {
-      status: "down",
-      latencyMs: Date.now() - dbStart,
-      error: err instanceof Error ? err.message : "Database unreachable",
-    };
-    overall = "unhealthy";
-  }
-
   const redisUrl = process.env.UPSTASH_REDIS_REST_URL ?? process.env.REDIS_URL;
   const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.REDIS_TOKEN;
+
+  const dbCheck = (async () => {
+    const dbStart = Date.now();
+    try {
+      const admin = createAdminClient();
+      const { error } = await admin.from("organizations").select("id").limit(1);
+      checks.database = {
+        status: error ? "down" : "up",
+        latencyMs: Date.now() - dbStart,
+        ...(error ? { error: error.message } : {}),
+      };
+      if (error) overall = "unhealthy";
+    } catch (err) {
+      checks.database = {
+        status: "down",
+        latencyMs: Date.now() - dbStart,
+        error: err instanceof Error ? err.message : "Database unreachable",
+      };
+      overall = "unhealthy";
+    }
+  })();
+
+  const redisCheck = (async () => {
+    if (!redisUrl || !redisToken) return;
+    const redisStart = Date.now();
+    try {
+      const response = await fetch(`${redisUrl}/ping`, {
+        headers: { Authorization: `Bearer ${redisToken}` },
+        signal: AbortSignal.timeout(800),
+      });
+      checks.redis = {
+        status: response.ok ? "up" : "down",
+        latencyMs: Date.now() - redisStart,
+      };
+      if (!response.ok && overall === "healthy") overall = "degraded";
+    } catch {
+      checks.redis = { status: "down", latencyMs: Date.now() - redisStart };
+      if (overall === "healthy") overall = "degraded";
+    }
+  })();
+
+  await Promise.all([dbCheck, redisCheck]);
 
   if (checks.ai_provider.status === "not_configured" && overall === "healthy") {
     overall = "degraded";
@@ -95,24 +118,6 @@ export async function getHealthStatus(): Promise<HealthStatus> {
 
   if (checks.tracking.status === "mock" && overall === "healthy") {
     overall = "degraded";
-  }
-
-  if (redisUrl && redisToken) {
-    const redisStart = Date.now();
-    try {
-      const response = await fetch(`${redisUrl}/ping`, {
-        headers: { Authorization: `Bearer ${redisToken}` },
-        signal: AbortSignal.timeout(3000),
-      });
-      checks.redis = {
-        status: response.ok ? "up" : "down",
-        latencyMs: Date.now() - redisStart,
-      };
-      if (!response.ok && overall === "healthy") overall = "degraded";
-    } catch {
-      checks.redis = { status: "down", latencyMs: Date.now() - redisStart };
-      if (overall === "healthy") overall = "degraded";
-    }
   }
 
   return {

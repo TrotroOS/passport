@@ -64,13 +64,10 @@ export async function getShipmentAccess(
   userId: string,
   shipmentId: string
 ): Promise<ShipmentAccess & { shipment?: Shipment | null }> {
-  const userOrganizationId = await getOrganizationIdForUser(supabase, userId);
-
-  const { data: shipment } = await supabase
-    .from("shipments")
-    .select("*")
-    .eq("id", shipmentId)
-    .maybeSingle();
+  const [userOrganizationId, { data: shipment }] = await Promise.all([
+    getOrganizationIdForUser(supabase, userId),
+    supabase.from("shipments").select("*").eq("id", shipmentId).maybeSingle(),
+  ]);
 
   if (shipment) {
     if (

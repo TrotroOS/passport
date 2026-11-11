@@ -6,6 +6,7 @@ import { getUserProfileForUser } from "@/lib/auth/get-organization-id";
 export interface SettingsContext {
   organizationName?: string;
   userEmail?: string;
+  isPlatformAdmin?: boolean;
 }
 
 export async function getSettingsContext(
@@ -30,5 +31,6 @@ export async function getSettingsContext(
   return {
     organizationName,
     userEmail: profile?.email ?? user.email ?? undefined,
+    isPlatformAdmin: profile?.is_platform_admin === true,
   };
 }

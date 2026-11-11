@@ -233,6 +233,24 @@ const MIGRATION_CHECKS = [
     file: "20240820000025_container_tracking_provider.sql",
     check: async () => columnExists("container_details", "tracking_provider"),
   },
+  {
+    id: "026",
+    label: "Collaborator participant type",
+    file: "20240820000026_collaborator_participant_type.sql",
+    check: async () => columnExists("shipment_collaborators", "participant_type"),
+  },
+  {
+    id: "027",
+    label: "Clearance autopilot",
+    file: "20240820000027_clearance_autopilot.sql",
+    check: async () => columnExists("shipments", "clearance_stage"),
+  },
+  {
+    id: "028",
+    label: "Corridor intelligence moat",
+    file: "20240820000028_corridor_intelligence_moat.sql",
+    check: async () => tableExists("organization_corridor_profiles"),
+  },
 ];
 
 async function tableExists(table) {

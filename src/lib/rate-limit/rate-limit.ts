@@ -33,6 +33,9 @@ interface MemoryEntry {
 
 const memoryStore = new Map<string, MemoryEntry>();
 let memoryFallbackLogged = false;
+let redisDownUntil = 0;
+const REDIS_TIMEOUT_MS = 800;
+const REDIS_CIRCUIT_MS = 15_000;
 
 function checkMemoryLimit(
   key: string,
@@ -66,6 +69,7 @@ async function checkRedisLimit(
   const token = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.REDIS_TOKEN;
 
   if (!url || !token) return null;
+  if (Date.now() < redisDownUntil) return null;
 
   try {
     const windowSec = Math.ceil(windowMs / 1000);
@@ -83,9 +87,13 @@ async function checkRedisLimit(
         "Content-Type": "application/json",
       },
       body: JSON.stringify(pipeline),
+      signal: AbortSignal.timeout(REDIS_TIMEOUT_MS),
     });
 
-    if (!response.ok) return null;
+    if (!response.ok) {
+      redisDownUntil = Date.now() + REDIS_CIRCUIT_MS;
+      return null;
+    }
 
     const results = (await response.json()) as Array<{ result: number }>;
     const count = results[0]?.result ?? 1;
@@ -99,6 +107,7 @@ async function checkRedisLimit(
           "Content-Type": "application/json",
         },
         body: JSON.stringify(["EXPIRE", redisKey, windowSec]),
+        signal: AbortSignal.timeout(REDIS_TIMEOUT_MS),
       });
       ttl = windowSec;
     }
@@ -110,6 +119,7 @@ async function checkRedisLimit(
       resetAt,
     };
   } catch {
+    redisDownUntil = Date.now() + REDIS_CIRCUIT_MS;
     return null;
   }
 }
@@ -124,7 +134,10 @@ export async function checkRateLimit(
   let result = await checkRedisLimit(key, config.limit, config.windowMs);
 
   if (!result) {
-    if (isProduction()) {
+    const redisConfigured = Boolean(
+      process.env.UPSTASH_REDIS_REST_URL ?? process.env.REDIS_URL
+    );
+    if (isProduction() && !redisConfigured) {
       throw new ApiError(
         "SERVICE_UNAVAILABLE",
         "Rate limiting is temporarily unavailable",
@@ -132,7 +145,11 @@ export async function checkRateLimit(
       );
     }
     if (!memoryFallbackLogged && process.env.NODE_ENV !== "test") {
-      logger.warn("Rate limiting using in-memory store (Redis not configured)");
+      logger.warn(
+        redisConfigured
+          ? "Rate limiting using in-memory store (Redis unreachable)"
+          : "Rate limiting using in-memory store (Redis not configured)"
+      );
       memoryFallbackLogged = true;
     }
     result = checkMemoryLimit(key, config.limit, config.windowMs);
@@ -159,6 +176,7 @@ export async function checkRateLimit(
 export function resetRateLimitStore(): void {
   memoryStore.clear();
   memoryFallbackLogged = false;
+  redisDownUntil = 0;
 }
 
 /** @internal exported for unit tests */

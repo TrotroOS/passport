@@ -52,19 +52,30 @@ async function loadOrgShipments(organizationId: string, range: AnalyticsDateRang
 async function loadAllOrgShipmentCount(organizationId: string) {
   const admin = createAdminClient();
   const now = new Date();
-  const d30 = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-  const d90 = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+  const d30 = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const d90 = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString();
 
-  const { data: all } = await admin
-    .from("shipments")
-    .select("id, created_at")
-    .eq("organization_id", organizationId);
+  const [allTime, last30Days, last90Days] = await Promise.all([
+    admin
+      .from("shipments")
+      .select("id", { count: "exact", head: true })
+      .eq("organization_id", organizationId),
+    admin
+      .from("shipments")
+      .select("id", { count: "exact", head: true })
+      .eq("organization_id", organizationId)
+      .gte("created_at", d30),
+    admin
+      .from("shipments")
+      .select("id", { count: "exact", head: true })
+      .eq("organization_id", organizationId)
+      .gte("created_at", d90),
+  ]);
 
-  const rows = all ?? [];
   return {
-    allTime: rows.length,
-    last30Days: rows.filter((r) => new Date(r.created_at) >= d30).length,
-    last90Days: rows.filter((r) => new Date(r.created_at) >= d90).length,
+    allTime: allTime.count ?? 0,
+    last30Days: last30Days.count ?? 0,
+    last90Days: last90Days.count ?? 0,
   };
 }
 
@@ -179,10 +190,14 @@ export async function getComplianceTrend(
   const admin = createAdminClient();
   const cutoff = dateRangeCutoff(range);
 
-  const { data: shipments } = await admin
+  let shipmentQuery = admin
     .from("shipments")
     .select("id, created_at")
     .eq("organization_id", organizationId);
+  if (cutoff) {
+    shipmentQuery = shipmentQuery.gte("created_at", cutoff.toISOString());
+  }
+  const { data: shipments } = await shipmentQuery;
 
   const shipmentIds = (shipments ?? []).map((s) => s.id);
   if (!shipmentIds.length) return { points: [] };

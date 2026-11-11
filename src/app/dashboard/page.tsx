@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
-import { getUserProfileForUser, getOrganizationIdForUser } from "@/lib/auth/get-organization-id";
-import { getAnalyticsSummary } from "@/lib/analytics/analytics-service";
+import { getUserProfileForUser } from "@/lib/auth/get-organization-id";
 import { listShipmentsForUser } from "@/lib/shipments/list-shipments";
 import { enrichShipmentsWithSummaries } from "@/lib/shipments/dashboard-summaries";
 import { listSharedShipmentsForUser } from "@/lib/shipments/shipment-access";
@@ -20,10 +19,6 @@ import {
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const t = await getTranslations("dashboard");
-  const ts = await getTranslations("status");
-  const tAnalytics = await getTranslations("analytics");
-
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -32,18 +27,34 @@ export default async function DashboardPage() {
     return null;
   }
 
-  const profile = await getUserProfileForUser(supabase, user.id);
-  const organizationId = await getOrganizationIdForUser(supabase, user.id);
+  const [t, ts, tAnalytics, profile] = await Promise.all([
+    getTranslations("dashboard"),
+    getTranslations("status"),
+    getTranslations("analytics"),
+    getUserProfileForUser(supabase, user.id),
+  ]);
 
-  const [rawShipments, sharedShipments, orgSummary] = await Promise.all([
-    listShipmentsForUser(supabase, user.id),
+  const organizationId = profile?.organization_id ?? null;
+
+  const [rawShipments, sharedShipments] = await Promise.all([
+    listShipmentsForUser(supabase, user.id, { organizationId, limit: 50 }),
     listSharedShipmentsForUser(supabase, user.id),
-    organizationId
-      ? getAnalyticsSummary(organizationId, "all").catch(() => null)
-      : Promise.resolve(null),
   ]);
 
   const shipments = await enrichShipmentsWithSummaries(rawShipments);
+
+  const scored = shipments.filter((s) => s.overallScore != null);
+  const orgSummary = {
+    shipmentCounts: { allTime: shipments.length },
+    avgPassportScore:
+      scored.length > 0
+        ? Math.round(
+            scored.reduce((sum, s) => sum + (s.overallScore ?? 0), 0) / scored.length
+          )
+        : null,
+    openDiscrepancies: shipments.reduce((sum, s) => sum + s.openDiscrepancies, 0),
+    pendingWorkflowTasks: shipments.reduce((sum, s) => sum + s.pendingTasks, 0),
+  };
 
   const orgName =
     profile?.organizations &&
@@ -54,7 +65,11 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-white">
-      <AppHeader organizationName={orgName} userEmail={profile?.email} />
+      <AppHeader
+        organizationName={orgName}
+        userEmail={profile?.email}
+        isPlatformAdmin={profile?.is_platform_admin === true}
+      />
       <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <div className="mb-8 flex min-w-0 flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
           <div className="min-w-0 flex-1">
