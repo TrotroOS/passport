@@ -74,6 +74,22 @@ async function countByShipment(
   return map;
 }
 
+let summaryRpcAvailable = true;
+
+type SummaryRow = {
+  shipment_id: string;
+  document_count: number | string | null;
+  overall_score: number | string | null;
+  open_discrepancies: number | string | null;
+  pending_tasks: number | string | null;
+  risk_level: string | null;
+};
+
+function toCount(value: number | string | null | undefined) {
+  const n = Number(value ?? 0);
+  return Number.isFinite(n) ? n : 0;
+}
+
 /** Attach compliance summary stats to dashboard shipment rows. */
 export async function enrichShipmentsWithSummaries(
   shipments: Shipment[]
@@ -81,6 +97,37 @@ export async function enrichShipmentsWithSummaries(
   if (!shipments.length) return [];
 
   const ids = shipments.map((s) => s.id);
+  const admin = createAdminClient();
+
+  if (summaryRpcAvailable) {
+    const { data: rpcRows, error: rpcError } = await admin.rpc(
+      "dashboard_shipment_summaries",
+      { p_ids: ids }
+    );
+
+    if (rpcError) {
+      summaryRpcAvailable = false;
+    } else if (Array.isArray(rpcRows) && rpcRows.length) {
+    const map = new Map<string, SummaryRow>();
+    for (const row of rpcRows as SummaryRow[]) {
+      map.set(row.shipment_id, row);
+    }
+    return shipments.map((shipment) => {
+      const row = map.get(shipment.id);
+      return {
+        ...shipment,
+        documentCount: toCount(row?.document_count),
+        overallScore:
+          row?.overall_score == null || row.overall_score === ""
+            ? null
+            : Number(row.overall_score),
+        openDiscrepancies: toCount(row?.open_discrepancies),
+        pendingTasks: toCount(row?.pending_tasks),
+        riskLevel: row?.risk_level ?? null,
+      };
+    });
+    }
+  }
 
   const [scores, risks, documents, discrepancies, tasks] = await Promise.all([
     latestPassportScores(ids),

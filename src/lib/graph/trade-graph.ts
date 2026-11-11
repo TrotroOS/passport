@@ -65,52 +65,82 @@ export async function getShipmentGraph(
     admin.from("risk_factors").select("*").eq("shipment_id", shipmentId),
   ]);
 
+  return buildShipmentGraphFromLoaded({
+    shipment,
+    parties: parties ?? [],
+    products: products ?? [],
+    documents: documents ?? [],
+    verificationChecks: verificationChecks ?? [],
+    discrepancies: discrepancies ?? [],
+    regulatoryChecks: regulatoryChecks ?? [],
+    workflowTasks: workflowTasks ?? [],
+    passportScore: passportScores?.[0] ?? null,
+    riskAssessment: riskAssessments?.[0] ?? null,
+    riskFactors: riskFactors ?? [],
+  });
+}
+
+/** Build the graph from rows already loaded on the shipment page (no extra queries). */
+export function buildShipmentGraphFromLoaded(input: {
+  shipment: Record<string, unknown>;
+  parties: Record<string, unknown>[];
+  products: Record<string, unknown>[];
+  documents: Record<string, unknown>[];
+  verificationChecks: Record<string, unknown>[];
+  discrepancies: Record<string, unknown>[];
+  regulatoryChecks: Record<string, unknown>[];
+  workflowTasks: Record<string, unknown>[];
+  passportScore: Record<string, unknown> | null;
+  riskAssessment: Record<string, unknown> | null;
+  riskFactors: Record<string, unknown>[];
+}): ShipmentGraph {
+  const shipmentId = String(input.shipment.id);
   const edges: ShipmentGraph["edges"] = [];
   const shipmentNode = `shipment:${shipmentId}`;
 
-  for (const party of parties ?? []) {
+  for (const party of input.parties) {
     edges.push({
       from: shipmentNode,
       to: `party:${party.id}`,
-      relationship: party.role,
+      relationship: String(party.role ?? "party"),
     });
   }
-  for (const product of products ?? []) {
+  for (const product of input.products) {
     edges.push({
       from: shipmentNode,
       to: `product:${product.id}`,
       relationship: "contains",
     });
   }
-  for (const doc of documents ?? []) {
+  for (const doc of input.documents) {
     edges.push({
       from: shipmentNode,
       to: `document:${doc.id}`,
       relationship: "has_document",
     });
   }
-  for (const check of verificationChecks ?? []) {
+  for (const check of input.verificationChecks) {
     edges.push({
       from: shipmentNode,
       to: `verification_check:${check.id}`,
       relationship: "verified_by",
     });
   }
-  for (const d of discrepancies ?? []) {
+  for (const d of input.discrepancies) {
     edges.push({
       from: shipmentNode,
       to: `discrepancy:${d.id}`,
       relationship: "has_discrepancy",
     });
   }
-  for (const rc of regulatoryChecks ?? []) {
+  for (const rc of input.regulatoryChecks) {
     edges.push({
       from: shipmentNode,
       to: `regulatory_check:${rc.id}`,
       relationship: "regulated_by",
     });
   }
-  for (const task of workflowTasks ?? []) {
+  for (const task of input.workflowTasks) {
     edges.push({
       from: shipmentNode,
       to: `workflow_task:${task.id}`,
@@ -119,17 +149,17 @@ export async function getShipmentGraph(
   }
 
   return {
-    shipment,
-    parties: parties ?? [],
-    products: products ?? [],
-    documents: documents ?? [],
-    verification_checks: verificationChecks ?? [],
-    discrepancies: discrepancies ?? [],
-    regulatory_checks: regulatoryChecks ?? [],
-    workflow_tasks: workflowTasks ?? [],
-    passport_score: passportScores?.[0] ?? null,
-    risk_assessment: riskAssessments?.[0] ?? null,
-    risk_factors: riskFactors ?? [],
+    shipment: input.shipment,
+    parties: input.parties,
+    products: input.products,
+    documents: input.documents,
+    verification_checks: input.verificationChecks,
+    discrepancies: input.discrepancies,
+    regulatory_checks: input.regulatoryChecks,
+    workflow_tasks: input.workflowTasks,
+    passport_score: input.passportScore,
+    risk_assessment: input.riskAssessment,
+    risk_factors: input.riskFactors,
     edges,
   };
 }

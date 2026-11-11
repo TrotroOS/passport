@@ -1,18 +1,20 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ArrowLeft, FileText, Package, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getUserProfileForUser } from "@/lib/auth/get-organization-id";
+import { getSessionUser } from "@/lib/auth/get-session-user";
+import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import {
   getShipmentAccess,
   hasPermission,
   listCollaboratorsForShipment,
+  type ShipmentAccess,
 } from "@/lib/shipments/shipment-access";
 import { loadShipmentComments } from "@/lib/shipments/load-shipment-comments";
 import { resolveReadinessConfirmationDetails, loadUserNamesForAuditEvents } from "@/lib/shipments/readiness-confirmation";
-import { AppPageShell } from "@/components/layout/app-page-shell";
 import { AddPartyForm } from "@/components/shipments/add-party-form";
 import { AddProductForm } from "@/components/shipments/add-product-form";
 import { DocumentUploadForm } from "@/components/shipments/document-upload-form";
@@ -26,7 +28,7 @@ import { CompliancePanel } from "@/components/shipments/compliance-panel";
 import { EditShipmentRouteForm } from "@/components/shipments/edit-shipment-route-form";
 import { WorkflowTasksPanel } from "@/components/shipments/workflow-tasks-panel";
 import { RiskPanel } from "@/components/shipments/risk-panel";
-import { TradeGraphPanel } from "@/components/shipments/trade-graph-panel";
+import { TradeGraphPanelLazy } from "@/components/shipments/trade-graph-panel-lazy";
 import { CollaboratorsPanel } from "@/components/shipments/collaborators-panel";
 import { ShipmentCommentsPanel } from "@/components/shipments/shipment-comments-panel";
 import { ReadinessPanel } from "@/components/shipments/readiness-panel";
@@ -40,7 +42,7 @@ import { PartyScreeningPanel } from "@/components/compliance/party-screening-pan
 import { DocumentChecklistPanel } from "@/components/compliance/document-checklist-panel";
 import { DutyEstimateCard } from "@/components/compliance/duty-estimate-card";
 import { DataTrustPanel } from "@/components/governance/data-trust-panel";
-import { getShipmentGraph } from "@/lib/graph/trade-graph";
+import { buildShipmentGraphFromLoaded } from "@/lib/graph/trade-graph";
 import { buildDocumentChecklist } from "@/lib/compliance/document-checklist";
 import { estimateShipmentDuty } from "@/lib/trade/duty-estimator";
 import { Badge } from "@/components/ui/badge";
@@ -69,6 +71,7 @@ import type {
   ContainerDetail,
   ShipmentTrackingEvent,
   WorkflowTask,
+  Shipment,
 } from "@/types/database";
 
 interface ShipmentDetailPageProps {
@@ -88,34 +91,63 @@ function statusVariant(status: string) {
   }
 }
 
+export const preferredRegion = ["fra1"];
+
+function ShipmentDetailFallback() {
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+      <div className="mb-8 h-10 w-64 animate-pulse rounded bg-slate-100" />
+      <div className="space-y-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="h-32 animate-pulse rounded-lg border bg-slate-50" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default async function ShipmentDetailPage({
   params,
 }: ShipmentDetailPageProps) {
   const { id } = await params;
-  const supabase = await createClient();
-  const t = await getTranslations("shipment");
-  const ts = await getTranslations("status");
-  const tNav = await getTranslations("nav");
-  const tDash = await getTranslations("dashboard");
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
 
   if (!user) {
     notFound();
   }
 
-  const [profile, access] = await Promise.all([
-    getUserProfileForUser(supabase, user.id),
-    getShipmentAccess(supabase, user.id, id),
-  ]);
-  const shipment = access.shipment ?? null;
+  const supabase = await createClient();
+  const access = await getShipmentAccess(supabase, user.id, id);
 
+  if (!access.shipment) {
+    notFound();
+  }
+
+  return (
+    <div className="no-print min-h-screen overflow-x-hidden bg-white print:hidden">
+      <Suspense fallback={<div className="h-14 border-b bg-white sm:h-16" />}>
+        <DashboardHeader userId={user.id} />
+      </Suspense>
+      <Suspense fallback={<ShipmentDetailFallback />}>
+        <ShipmentDetailContent shipmentId={id} access={access} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ShipmentDetailContent({
+  shipmentId: id,
+  access,
+}: {
+  shipmentId: string;
+  access: ShipmentAccess & { shipment?: Shipment | null };
+}) {
+  const shipment = access.shipment;
   if (!shipment) {
     notFound();
   }
 
+  const supabase = await createClient();
   const trackingConfig = getTrackingConfig();
   const isOwner = access.level === "owner";
   const isCollaborator = access.level === "collaborator";
@@ -128,6 +160,10 @@ export default async function ShipmentDetailPage({
   const admin = createAdminClient();
 
   const [
+    t,
+    ts,
+    tNav,
+    tDash,
     { data: ownerOrg },
     collaborators,
     comments,
@@ -135,47 +171,6 @@ export default async function ShipmentDetailPage({
     { data: products },
     { data: documents },
     { data: auditEvents },
-  ] = await Promise.all([
-    supabase
-      .from("organizations")
-      .select("name")
-      .eq("id", shipment.organization_id)
-      .single(),
-    listCollaboratorsForShipment(supabase, id),
-    loadShipmentComments(admin, id),
-    supabase.from("parties").select("*").eq("shipment_id", id).order("created_at"),
-    supabase.from("products").select("*").eq("shipment_id", id).order("created_at"),
-    supabase.from("documents").select("*").eq("shipment_id", id).order("created_at", { ascending: false }),
-    supabase
-      .from("audit_events")
-      .select("*, users(full_name, email)")
-      .eq("shipment_id", id)
-      .order("created_at", { ascending: false }),
-  ]);
-
-  const documentIds = (documents ?? []).map((d) => d.id);
-
-  const { data: allExtractions } = documentIds.length
-    ? await supabase
-        .from("document_extractions")
-        .select("*")
-        .in("document_id", documentIds)
-        .order("created_at", { ascending: false })
-    : { data: [] as DocumentExtraction[] };
-
-  const extractionByDoc = new Map<string, DocumentExtraction>();
-  for (const ext of allExtractions ?? []) {
-    if (!extractionByDoc.has(ext.document_id)) {
-      extractionByDoc.set(ext.document_id, ext as DocumentExtraction);
-    }
-  }
-
-  const documentsWithExtractions = (documents ?? []).map((doc) => ({
-    ...(doc as Document),
-    latestExtraction: extractionByDoc.get(doc.id) ?? null,
-  }));
-
-  const [
     { data: verificationChecks },
     { data: allDiscrepancies },
     { data: passportScores },
@@ -187,6 +182,29 @@ export default async function ShipmentDetailPage({
     { data: containers },
     { data: trackingEvents },
   ] = await Promise.all([
+    getTranslations("shipment"),
+    getTranslations("status"),
+    getTranslations("nav"),
+    getTranslations("dashboard"),
+    supabase
+      .from("organizations")
+      .select("name")
+      .eq("id", shipment.organization_id)
+      .single(),
+    listCollaboratorsForShipment(supabase, id),
+    loadShipmentComments(admin, id),
+    supabase.from("parties").select("*").eq("shipment_id", id).order("created_at"),
+    supabase.from("products").select("*").eq("shipment_id", id).order("created_at"),
+    supabase
+      .from("documents")
+      .select("*, document_extractions(*)")
+      .eq("shipment_id", id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("audit_events")
+      .select("*, users(full_name, email)")
+      .eq("shipment_id", id)
+      .order("created_at", { ascending: false }),
     supabase
       .from("verification_checks")
       .select("*")
@@ -234,7 +252,21 @@ export default async function ShipmentDetailPage({
       .order("event_date", { ascending: false, nullsFirst: false }),
   ]);
 
-  const tradeGraph = await getShipmentGraph(id);
+  const documentsWithExtractions = (documents ?? []).map((doc) => {
+    const row = doc as Document & { document_extractions?: DocumentExtraction[] };
+    const latestExtraction =
+      row.document_extractions
+        ?.slice()
+        .sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )[0] ?? null;
+    return {
+      ...(doc as Document),
+      latestExtraction,
+    };
+  });
+
   const documentChecklist = buildDocumentChecklist(
     shipment,
     (documents ?? []) as Document[]
@@ -261,13 +293,19 @@ export default async function ShipmentDetailPage({
 
   const latestRiskAssessment = (riskAssessments?.[0] ?? null) as RiskAssessment | null;
 
-  const orgName =
-    profile?.organizations &&
-    typeof profile.organizations === "object" &&
-    "name" in profile.organizations
-      ? (profile.organizations as { name: string }).name
-      : undefined;
-
+  const tradeGraph = buildShipmentGraphFromLoaded({
+    shipment: shipment as unknown as Record<string, unknown>,
+    parties: (parties ?? []) as unknown as Record<string, unknown>[],
+    products: (products ?? []) as unknown as Record<string, unknown>[],
+    documents: (documents ?? []) as unknown as Record<string, unknown>[],
+    verificationChecks: (verificationChecks ?? []) as unknown as Record<string, unknown>[],
+    discrepancies: (allDiscrepancies ?? []) as unknown as Record<string, unknown>[],
+    regulatoryChecks: (regulatoryChecks ?? []) as unknown as Record<string, unknown>[],
+    workflowTasks: (workflowTasks ?? []) as unknown as Record<string, unknown>[],
+    passportScore: (passportScores?.[0] ?? null) as Record<string, unknown> | null,
+    riskAssessment: (riskAssessments?.[0] ?? null) as Record<string, unknown> | null,
+    riskFactors: (riskFactors ?? []) as unknown as Record<string, unknown>[],
+  });
 
   const auditEventsList = (auditEvents ?? []) as AuditEvent[];
   const readinessUserNames = await loadUserNamesForAuditEvents(admin, auditEventsList);
@@ -279,11 +317,6 @@ export default async function ShipmentDetailPage({
   );
 
   return (
-    <AppPageShell
-      organizationName={orgName}
-      userEmail={profile?.email}
-      isPlatformAdmin={profile?.is_platform_admin === true}
-    >
       <main className="no-print mx-auto w-full max-w-7xl min-w-0 overflow-x-hidden px-4 py-6 print:hidden sm:px-6 sm:py-8 lg:px-8">
         <Button variant="ghost" size="sm" asChild className="no-print mb-6 print:hidden">
           <Link href="/dashboard">
@@ -494,7 +527,7 @@ export default async function ShipmentDetailPage({
 
           {tradeGraph && (
             <div className="lg:col-span-2">
-              <TradeGraphPanel graph={tradeGraph} />
+              <TradeGraphPanelLazy graph={tradeGraph} />
             </div>
           )}
 
@@ -557,6 +590,5 @@ export default async function ShipmentDetailPage({
           </Card>
         </div>
       </main>
-    </AppPageShell>
   );
 }

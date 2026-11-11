@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { LoginForm } from "@/components/auth/login-form";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
-export const dynamic = "force-dynamic";
+export const preferredRegion = ["fra1"];
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("auth");

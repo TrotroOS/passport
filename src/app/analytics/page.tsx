@@ -4,25 +4,27 @@ import { ArrowLeft, GitBranch, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getUserProfileForUser, getOrganizationIdForUser } from "@/lib/auth/get-organization-id";
 import { AppHeader } from "@/components/layout/app-header";
-import { AnalyticsDashboard } from "@/components/analytics/analytics-dashboard";
+import { AnalyticsDashboardLazy } from "@/components/analytics/analytics-dashboard-lazy";
+import { getSessionUser } from "@/lib/auth/get-session-user";
 import { Button } from "@/components/ui/button";
 
+export const preferredRegion = ["fra1"];
+
 export default async function AnalyticsPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getSessionUser();
 
   if (!user) {
     redirect("/login");
   }
 
-  const organizationId = await getOrganizationIdForUser(supabase, user.id);
+  const supabase = await createClient();
+  const [organizationId, profile] = await Promise.all([
+    getOrganizationIdForUser(supabase, user.id),
+    getUserProfileForUser(supabase, user.id),
+  ]);
   if (!organizationId) {
     redirect("/dashboard");
   }
-
-  const profile = await getUserProfileForUser(supabase, user.id);
   const orgName =
     profile?.organizations &&
     typeof profile.organizations === "object" &&
@@ -32,7 +34,11 @@ export default async function AnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-white print:hidden">
-      <AppHeader organizationName={orgName} userEmail={profile?.email} />
+      <AppHeader
+        organizationName={orgName}
+        userEmail={profile?.email}
+        isPlatformAdmin={profile?.is_platform_admin === true}
+      />
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Button variant="ghost" size="sm" asChild className="mb-6">
           <Link href="/dashboard">
@@ -55,7 +61,7 @@ export default async function AnalyticsPage() {
             </Link>
           </Button>
         </div>
-        <AnalyticsDashboard />
+        <AnalyticsDashboardLazy />
       </main>
     </div>
   );
