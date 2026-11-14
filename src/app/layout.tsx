@@ -1,13 +1,9 @@
 import { Inter, Cairo } from "next/font/google";
-import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "sonner";
 import { isRtlLocale, type Locale } from "@/i18n/config";
-import {
-  handleIntlError,
-  missingMessageFallback,
-} from "@/lib/i18n/missing-message";
 import { AppProviders } from "@/components/providers/app-providers";
+import { IntlProvider } from "@/components/providers/intl-provider";
 import { KeyboardShortcutsProvider } from "@/components/layout/keyboard-shortcuts";
 import { buildRootMetadata } from "@/lib/seo/metadata";
 import "./globals.css";
@@ -60,19 +56,14 @@ export default async function RootLayout({
           </>
         ) : null}
         <AppProviders>
-          <NextIntlClientProvider
-            locale={resolvedLocale}
-            messages={messages}
-            onError={handleIntlError}
-            getMessageFallback={missingMessageFallback}
-          >
+          <IntlProvider locale={resolvedLocale} messages={messages}>
             <KeyboardShortcutsProvider>
               <div id="passport-app-shell" className="no-print">
                 {children}
                 <Toaster richColors position={isRtlLocale(resolvedLocale) ? "top-left" : "top-right"} />
               </div>
             </KeyboardShortcutsProvider>
-          </NextIntlClientProvider>
+          </IntlProvider>
         </AppProviders>
       </body>
     </html>
