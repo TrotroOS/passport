@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Passport",
+    "appName": "Seadell",
     "loading": "Loading…",
     "save": "Save",
     "cancel": "Cancel",
@@ -146,7 +146,7 @@
     "grade": "Grade",
     "lineage": "Lineage",
     "sourceReliability": "Source reliability",
-    "passportScore": "Passport score",
+    "passportScore": "Seadell score",
     "aiConfidence": "Extraction confidence",
     "improveTrust": "Improve trust score",
     "lineageSummary": "Lineage summary",
@@ -197,10 +197,10 @@
     "referralSource": "How did you hear about us?",
     "referralSourcePlaceholder": "Select an option (optional)",
     "referralSourceHint": "Helps us understand which channels work — optional.",
-    "loginMetaTitle": "Sign in — Passport",
-    "loginMetaDescription": "Sign in to Passport to manage trade compliance shipments, documents, and broker collaboration.",
-    "signupMetaTitle": "Create account — Passport",
-    "signupMetaDescription": "Create a free Passport account for trade document verification, regulatory checks, and shipment readiness scoring.",
+    "loginMetaTitle": "Sign in — Seadell",
+    "loginMetaDescription": "Sign in to Seadell to manage trade compliance shipments, documents, and broker collaboration.",
+    "signupMetaTitle": "Create account — Seadell",
+    "signupMetaDescription": "Create a free Seadell account for trade document verification, regulatory checks, and shipment readiness scoring.",
     "referralSources": {
       "search": "Search engine",
       "broker": "Broker or forwarder referral",
@@ -224,13 +224,13 @@
     }
   },
   "legal": {
-    "metaTitle": "Legal & policies — Passport",
-    "metaDescription": "Terms of service, privacy policy, compliance disclaimers, and data processing agreements for Passport trade compliance software.",
+    "metaTitle": "Legal & policies — Seadell",
+    "metaDescription": "Terms of service, privacy policy, compliance disclaimers, and data processing agreements for Seadell trade compliance software.",
     "hubTitle": "Legal",
     "hubDescription": "Policies and agreements for {entity}.",
     "lastUpdated": "Last updated",
     "signIn": "Sign in",
-    "footerNotice": "These policies govern use of Passport. For legal questions, contact the address shown in each document. Qualified counsel review is recommended before production reliance.",
+    "footerNotice": "These policies govern use of Seadell. For legal questions, contact the address shown in each document. Qualified counsel review is recommended before production reliance.",
     "customerSupport": "Customer support:",
     "helpLink": "Help & troubleshooting",
     "settingsLink": "Legal & policies"
@@ -284,7 +284,7 @@
     }
   },
   "score": {
-    "title": "Passport Score",
+    "title": "Seadell Score",
     "description": "Cross-document consistency and readiness assessment",
     "runVerification": "Run Verification",
     "running": "Running…",
@@ -530,7 +530,7 @@
     "revokeFailed": "Failed to revoke access",
     "revoked": "Access revoked",
     "externalOrg": "External organization",
-    "pendingExternal": "Not on Passport yet — invitation pending",
+    "pendingExternal": "Not on Seadell yet — invitation pending",
     "pendingHint": "Pending until they accept. You'll get an email when they first open the invite link.",
     "copyLink": "Copy invite link",
     "linkCopied": "Invitation link copied",
@@ -546,7 +546,7 @@
     "inviteMultiHint": "Add one or more email addresses — each person gets their own invitation.",
     "inviteEmailsLabel": "Email addresses",
     "inviteEmailsPlaceholder": "broker@example.com\nforwarder@example.com",
-    "inviteEmailHint": "Separate emails with commas or new lines. If outbound email is not configured, Passport will give you links to copy and send manually.",
+    "inviteEmailHint": "Separate emails with commas or new lines. If outbound email is not configured, Seadell will give you links to copy and send manually.",
     "inviteParticipantTypeLabel": "Participant type",
     "participantCustomsBroker": "Customs broker",
     "participantFreightForwarder": "Freight forwarder",
@@ -561,7 +561,7 @@
     "emailRequired": "At least one email is required",
     "inviteFailed": "Failed to send invitation",
     "inviteSent": "Collaboration invitation email sent",
-    "inviteSentExternal": "Invitation email sent — they can create a Passport account to join",
+    "inviteSentExternal": "Invitation email sent — they can create a Seadell account to join",
     "inviteCreated": "Invitation created",
     "inviteEmailFailed": "Email could not be delivered. Copy the invite link and send it manually.",
     "inviteEmailNotConfigured": "Email is not configured. Copy the invite link and send it to your collaborator.",
@@ -581,14 +581,14 @@
     "updating": "Updating…",
     "kpiShipments": "Shipments",
     "kpiImportValue": "Import value",
-    "kpiAvgScore": "Avg Passport Score",
+    "kpiAvgScore": "Avg Seadell Score",
     "kpiOpenDiscrepancies": "Open discrepancies",
     "kpiPendingTasks": "Pending tasks",
     "kpiAllTimeShipments": "All-time shipments",
     "kpiImportHint": "Sum of product totals",
     "kpiPeriodHint": "{d30} in 30d · {d90} in 90d",
     "complianceTrend": "Compliance trend",
-    "complianceTrendDesc": "Average Passport Score by month",
+    "complianceTrendDesc": "Average Seadell Score by month",
     "noScoreHistory": "No score history in this period",
     "riskDistribution": "Risk distribution",
     "riskDistributionDesc": "Latest assessments in range",
@@ -621,7 +621,39 @@
     "missingCount": "Missing count",
     "chartOverall": "Overall",
     "chartDocumentation": "Documentation",
-    "chartRegulatory": "Regulatory"
+    "chartRegulatory": "Regulatory",
+    "chartConsistency": "Consistency",
+    "chartCounterparty": "Counterparty",
+    "discrepancyTrend": "Discrepancy trend",
+    "discrepancyTrendDesc": "Open vs resolved by month",
+    "noDiscrepancyHistory": "No discrepancy history",
+    "open": "Open",
+    "resolved": "Resolved",
+    "scoreDimensions": "Seadell Score dimensions",
+    "scoreDimensionsDesc": "Average across latest shipment scores",
+    "noScoreDimensions": "No score dimensions yet",
+    "riskFactorScores": "Risk factor scores",
+    "riskFactorScoresDesc": "Average factor contribution by type",
+    "noRiskFactors": "No risk factors yet",
+    "avgScoreBar": "Avg score",
+    "shipmentPipeline": "Shipment pipeline",
+    "shipmentPipelineDesc": "Status breakdown in selected range",
+    "noShipmentsInRange": "No shipments in range",
+    "freightTracking": "Freight tracking",
+    "freightTrackingDesc": "Container and event summary",
+    "containers": "Containers",
+    "shipmentsTracked": "Shipments tracked",
+    "delays": "Delays",
+    "deliveries": "Deliveries",
+    "overviewLast90Days": "Overview (last 90 days)",
+    "fullAnalytics": "Full analytics",
+    "shipmentStatus": "Shipment status",
+    "pipelineBreakdown": "Current pipeline breakdown",
+    "noRiskDataYet": "No risk data yet",
+    "containersTracked": "Containers tracked",
+    "shipmentsWithTracking": "Shipments with tracking",
+    "delayEvents": "Delay events",
+    "deliveriesRecorded": "Deliveries recorded"
   },
   "print": {
     "title": "Shipment Compliance Report",
@@ -640,9 +672,9 @@
     "route": "Route",
     "status": "Status",
     "incoterm": "Incoterm",
-    "passportScore": "Passport Score",
+    "passportScore": "Seadell Score",
     "summary": "Summary",
-    "summaryIntro": "Key shipment identifiers and overall Passport Score at the time this report was generated.",
+    "summaryIntro": "Key shipment identifiers and overall Seadell Score at the time this report was generated.",
     "readiness": "Readiness confirmations",
     "readinessIntro": "Both the importer (owner) and broker must confirm readiness before the shipment can move to ready status.",
     "readinessOverall": "Overall clearance readiness",
@@ -707,24 +739,24 @@
     "auditAction": "Action",
     "auditEntity": "Entity",
     "confidentialNote": "Confidential compliance record for internal review and audit purposes. Not customs clearance or regulatory approval.",
-    "footer": "Generated by Passport. This report is for internal review only and does not constitute customs clearance or regulatory approval.",
+    "footer": "Generated by Seadell. This report is for internal review only and does not constitute customs clearance or regulatory approval.",
     "documentsOnFile": "{count, plural, one {# document on file} other {# documents on file}}",
     "attentionRequired": "Discrepancies / tasks"
   },
   "help": {
-    "metaTitle": "Help & troubleshooting — Passport",
-    "metaDescription": "Passport user guide and troubleshooting for sign-in, document uploads, shipment readiness, broker invites, and API integrations.",
+    "metaTitle": "Help & troubleshooting — Seadell",
+    "metaDescription": "Seadell user guide and troubleshooting for sign-in, document uploads, shipment readiness, broker invites, and API integrations.",
     "nav": "Help",
     "eyebrow": "User guide",
     "pageTitle": "Help & troubleshooting",
-    "pageSubtitle": "What to do when something goes wrong in Passport — common fixes before you contact support.",
+    "pageSubtitle": "What to do when something goes wrong in Seadell — common fixes before you contact support.",
     "onThisPage": "On this page",
     "backToDashboard": "Back to dashboard",
     "signUp": "Create account",
     "contactTitle": "Still stuck?",
     "contactBody": "If these steps do not resolve the issue, email support with your shipment reference, a short description, and screenshots if possible. Signed-in users can also send in-app feedback.",
     "contactEmailLabel": "Email support:",
-    "disclaimer": "Passport provides assistive trade-compliance tools. Outputs are not legal or customs advice. For binding decisions, consult qualified counsel or your licensed customs broker.",
+    "disclaimer": "Seadell provides assistive trade-compliance tools. Outputs are not legal or customs advice. For binding decisions, consult qualified counsel or your licensed customs broker.",
     "links": {
       "signIn": "Sign in",
       "dashboard": "Go to dashboard",
@@ -758,10 +790,10 @@
         ]
       },
       "blocked": {
-        "title": "Shipment blocked or low Passport Score",
+        "title": "Shipment blocked or low Seadell Score",
         "summary": "Readiness is not met for clearance handoff.",
         "steps": [
-          "Open the shipment and review the Passport Score card for the lowest-scoring dimensions.",
+          "Open the shipment and review the Seadell Score card for the lowest-scoring dimensions.",
           "Resolve open discrepancies — mismatched quantities, dates, or party names between documents.",
           "Upload missing document types flagged in the documentation checklist.",
           "Complete or assign open workflow tasks from verification and regulatory results.",
@@ -788,7 +820,7 @@
           "Upload the required document type or obtain the permit/registration cited in the rule.",
           "Confirm origin, destination, and product category on the shipment match your trade lane.",
           "Re-run regulatory checks after uploading new documents.",
-          "Remember: Passport rules are assistive — confirm requirements with your broker or authority."
+          "Remember: Seadell rules are assistive — confirm requirements with your broker or authority."
         ]
       },
       "invites": {
@@ -834,16 +866,16 @@
     "typeOther": "Other"
   },
   "notifications": {
-    "collaborationInviteSubject": "Passport — Collaboration invitation for {shipmentRef}",
-    "collaborationInviteBody": "Dear colleague,\n\n{orgName} has invited you to collaborate on shipment {shipmentRef} in Passport.\n\nAccess level: {role}\n\nPlease use the link below to review and respond to this invitation:\n{link}\n\nIf you did not expect this invitation, you may safely ignore this message.\n\n— Passport Trade Compliance",
-    "collaborationInviteExternalBody": "Dear colleague,\n\n{orgName} has invited you to collaborate on shipment {shipmentRef} in Passport.\n\nAccess level: {role}\n\nTo accept this invitation, please create a Passport account using the link below:\n{link}\n\nIf you did not expect this invitation, you may safely ignore this message.\n\n— Passport Trade Compliance",
-    "invitationViewedSubject": "Passport — Invitation viewed for {shipmentRef}",
-    "invitationViewedBody": "Hello,\n\n{viewer} has opened the collaboration invitation for shipment {shipmentRef}. Access has not yet been accepted.\n\nView shipment details:\n{link}\n\n— Passport Trade Compliance",
-    "collaborationCommentSubject": "Passport — New comment on {shipmentRef}",
-    "collaborationCommentBody": "Hello,\n\n{commenter} added a comment on shipment {shipmentRef}:\n\n\"{comment}\"\n\nView the full conversation:\n{link}\n\n— Passport Trade Compliance",
-    "trackingUpdateSubject": "Passport — Tracking update for {shipmentRef}",
-    "trackingUpdateBody": "Hello,\n\nThere is a new tracking update for shipment {shipmentRef}.\n\nEvent: {eventType}\n{description}\n{location}\n{date}\n\nView shipment details:\n{link}\n\n— Passport Trade Compliance",
-    "trackingWhatsApp": "Passport tracking update for {shipmentRef}: {eventType} — {description}"
+    "collaborationInviteSubject": "Seadell — Collaboration invitation for {shipmentRef}",
+    "collaborationInviteBody": "Dear colleague,\n\n{orgName} has invited you to collaborate on shipment {shipmentRef} in Seadell.\n\nAccess level: {role}\n\nPlease use the link below to review and respond to this invitation:\n{link}\n\nIf you did not expect this invitation, you may safely ignore this message.\n\n— Seadell Trade Compliance",
+    "collaborationInviteExternalBody": "Dear colleague,\n\n{orgName} has invited you to collaborate on shipment {shipmentRef} in Seadell.\n\nAccess level: {role}\n\nTo accept this invitation, please create a Seadell account using the link below:\n{link}\n\nIf you did not expect this invitation, you may safely ignore this message.\n\n— Seadell Trade Compliance",
+    "invitationViewedSubject": "Seadell — Invitation viewed for {shipmentRef}",
+    "invitationViewedBody": "Hello,\n\n{viewer} has opened the collaboration invitation for shipment {shipmentRef}. Access has not yet been accepted.\n\nView shipment details:\n{link}\n\n— Seadell Trade Compliance",
+    "collaborationCommentSubject": "Seadell — New comment on {shipmentRef}",
+    "collaborationCommentBody": "Hello,\n\n{commenter} added a comment on shipment {shipmentRef}:\n\n\"{comment}\"\n\nView the full conversation:\n{link}\n\n— Seadell Trade Compliance",
+    "trackingUpdateSubject": "Seadell — Tracking update for {shipmentRef}",
+    "trackingUpdateBody": "Hello,\n\nThere is a new tracking update for shipment {shipmentRef}.\n\nEvent: {eventType}\n{description}\n{location}\n{date}\n\nView shipment details:\n{link}\n\n— Seadell Trade Compliance",
+    "trackingWhatsApp": "Seadell tracking update for {shipmentRef}: {eventType} — {description}"
   },
   "status": {
     "draft": "Draft",
@@ -900,13 +932,13 @@
     "other": "Other"
   },
   "marketing": {
-    "metaTitle": "Passport — Trade Compliance & Shipment Intelligence",
+    "metaTitle": "Seadell — Trade Compliance & Shipment Intelligence",
     "metaDescription": "Upload trade documents, verify cross-document consistency, run regulatory checks, and collaborate with brokers — before customs filing.",
     "nav": {
       "audiences": "Who it's for",
       "features": "Features",
       "howItWorks": "How it works",
-      "compare": "Why Passport",
+      "compare": "Why Seadell",
       "corridors": "Corridors",
       "pricing": "Pricing",
       "help": "Help",
@@ -918,7 +950,7 @@
       "badge": "AI-powered trade compliance",
       "title": "Clear customs with confidence — before you file",
       "titleHighlight": "confidence",
-      "subtitle": "Passport helps importers, brokers, and forwarders upload trade documents, catch discrepancies early, score shipment readiness, and collaborate on clearance workflows across African import corridors.",
+      "subtitle": "Seadell helps importers, brokers, and forwarders upload trade documents, catch discrepancies early, score shipment readiness, and collaborate on clearance workflows across African import corridors.",
       "primaryCta": "Start free",
       "secondaryCta": "Sign in",
       "disclaimer": "Assistive decision-support software — not legal or customs advice."
@@ -926,7 +958,7 @@
     "heroPreview": {
       "shipmentRef": "Shipment",
       "ready": "Ready",
-      "passportScore": "Passport Score",
+      "passportScore": "Seadell Score",
       "docs": "Docs",
       "checks": "Checks",
       "tasks": "Tasks",
@@ -952,12 +984,12 @@
     },
     "audiences": {
       "title": "Built for every link in the import chain",
-      "subtitle": "Whether you own the shipment, clear it, or move the freight — Passport gives your team one workspace before customs filing.",
+      "subtitle": "Whether you own the shipment, clear it, or move the freight — Seadell gives your team one workspace before customs filing.",
       "importers": {
         "title": "Importers & compliance teams",
         "description": "Stop discovering document gaps when customs already has your container.",
         "point1": "Upload and classify invoices, packing lists, and certificates in one place",
-        "point2": "Run verification and Passport Score before broker handoff",
+        "point2": "Run verification and Seadell Score before broker handoff",
         "point3": "Invite brokers with role-based access and full audit history"
       },
       "brokers": {
@@ -977,9 +1009,9 @@
     },
     "compare": {
       "title": "Why teams switch from email and spreadsheets",
-      "subtitle": "Email and Excel can store files — Passport verifies them, scores readiness, and keeps everyone aligned.",
+      "subtitle": "Email and Excel can store files — Seadell verifies them, scores readiness, and keeps everyone aligned.",
       "capability": "Capability",
-      "passport": "Passport",
+      "passport": "Seadell",
       "legacy": "Email & spreadsheets",
       "rows": {
         "documents": {
@@ -1006,15 +1038,15 @@
     },
     "testimonials": {
       "title": "What early teams are saying",
-      "subtitle": "Pilot feedback from import and brokerage teams testing Passport on live corridors.",
-      "disclaimer": "Representative pilot feedback — individual results vary. Passport is assistive software, not customs advice.",
+      "subtitle": "Pilot feedback from import and brokerage teams testing Seadell on live corridors.",
+      "disclaimer": "Representative pilot feedback — individual results vary. Seadell is assistive software, not customs advice.",
       "quote1": {
         "text": "We caught a quantity mismatch between the invoice and packing list before our broker submitted — that alone saved us a hold at Tema.",
         "role": "Import compliance lead",
         "context": "Consumer goods · Ghana corridor"
       },
       "quote2": {
-        "text": "Clients send cleaner files now because they know we run everything through Passport first. Fewer back-and-forth emails on every shipment.",
+        "text": "Clients send cleaner files now because they know we run everything through Seadell first. Fewer back-and-forth emails on every shipment.",
         "role": "Clearance operations manager",
         "context": "Customs brokerage · West Africa"
       },
@@ -1029,14 +1061,14 @@
       "subtitle": "From document ingestion to broker handoff — one platform for your shipment intelligence.",
       "extraction": {
         "title": "AI document extraction",
-        "description": "Upload invoices, packing lists, bills of lading, and certificates. Passport classifies documents and extracts structured fields automatically."
+        "description": "Upload invoices, packing lists, bills of lading, and certificates. Seadell classifies documents and extracts structured fields automatically."
       },
       "verification": {
         "title": "Cross-document verification",
         "description": "Catch mismatched quantities, dates, parties, and values before they become customs delays."
       },
       "score": {
-        "title": "Passport Score",
+        "title": "Seadell Score",
         "description": "A readiness score across documentation, verification, regulatory, and workflow dimensions — know when a shipment is clearance-ready."
       },
       "regulatory": {
@@ -1057,11 +1089,11 @@
       }
     },
     "howItWorks": {
-      "title": "How Passport works",
+      "title": "How Seadell works",
       "subtitle": "Four steps from fragmented documents to clearance-ready shipments.",
       "step1": {
         "title": "Create a shipment",
-        "description": "Set your trade corridor, parties, and product lines. Passport organizes everything in one tenant-secure workspace."
+        "description": "Set your trade corridor, parties, and product lines. Seadell organizes everything in one tenant-secure workspace."
       },
       "step2": {
         "title": "Upload documents",
@@ -1109,7 +1141,7 @@
     },
     "cta": {
       "title": "Ready to modernize your trade compliance?",
-      "subtitle": "Join importers and brokers using Passport to catch issues early and move shipments faster.",
+      "subtitle": "Join importers and brokers using Seadell to catch issues early and move shipments faster.",
       "button": "Create your account",
       "contact": "Questions? Email us at {email}"
     },

@@ -166,7 +166,7 @@ export async function sendTestWebhook(
   await dispatchWebhook(orgId, "verification.completed", {
     shipment_id: shipmentId,
     test: true,
-    message: "Test webhook from Passport",
+    message: "Test webhook from Seadell",
   });
   return { dispatched: 1 };
 }

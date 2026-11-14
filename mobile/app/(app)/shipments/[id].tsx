@@ -270,7 +270,7 @@ function OverviewTab({
           <EmptyState
             icon="analytics-outline"
             title="No score yet"
-            message="Upload documents and run verification on the web app to generate a Passport Score."
+            message="Upload documents and run verification on the web app to generate a Seadell Score."
           />
         )}
       </View>

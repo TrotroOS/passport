@@ -5,7 +5,7 @@ export const acceptableUsePolicy: LegalDocument = {
   slug: "acceptable-use",
   title: "Acceptable Use Policy",
   description:
-    "Permitted and prohibited uses of Passport, including trade compliance, AI, API, and collaboration rules.",
+    "Permitted and prohibited uses of Seadell, including trade compliance, AI, API, and collaboration rules.",
   lastUpdated: LEGAL_LAST_UPDATED,
   sections: [
     {
@@ -31,15 +31,15 @@ export const acceptableUsePolicy: LegalDocument = {
     {
       id: "prohibited-trade",
       title: "3. Prohibited trade and compliance conduct",
-      paragraphs: ["You must not use Passport to:"],
+      paragraphs: ["You must not use Seadell to:"],
       bullets: [
         "Facilitate smuggling, misdeclaration, undervaluation, false invoicing, or customs fraud.",
         "Evade or circumvent sanctions, export controls, import restrictions, or denied-party screening requirements.",
         "Process shipments or parties you know or should know are prohibited under applicable law.",
         "Upload forged, altered, stolen, or counterfeit documents, or documents you are not authorized to use.",
         "Misrepresent goods, origin, value, classification, or parties to obtain improper clearance or duty treatment.",
-        "Rely on Passport outputs as a substitute for licensed professional advice or official government approval.",
-        "Present Passport Score, verification pass results, or readiness confirmations as guaranteed clearance or legal certification.",
+        "Rely on Seadell outputs as a substitute for licensed professional advice or official government approval.",
+        "Present Seadell Score, verification pass results, or readiness confirmations as guaranteed clearance or legal certification.",
       ],
     },
     {
@@ -64,7 +64,7 @@ export const acceptableUsePolicy: LegalDocument = {
         "Upload content that is unlawful, defamatory, harassing, threatening, or infringes intellectual property or privacy rights.",
         "Harass, abuse, or impersonate other users or organizations.",
         "Use the Service for personal, non-business purposes unrelated to trade compliance workflows.",
-        "Resell, sublicense, or provide the Service to third parties as a standalone offering without a written agreement with Passport.",
+        "Resell, sublicense, or provide the Service to third parties as a standalone offering without a written agreement with Seadell.",
         "Use the Service to build a competing product through systematic extraction of outputs or underlying logic.",
       ],
     },
@@ -72,7 +72,7 @@ export const acceptableUsePolicy: LegalDocument = {
       id: "data-responsibility",
       title: "6. Data and collaboration responsibilities",
       paragraphs: [
-        "You are responsible for ensuring that all data you upload, share, or process through Passport is accurate, authorized, and compliant with applicable data protection and trade laws.",
+        "You are responsible for ensuring that all data you upload, share, or process through Seadell is accurate, authorized, and compliant with applicable data protection and trade laws.",
         "When inviting collaborators, assign the minimum role necessary. Revoke access promptly when no longer required.",
         "Do not invite individuals who are not authorized to receive confidential trade or personal data for the shipment.",
         "Inbound channels (email, WhatsApp) must only be used for lawful document intake you control.",
@@ -83,7 +83,7 @@ export const acceptableUsePolicy: LegalDocument = {
       title: "7. AI and automated output use",
       paragraphs: [
         "AI extractions, HS code suggestions, and automated flags are assistive only. You must review them before use in filings or commercial decisions.",
-        "Do not train external models on Passport outputs or Customer Data without authorization.",
+        "Do not train external models on Seadell outputs or Customer Data without authorization.",
         "Do not represent AI-generated content as human-reviewed or government-approved unless that is factually true.",
       ],
     },

@@ -25,7 +25,7 @@ export const ADMIN_RUNBOOK_SECTIONS: RunbookSection[] = [
     id: "overview",
     title: "Overview",
     intro:
-      "This runbook is for Passport platform administrators. You operate a multi-tenant trade compliance SaaS — monitor health, triage failures, manage reference data, and grant admin access. Passport outputs are assistive; never present them as legal or customs advice.",
+      "This runbook is for Seadell platform administrators. You operate a multi-tenant trade compliance SaaS — monitor health, triage failures, manage reference data, and grant admin access. Seadell outputs are assistive; never present them as legal or customs advice.",
     bullets: [
       "Admin UI: /admin (requires is_platform_admin on your user profile)",
       "All admin shipment views are read-only — tenants manage data in the main app",

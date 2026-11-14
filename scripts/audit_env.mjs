@@ -80,7 +80,7 @@ function status(key) {
   return isSet(key) ? "SET" : "MISSING";
 }
 
-console.log("Passport env audit (local .env.local — mirror these in Vercel)\n");
+console.log("Seadell env audit (local .env.local — mirror these in Vercel)\n");
 
 console.log("Required for production:");
 console.log(`  [${hasSupabaseUrl() ? "SET" : "MISSING"}] SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL)`);

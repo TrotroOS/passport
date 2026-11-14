@@ -1,4 +1,4 @@
-# Passport — Marketing Plan
+# Seadell — Marketing Plan
 
 **Version:** 1.0  
 **Last updated:** 2026-08-28  
@@ -9,9 +9,9 @@
 
 ## 1. Executive summary
 
-Passport is an AI-powered trade compliance and shipment intelligence platform for importers, customs brokers, and freight forwarders operating on African import corridors (Ghana primary, Nigeria and Kenya next).
+Seadell is an AI-powered trade compliance and shipment intelligence platform for importers, customs brokers, and freight forwarders operating on African import corridors (Ghana primary, Nigeria and Kenya next).
 
-**Marketing goal (12 months):** Establish Passport as the default pre-clearance workspace for mid-market import teams in West Africa — measured by activated pilot orgs, broker-invite loops, and paid conversion on Pro.
+**Marketing goal (12 months):** Establish Seadell as the default pre-clearance workspace for mid-market import teams in West Africa — measured by activated pilot orgs, broker-invite loops, and paid conversion on Pro.
 
 **Core promise:** Catch document and compliance gaps *before* customs filing — not after delays and penalties.
 
@@ -30,21 +30,21 @@ Trade compliance operations software / shipment intelligence — not a licensed 
 | Pillar | Message | Proof on site |
 |--------|---------|---------------|
 | **Speed to readiness** | Upload docs → AI extraction → verification in minutes | Hero preview, How it works |
-| **Risk reduction** | Cross-document checks + Passport Score before filing | Features: verification, score |
+| **Risk reduction** | Cross-document checks + Seadell Score before filing | Features: verification, score |
 | **Corridor expertise** | Rules tuned for Ghana, Nigeria, Kenya | Corridors section |
 | **Collaboration** | Importers and brokers on one audited workspace | Features: collaboration |
 | **Integrations** | API + webhooks for ERP/WMS back offices | Product (API v1), Enterprise tier |
 
 ### Messaging guardrails
 
-- Always include assistive disclaimer: Passport is **decision-support**, not legal or customs advice.
+- Always include assistive disclaimer: Seadell is **decision-support**, not legal or customs advice.
 - Lead with outcomes (fewer holds, faster handoffs), not AI buzzwords.
 - Use corridor-specific language where possible (e.g. “Ghana import readiness” vs generic “compliance”).
 - Avoid guarantees of clearance or duty amounts.
 
 ### Elevator pitch (30 seconds)
 
-> Passport helps import teams and brokers upload trade documents, automatically extract and cross-check fields, run corridor-specific regulatory checks, and score shipment readiness — with full audit trails and broker collaboration — before anything hits customs.
+> Seadell helps import teams and brokers upload trade documents, automatically extract and cross-check fields, run corridor-specific regulatory checks, and score shipment readiness — with full audit trails and broker collaboration — before anything hits customs.
 
 ---
 
@@ -92,9 +92,9 @@ Trade compliance operations software / shipment intelligence — not a licensed 
 
 ## 4. Competitive differentiation
 
-| Alternative | Weakness | Passport angle |
+| Alternative | Weakness | Seadell angle |
 |-------------|----------|------------------|
-| Email + spreadsheets | No verification, no audit trail | Structured workspace + Passport Score |
+| Email + spreadsheets | No verification, no audit trail | Structured workspace + Seadell Score |
 | Generic document AI | No trade-specific checks or corridors | Brain + Arbiter + corridor rules |
 | Broker-only portals | Importer doesn’t own the workflow | Multi-tenant; importer-led with broker invite |
 | ERP modules | Slow to configure; weak on doc extraction | Fast pilot on Free tier; API for sync |
@@ -133,7 +133,7 @@ Trade compliance operations software / shipment intelligence — not a licensed 
 
 | Workstream | Actions |
 |------------|---------|
-| **Content** | Monthly “corridor brief” (regulatory changes + how Passport checks them) |
+| **Content** | Monthly “corridor brief” (regulatory changes + how Seadell checks them) |
 | **Partnerships** | 3 broker LOIs for preferred collaborator onboarding |
 | **Events** | 1 trade/logistics conference or webinar (Accra or virtual WA) |
 | **Localization** | French landing copy push for WA Francophone importers |
@@ -237,7 +237,7 @@ Trade compliance operations software / shipment intelligence — not a licensed 
 ### Customs brokers
 
 - **Offer:** Free collaborator seats; co-branded onboarding PDF for their clients
-- **Ask:** Recommend Passport for pre-clearance doc prep; joint webinar
+- **Ask:** Recommend Seadell for pre-clearance doc prep; joint webinar
 - **Metric:** Invites per broker org; broker readiness confirmations
 
 ### Freight forwarders
@@ -336,4 +336,4 @@ Trade compliance operations software / shipment intelligence — not a licensed 
 
 ---
 
-*Passport marketing must always reflect the product truth in [PRD.md](../PRD.md). Update this plan quarterly or when pricing, corridors, or ICP focus changes.*
+*Seadell marketing must always reflect the product truth in [PRD.md](../PRD.md). Update this plan quarterly or when pricing, corridors, or ICP focus changes.*

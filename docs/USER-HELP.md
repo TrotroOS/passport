@@ -1,6 +1,6 @@
 # User help & troubleshooting
 
-End-user guide for when something goes wrong in Passport. The live version is at **`/help`** in the app (public — no sign-in required).
+End-user guide for when something goes wrong in Seadell. The live version is at **`/help`** in the app (public — no sign-in required).
 
 ## Topics covered
 
@@ -22,4 +22,4 @@ End-user guide for when something goes wrong in Passport. The live version is at
 
 ## Disclaimer
 
-Passport outputs are assistive trade-compliance tools, not legal or customs advice.
+Seadell outputs are assistive trade-compliance tools, not legal or customs advice.

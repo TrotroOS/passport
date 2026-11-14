@@ -37,10 +37,10 @@ async function sendEmailResponse(payload: InboundResponsePayload): Promise<void>
   const apiKey = process.env.SENDGRID_API_KEY;
   const from =
     process.env.INBOUND_EMAIL_FROM ??
-    `Passport <noreply@${getInboundConfig().inboundEmailDomain}>`;
+    `Seadell <noreply@${getInboundConfig().inboundEmailDomain}>`;
 
   const link = dashboardUrl(payload.shipmentId);
-  const subject = `Passport — Documents received for ${payload.shipmentRef}`;
+  const subject = `Seadell — Documents received for ${payload.shipmentRef}`;
   const body = buildEmailBody(payload, link);
   const html = buildInboundEmailHtml(subject, body, link);
 
@@ -129,18 +129,18 @@ export async function sendUnknownSenderReply(
     const apiKey = process.env.SENDGRID_API_KEY;
     const from =
       process.env.INBOUND_EMAIL_FROM ??
-      `Passport <noreply@${getInboundConfig().inboundEmailDomain}>`;
-    const subject = "Passport — Account not found";
+      `Seadell <noreply@${getInboundConfig().inboundEmailDomain}>`;
+    const subject = "Seadell — Account not found";
     const body = [
       "Hello,",
       "",
-      "We received your email but could not match the sender address to a Passport account.",
+      "We received your email but could not match the sender address to a Seadell account.",
       "",
       `To submit trade documents by email, please register at ${signupUrl}/signup and forward messages from your registered email address.`,
       "",
       "If you believe this is an error, please contact your organization administrator.",
       "",
-      "— Passport Trade Compliance",
+      "— Seadell Trade Compliance",
     ].join("\n");
     const html = buildInboundEmailHtml(subject, body);
 
@@ -171,7 +171,7 @@ export async function sendUnknownSenderReply(
   const sid = process.env.TWILIO_ACCOUNT_SID;
   const token = process.env.TWILIO_AUTH_TOKEN;
   const from = process.env.TWILIO_WHATSAPP_FROM;
-  const text = `We couldn't find a Passport account linked to this number. Sign up at ${signupUrl}/signup and add your phone in settings.`;
+  const text = `We couldn't find a Seadell account linked to this number. Sign up at ${signupUrl}/signup and add your phone in settings.`;
 
   if (!sid || !token || !from) {
     console.info("[Inbound] Unknown sender WhatsApp reply skipped (Twilio not configured)");
@@ -210,7 +210,7 @@ function buildEmailBody(payload: InboundResponsePayload, link: string): string {
     payload.processingNote?.trim() || null,
   ].filter(Boolean) as string[];
 
-  return `${paragraphs.join("\n\n")}\n\n— Passport Trade Compliance`;
+  return `${paragraphs.join("\n\n")}\n\n— Seadell Trade Compliance`;
 }
 
 function buildInboundEmailHtml(subject: string, body: string, link?: string): string {
@@ -244,5 +244,5 @@ function parseFromEmail(from: string): string {
 
 function parseFromName(from: string): string {
   const match = from.match(/^([^<]+)</);
-  return match?.[1]?.trim() ?? "Passport";
+  return match?.[1]?.trim() ?? "Seadell";
 }

@@ -5,16 +5,16 @@ export const privacyPolicy: LegalDocument = {
   slug: "privacy-policy",
   title: "Privacy Policy",
   description:
-    "How Passport collects, uses, shares, retains, and protects personal and trade-related data.",
+    "How Seadell collects, uses, shares, retains, and protects personal and trade-related data.",
   lastUpdated: LEGAL_LAST_UPDATED,
   sections: [
     {
       id: "intro",
       title: "1. Introduction",
       paragraphs: [
-        `${LEGAL_ENTITY_NAME} ("Passport", "we", "us", "our") provides a trade compliance and shipment intelligence platform. This Privacy Policy explains how we collect, use, disclose, retain, and protect personal data when you visit our website, create an account, collaborate on shipments, use our API, or otherwise interact with the Service.`,
+        `${LEGAL_ENTITY_NAME} ("Seadell", "we", "us", "our") provides a trade compliance and shipment intelligence platform. This Privacy Policy explains how we collect, use, disclose, retain, and protect personal data when you visit our website, create an account, collaborate on shipments, use our API, or otherwise interact with the Service.`,
         "This policy applies to account holders, organization administrators, collaborators, invitees, API integrators, and visitors. It should be read together with our Terms of Service, Cookie Policy, and Data Processing Agreement (DPA) where we process data on your behalf.",
-        "Passport is designed for business use. It is not directed to children.",
+        "Seadell is designed for business use. It is not directed to children.",
       ],
     },
     {
@@ -22,7 +22,7 @@ export const privacyPolicy: LegalDocument = {
       title: "2. Roles and contact",
       paragraphs: [
         `${LEGAL_ENTITY_NAME} is typically the data controller for account, billing, security, and platform operation data.`,
-        "When you upload personal data about your employees, brokers, suppliers, buyers, or other parties in trade documents, you are generally the data controller and Passport acts as a data processor processing that data on your instructions via the Service. See our DPA for processor terms.",
+        "When you upload personal data about your employees, brokers, suppliers, buyers, or other parties in trade documents, you are generally the data controller and Seadell acts as a data processor processing that data on your instructions via the Service. See our DPA for processor terms.",
         `Privacy and data protection inquiries: ${LEGAL_CONTACT_EMAIL}.`,
       ],
     },
@@ -34,7 +34,7 @@ export const privacyPolicy: LegalDocument = {
         "Identity and account data: name, email address, phone number (optional), organization name, job role, language preference, avatar, and account settings.",
         "Authentication data: credentials and session tokens managed by our authentication provider (Supabase). We do not store plain-text passwords.",
         "Organization and tenancy data: organization membership, roles, subscription plan, API key metadata (hashed or scoped identifiers, not full secrets in logs), and feature flags.",
-        "Trade and shipment data: shipment references, parties (names, addresses, tax IDs, contact details), products, HS codes, commercial terms, uploaded documents (invoices, packing lists, bills of lading, certificates, etc.), extraction results, verification outcomes, discrepancies, regulatory check results, risk assessments, Passport Score, workflow tasks, comments, readiness confirmations, and audit logs.",
+        "Trade and shipment data: shipment references, parties (names, addresses, tax IDs, contact details), products, HS codes, commercial terms, uploaded documents (invoices, packing lists, bills of lading, certificates, etc.), extraction results, verification outcomes, discrepancies, regulatory check results, risk assessments, Seadell Score, workflow tasks, comments, readiness confirmations, and audit logs.",
         "Collaboration data: collaborator invitations (including invitee email addresses for users not yet registered), roles, acceptance timestamps, and shared activity within shipments.",
         "Tracking and logistics data: container numbers, bill-of-lading references, carrier events, and tracking notifications you enable.",
         "Communications: support requests, feedback, inbound email or WhatsApp metadata and content when inbound channels are enabled, and transactional messages (invites, security alerts, tracking updates).",

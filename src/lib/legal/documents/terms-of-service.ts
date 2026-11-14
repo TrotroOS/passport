@@ -11,14 +11,14 @@ export const termsOfService: LegalDocument = {
   slug: "terms-of-service",
   title: "Terms of Service",
   description:
-    "Binding terms governing access to and use of the Passport trade compliance platform.",
+    "Binding terms governing access to and use of the Seadell trade compliance platform.",
   lastUpdated: LEGAL_LAST_UPDATED,
   sections: [
     {
       id: "acceptance",
       title: "1. Agreement to these Terms",
       paragraphs: [
-        `These Terms of Service ("Terms") are a binding legal agreement between you and ${LEGAL_ENTITY_NAME} ("Passport", "we", "us", "our") governing access to and use of the Passport trade compliance platform, website, application programming interfaces ("API"), and related services (collectively, the "Service").`,
+        `These Terms of Service ("Terms") are a binding legal agreement between you and ${LEGAL_ENTITY_NAME} ("Seadell", "we", "us", "our") governing access to and use of the Seadell trade compliance platform, website, application programming interfaces ("API"), and related services (collectively, the "Service").`,
         `By creating an account, clicking to accept, accessing, or using the Service, you agree to these Terms, our Privacy Policy, Cookie Policy, Acceptable Use Policy, and Data Processing Agreement (where applicable) (collectively, the "Policies"). If you do not agree, do not use the Service.`,
         `If you use the Service on behalf of a company, customs brokerage, freight forwarder, or other organization, you represent and warrant that you have authority to bind that entity. In that case, "you" and "your" refer to that entity, and you are jointly responsible for all users under your account.`,
       ],
@@ -37,7 +37,7 @@ export const termsOfService: LegalDocument = {
       id: "service",
       title: "3. Description of the Service",
       paragraphs: [
-        "Passport is a software-as-a-service platform for trade document management, AI-assisted classification and extraction, cross-document verification, Passport Score and readiness assessments, regulatory and risk checks, HS code intelligence, shipment and container tracking, collaboration with third parties, analytics, workflow tasks, audit logging, inbound document channels (where enabled), webhooks, and a public REST API.",
+        "Seadell is a software-as-a-service platform for trade document management, AI-assisted classification and extraction, cross-document verification, Seadell Score and readiness assessments, regulatory and risk checks, HS code intelligence, shipment and container tracking, collaboration with third parties, analytics, workflow tasks, audit logging, inbound document channels (where enabled), webhooks, and a public REST API.",
         "Features may vary by plan, configuration, jurisdiction, and release. We may add, modify, suspend, or discontinue features at any time. Beta, preview, or experimental features may be less reliable and are provided without warranty.",
       ],
     },
@@ -46,9 +46,9 @@ export const termsOfService: LegalDocument = {
       title: "4. Not legal, customs, or professional advice",
       paragraphs: [
         "THE SERVICE IS A DECISION-SUPPORT AND WORKFLOW TOOL ONLY. IT DOES NOT CONSTITUTE LEGAL, CUSTOMS, TAX, ACCOUNTING, EXPORT CONTROL, SANCTIONS, OR OTHER PROFESSIONAL ADVICE.",
-        "Passport is not a licensed customs broker, freight forwarder, government agency, or law firm. We do not file customs declarations, obtain clearance, or act as your agent with any authority unless explicitly agreed in a separate signed writing.",
+        "Seadell is not a licensed customs broker, freight forwarder, government agency, or law firm. We do not file customs declarations, obtain clearance, or act as your agent with any authority unless explicitly agreed in a separate signed writing.",
         "You remain solely and exclusively responsible for: (a) accuracy and completeness of all data you enter or upload; (b) all customs, import, export, tax, and regulatory filings; (c) classification of goods (including HS codes); (d) sanctions and export control compliance; (e) interactions with customs, carriers, banks, and counterparties; and (f) all commercial and legal consequences of your shipments.",
-        "No output from the Service — including verification results, Passport Score, readiness indicators, regulatory pass/fail flags, risk ratings, HS suggestions, tracking status, or AI extractions — creates or implies clearance approval, compliance certification, or fitness for any particular purpose.",
+        "No output from the Service — including verification results, Seadell Score, readiness indicators, regulatory pass/fail flags, risk ratings, HS suggestions, tracking status, or AI extractions — creates or implies clearance approval, compliance certification, or fitness for any particular purpose.",
       ],
     },
     {
@@ -66,7 +66,7 @@ export const termsOfService: LegalDocument = {
       id: "customer-data",
       title: "6. Customer Data and license",
       paragraphs: [
-        `You retain ownership of trade documents, shipment records, comments, and other content you or your users submit to the Service ("Customer Data"). You grant Passport a worldwide, non-exclusive, royalty-free license to host, copy, transmit, display, and process Customer Data solely to provide, secure, maintain, and improve the Service, comply with law, and as described in the Policies.`,
+        `You retain ownership of trade documents, shipment records, comments, and other content you or your users submit to the Service ("Customer Data"). You grant Seadell a worldwide, non-exclusive, royalty-free license to host, copy, transmit, display, and process Customer Data solely to provide, secure, maintain, and improve the Service, comply with law, and as described in the Policies.`,
         "You represent and warrant that: (a) you have all rights, licenses, and consents necessary to upload and process Customer Data, including personal data of employees, brokers, suppliers, buyers, and other parties named in trade documents; (b) your use of the Service complies with applicable data protection, export control, sanctions, and trade laws; and (c) Customer Data does not infringe third-party rights or violate law.",
         "You are the data controller for Customer Data you upload. Where we process personal data on your instructions, our Data Processing Agreement applies.",
       ],
@@ -86,7 +86,7 @@ export const termsOfService: LegalDocument = {
       id: "verification",
       title: "8. Verification, scores, and regulatory checks",
       paragraphs: [
-        "Verification engines, Passport Score, discrepancy tracking, regulatory checks (including corridor-specific rules such as Ghana import checks), risk assessments, workflow tasks, and printable reports are informational tools based on data you provide and rules configured in the Service.",
+        "Verification engines, Seadell Score, discrepancy tracking, regulatory checks (including corridor-specific rules such as Ghana import checks), risk assessments, workflow tasks, and printable reports are informational tools based on data you provide and rules configured in the Service.",
         "Results depend on document quality, completeness, timeliness, and correct configuration. Missing, illegible, or fraudulent documents will produce unreliable results.",
         "Regulatory rule sets may be incomplete, superseded, or not applicable to your facts. Sanctions screening (where enabled) uses third-party or configured sources that may be delayed, incomplete, or produce false positives or false negatives.",
         "A pass, high score, or readiness confirmation does not guarantee customs acceptance, release of goods, absence of penalties, or compliance with all applicable laws.",
@@ -152,7 +152,7 @@ export const termsOfService: LegalDocument = {
       id: "ip",
       title: "15. Intellectual property",
       paragraphs: [
-        "Passport owns the Service, software, models, documentation, branding, and all related intellectual property, except Customer Data and your pre-existing materials.",
+        "Seadell owns the Service, software, models, documentation, branding, and all related intellectual property, except Customer Data and your pre-existing materials.",
         "These Terms grant you a limited, non-exclusive, non-transferable, revocable license to use the Service during your subscription in accordance with these Terms.",
         "You may not copy, modify, distribute, sell, lease, reverse engineer, or create derivative works of the Service except as expressly permitted by law or in writing by us.",
         "Feedback and suggestions you provide may be used without restriction or compensation to you.",
@@ -170,7 +170,7 @@ export const termsOfService: LegalDocument = {
       id: "indemnification",
       title: "17. Indemnification",
       paragraphs: [
-        "You will defend, indemnify, and hold harmless Passport, its affiliates, officers, directors, employees, and agents from and against any claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys fees) arising out of or related to: (a) your Customer Data or use of the Service; (b) your violation of these Terms or the Policies; (c) your violation of law, including trade, customs, export control, sanctions, or data protection laws; (d) customs penalties, seizures, or disputes resulting from your filings or shipments; (e) disputes with collaborators, counterparties, or authorities; or (f) negligence or willful misconduct by you or your users.",
+        "You will defend, indemnify, and hold harmless Seadell, its affiliates, officers, directors, employees, and agents from and against any claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys fees) arising out of or related to: (a) your Customer Data or use of the Service; (b) your violation of these Terms or the Policies; (c) your violation of law, including trade, customs, export control, sanctions, or data protection laws; (d) customs penalties, seizures, or disputes resulting from your filings or shipments; (e) disputes with collaborators, counterparties, or authorities; or (f) negligence or willful misconduct by you or your users.",
         "We will promptly notify you of claims subject to indemnification and cooperate at your expense. We may participate with our own counsel at our expense.",
       ],
     },

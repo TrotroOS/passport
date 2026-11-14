@@ -49,7 +49,7 @@ Organization → Users → Shipments → (Parties, Products, Documents, …)
 | Module | Path | Purpose |
 |--------|------|---------|
 | AI pipeline | `ai/`, `arbiter/`, `sentry/`, `pipeline/` | Extract, validate, retry; async via `queue-document-processing.ts` |
-| Verification | `verification/` | Checks, Passport Score, discrepancies |
+| Verification | `verification/` | Checks, Seadell Score, discrepancies |
 | Regulatory | `regulatory/` | Jurisdiction rules, pass/fail |
 | Risk | `risk/` | Risk assessment engine |
 | HS codes | `hs-code/` | Suggest, verify, select |

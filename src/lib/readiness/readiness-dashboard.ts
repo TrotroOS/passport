@@ -32,7 +32,7 @@ function classifyReadiness(row: ShipmentWithSummary): {
     reasons.push("No documents uploaded");
   }
   if (row.overallScore != null && row.overallScore < 70) {
-    reasons.push(`Passport Score ${row.overallScore}/100 below target`);
+    reasons.push(`Seadell Score ${row.overallScore}/100 below target`);
   }
   if (row.riskLevel === "critical" || row.riskLevel === "high") {
     reasons.push(`Risk level: ${row.riskLevel}`);

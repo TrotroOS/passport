@@ -1,6 +1,10 @@
 import { getRequestConfig } from "next-intl/server";
 import { cookies, headers } from "next/headers";
 import { defaultLocale, isLocale, LOCALE_COOKIE } from "./config";
+import {
+  handleIntlError,
+  missingMessageFallback,
+} from "@/lib/i18n/missing-message";
 
 export default getRequestConfig(async () => {
   const headerLocale = (await headers()).get("x-passport-locale");
@@ -15,5 +19,7 @@ export default getRequestConfig(async () => {
   return {
     locale,
     messages: (await import(`../../messages/${locale}.json`)).default,
+    onError: handleIntlError,
+    getMessageFallback: missingMessageFallback,
   };
 });

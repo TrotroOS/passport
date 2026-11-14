@@ -120,7 +120,7 @@ export function InvitationAcceptPanel({
         <CardDescription>
           {isAuthenticated
             ? "Review the invitation details before accepting access"
-            : "Sign in or create a Passport account to accept this invitation"}
+            : "Sign in or create a Seadell account to accept this invitation"}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -147,7 +147,7 @@ export function InvitationAcceptPanel({
             <Badge variant="outline">{formatStatus(invitation.role)}</Badge>
             <Badge variant="secondary">{formatStatus(invitation.status)}</Badge>
             {invitation.is_external ? (
-              <Badge variant="warning">New to Passport</Badge>
+              <Badge variant="warning">New to Seadell</Badge>
             ) : null}
           </div>
         </div>
@@ -155,7 +155,7 @@ export function InvitationAcceptPanel({
         {!isAuthenticated && invitation.status === "pending" ? (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Create a free Passport account or sign in with the invited email to
+              Create a free Seadell account or sign in with the invited email to
               collaborate on this shipment.
             </p>
             <div className="flex flex-wrap gap-2">

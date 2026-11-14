@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** Smoke test key routes against a running Passport server (dev or production). */
+/** Smoke test key routes against a running Seadell server (dev or production). */
 const baseUrl = (process.env.SMOKE_TEST_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
 const routes = [
@@ -41,7 +41,7 @@ async function checkRoute(path, expect, options = {}) {
 }
 
 async function main() {
-  console.log(`Passport smoke test → ${baseUrl}\n`);
+  console.log(`Seadell smoke test → ${baseUrl}\n`);
   let failed = 0;
 
   for (const route of routes) {

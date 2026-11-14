@@ -57,7 +57,7 @@ export function buildAuditExportCsv(
     Status: formatStatus(String(sections.summary.status ?? "")),
     Origin: sections.summary.origin ?? "",
     Destination: sections.summary.destination ?? "",
-    "Passport score": sections.summary.passport_score ?? "",
+    "Seadell score": sections.summary.passport_score ?? "",
     "Export ID": exportId,
     "Exported at": formatAuditTimestamp(exportedAt.toISOString(), timeZone),
   };

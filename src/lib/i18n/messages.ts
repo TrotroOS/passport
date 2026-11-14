@@ -3,6 +3,7 @@ import en from "../../../messages/en.json";
 import fr from "../../../messages/fr.json";
 import pt from "../../../messages/pt.json";
 import ar from "../../../messages/ar.json";
+import { formatMissingTranslationKey } from "@/lib/i18n/missing-message";
 
 type MessageTree = typeof en;
 
@@ -30,11 +31,11 @@ export function formatNotificationMessage(
 export function translateStatus(locale: string, status: string): string {
   const messages = getMessagesForLocale(locale);
   const statusMap = messages.status as Record<string, string>;
-  return statusMap[status] ?? status.replace(/_/g, " ");
+  return statusMap[status] ?? formatMissingTranslationKey(status);
 }
 
 export function translateEventType(locale: string, eventType: string): string {
   const messages = getMessagesForLocale(locale);
   const events = messages.events as Record<string, string>;
-  return events[eventType] ?? eventType.replace(/_/g, " ");
+  return events[eventType] ?? formatMissingTranslationKey(eventType);
 }

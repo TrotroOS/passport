@@ -17,7 +17,7 @@ export function createTrackingProvider(): TrackingProvider {
   if (provider === "mock") {
     if (isProduction()) {
       console.warn(
-        "[Passport] TRACKING_PROVIDER=mock in production — set TRACKING_PROVIDER=terminal49 and TRACKING_API_KEY for live tracking"
+        "[Seadell] TRACKING_PROVIDER=mock in production — set TRACKING_PROVIDER=terminal49 and TRACKING_API_KEY for live tracking"
       );
     }
     return new MockTrackingProvider();

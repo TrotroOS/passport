@@ -1,5 +1,10 @@
-import { cache } from "react";
+import { cache as reactCache } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
+
+const cache =
+  typeof reactCache === "function"
+    ? reactCache
+    : <T extends (...args: never[]) => unknown>(fn: T) => fn;
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 

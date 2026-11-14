@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Push Passport auth settings to Supabase (site URL, redirects, Google + Apple OAuth).
+ * Push Seadell auth settings to Supabase (site URL, redirects, Google + Apple OAuth).
  *
  * Requires:
  *   SUPABASE_ACCESS_TOKEN — https://supabase.com/dashboard/account/tokens
@@ -163,4 +163,4 @@ console.log("✓ Supabase auth config updated");
 if (googleId) console.log("✓ Google sign-in enabled");
 if (appleId) console.log("✓ Apple sign-in enabled");
 
-console.log("\nNext: redeploy Passport if env vars changed, then test /login OAuth buttons.");
+console.log("\nNext: redeploy Seadell if env vars changed, then test /login OAuth buttons.");

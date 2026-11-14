@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** Verify a deployed Passport instance is ready for public launch (read-only checks). */
+/** Verify a deployed Seadell instance is ready for public launch (read-only checks). */
 const baseUrl = (process.env.SMOKE_TEST_URL ?? process.env.VERIFY_PRODUCTION_URL ?? "https://passport-one-kappa.vercel.app").replace(/\/$/, "");
 
 const failures = [];
@@ -19,7 +19,7 @@ function ok(message) {
   console.log(`✓ ${message}`);
 }
 
-console.log(`Passport production verification → ${baseUrl}\n`);
+console.log(`Seadell production verification → ${baseUrl}\n`);
 
 try {
   const healthRes = await fetch(`${baseUrl}/api/health`);

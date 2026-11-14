@@ -1,4 +1,4 @@
-# CLAUDE.md — Passport coding agent instructions
+# CLAUDE.md — Seadell coding agent instructions
 
 Primary instruction file for AI coding agents working in this repository.
 
@@ -6,7 +6,7 @@ Primary instruction file for AI coding agents working in this repository.
 
 ## Project identity
 
-**Passport** is a multi-tenant trade compliance SaaS (Next.js 15 + Supabase). Read [PRD.md](./PRD.md) for product scope and [ARCHITECTURE-ESSENTIALS.md](./ARCHITECTURE-ESSENTIALS.md) before making changes.
+**Seadell** is a multi-tenant trade compliance SaaS (Next.js 15 + Supabase). Read [PRD.md](./PRD.md) for product scope and [ARCHITECTURE-ESSENTIALS.md](./ARCHITECTURE-ESSENTIALS.md) before making changes.
 
 ---
 
@@ -30,7 +30,7 @@ Primary instruction file for AI coding agents working in this repository.
 
 ### Domain rules
 
-- Passport outputs are **assistive**, not legal/customs advice
+- Seadell outputs are **assistive**, not legal/customs advice
 - All mutating actions should call `writeAuditEvent()` where applicable
 - Shipment access must go through `shipment-access.ts` / `assertShipmentAccess()`
 - New tables **require RLS policies** in the same migration

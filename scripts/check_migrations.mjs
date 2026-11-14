@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** Report which Passport migrations appear applied on the remote database. */
+/** Report which Seadell migrations appear applied on the remote database. */
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
@@ -263,7 +263,7 @@ async function columnExists(table, column) {
   return !error;
 }
 
-console.log("Passport migration status\n");
+console.log("Seadell migration status\n");
 
 const pending = [];
 

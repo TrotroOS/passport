@@ -46,7 +46,7 @@ export async function AppHeader({
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 px-4 sm:h-16 sm:gap-3 sm:px-6 lg:px-8">
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <Link href="/dashboard" className="flex shrink-0 items-center gap-2">
-            <PassportLogo height={28} />
+            <PassportLogo variant="lockup" height={26} />
           </Link>
           {organizationName ? (
             <span className="hidden truncate text-sm text-muted-foreground lg:inline">

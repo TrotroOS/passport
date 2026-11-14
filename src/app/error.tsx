@@ -12,7 +12,7 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[Passport]", error);
+    console.error("[Seadell]", error);
     reportClientError(error, { digest: error.digest });
   }, [error]);
 

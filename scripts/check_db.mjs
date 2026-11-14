@@ -41,7 +41,7 @@ const client = createClient(url, anon);
 const email = process.argv[2] ?? "trotroosapp@gmail.com";
 const password = process.argv[3] ?? "Mensdom24.";
 
-console.log("Passport database check\n");
+console.log("Seadell database check\n");
 
 const { data: profiles } = await admin.from("users").select("id, email, organization_id");
 console.log(`Users (service role): ${profiles?.length ?? 0}`);

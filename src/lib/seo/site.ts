@@ -1,9 +1,9 @@
 import { LEGAL_DOCUMENTS } from "@/lib/legal";
 import { getAppUrl } from "@/lib/app-url";
 
-export const SITE_NAME = "Passport";
+export const SITE_NAME = "Seadell";
 
-export const DEFAULT_TITLE = "Passport — Trade Compliance & Shipment Intelligence";
+export const DEFAULT_TITLE = "Seadell — Global Trade Intelligence";
 
 export const DEFAULT_DESCRIPTION =
   "Automatically classify trade documents and HS codes, run customs clearance checks, and score shipment readiness — before filing with authorities.";

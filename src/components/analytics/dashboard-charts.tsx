@@ -17,6 +17,7 @@ import {
   YAxis,
 } from "recharts";
 import { ArrowRight, Ship, AlertTriangle, Container } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { formatMonthLabel } from "@/lib/analytics/date-range";
 import { useLocalizedStatus } from "@/lib/i18n/use-localized-status";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,7 @@ const STATUS_COLORS = [
 ];
 
 export function DashboardCharts() {
+  const t = useTranslations("analytics");
   const localizedStatus = useLocalizedStatus();
   const [loading, setLoading] = useState(true);
   const [summary, setSummary] = useState<Record<string, unknown> | null>(null);
@@ -113,10 +115,10 @@ export function DashboardCharts() {
   return (
     <div className="mb-8 min-w-0 space-y-4 overflow-hidden print:hidden">
       <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-lg font-semibold">Overview (last 90 days)</h2>
+        <h2 className="text-lg font-semibold">{t("overviewLast90Days")}</h2>
         <Button variant="ghost" size="sm" asChild className="w-fit shrink-0">
           <Link href="/analytics">
-            Full analytics
+            {t("fullAnalytics")}
             <ArrowRight className="ms-2 h-4 w-4" />
           </Link>
         </Button>
@@ -125,12 +127,12 @@ export function DashboardCharts() {
       <div className="grid min-w-0 gap-4 lg:grid-cols-3">
         <Card className="min-w-0 overflow-hidden">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Compliance trend</CardTitle>
-            <CardDescription>Avg Passport Score by month</CardDescription>
+            <CardTitle className="text-base">{t("complianceTrend")}</CardTitle>
+            <CardDescription>{t("complianceTrendDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="h-44 min-w-0 overflow-hidden">
             {compliance.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No score history yet</p>
+              <p className="text-sm text-muted-foreground">{t("noScoreHistory")}</p>
             ) : (
               <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <LineChart data={compliance}>
@@ -155,13 +157,13 @@ export function DashboardCharts() {
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
               <Ship className="h-4 w-4 shrink-0" />
-              Shipment status
+              {t("shipmentStatus")}
             </CardTitle>
-            <CardDescription>Current pipeline breakdown</CardDescription>
+            <CardDescription>{t("pipelineBreakdown")}</CardDescription>
           </CardHeader>
           <CardContent className="h-44 min-w-0 overflow-hidden">
             {statusBreakdown.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No shipments in range</p>
+              <p className="text-sm text-muted-foreground">{t("noShipmentsInRange")}</p>
             ) : (
               <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <BarChart data={statusBreakdown} layout="vertical" margin={{ left: 8 }}>
@@ -186,12 +188,12 @@ export function DashboardCharts() {
 
         <Card className="min-w-0 overflow-hidden">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Risk distribution</CardTitle>
-            <CardDescription>Latest assessments</CardDescription>
+            <CardTitle className="text-base">{t("riskDistribution")}</CardTitle>
+            <CardDescription>{t("riskDistributionDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="h-44 min-w-0 overflow-hidden">
             {riskPie.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No risk data yet</p>
+              <p className="text-sm text-muted-foreground">{t("noRiskDataYet")}</p>
             ) : (
               <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <PieChart>
@@ -225,14 +227,14 @@ export function DashboardCharts() {
               <Container className="h-8 w-8 text-primary" />
               <div>
                 <p className="text-2xl font-bold">{String(tracking.containersTracked ?? 0)}</p>
-                <p className="text-xs text-muted-foreground">Containers tracked</p>
+                <p className="text-xs text-muted-foreground">{t("containersTracked")}</p>
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6">
               <p className="text-2xl font-bold">{String(tracking.shipmentsWithTracking ?? 0)}</p>
-              <p className="text-xs text-muted-foreground">Shipments with tracking</p>
+              <p className="text-xs text-muted-foreground">{t("shipmentsWithTracking")}</p>
             </CardContent>
           </Card>
           <Card>
@@ -240,14 +242,14 @@ export function DashboardCharts() {
               <AlertTriangle className="h-8 w-8 text-amber-500" />
               <div>
                 <p className="text-2xl font-bold">{String(tracking.delayedEvents ?? 0)}</p>
-                <p className="text-xs text-muted-foreground">Delay events</p>
+                <p className="text-xs text-muted-foreground">{t("delayEvents")}</p>
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6">
               <p className="text-2xl font-bold">{String(tracking.delivered ?? 0)}</p>
-              <p className="text-xs text-muted-foreground">Deliveries recorded</p>
+              <p className="text-xs text-muted-foreground">{t("deliveriesRecorded")}</p>
             </CardContent>
           </Card>
         </div>

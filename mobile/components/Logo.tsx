@@ -14,7 +14,7 @@ export function Logo({ width = 280, style }: LogoProps) {
         source={require("@/assets/logo.png")}
         style={{ width, height }}
         resizeMode="contain"
-        accessibilityLabel="Passport logo"
+        accessibilityLabel="Seadell logo"
       />
     </View>
   );

@@ -75,7 +75,7 @@ export function classifyClearanceStage(
   }
 
   if (input.overallScore != null && input.overallScore < ASSISTIVE_CLEARANCE_SCORE_MIN) {
-    reasons.push(`Passport Score ${input.overallScore}/100 below clearance target`);
+    reasons.push(`Seadell Score ${input.overallScore}/100 below clearance target`);
     recommendedActions.push("Improve documentation and consistency scores");
   }
 

@@ -1,6 +1,6 @@
-# Passport Mobile (React Native / Expo SDK 54)
+# Seadell Mobile (React Native / Expo SDK 54)
 
-Native companion app for the Passport trade compliance platform. Built with **Expo SDK 54** (compatible with the latest Expo Go).
+Native companion app for the Seadell trade compliance platform. Built with **Expo SDK 54** (compatible with the latest Expo Go).
 
 ## Prerequisites
 

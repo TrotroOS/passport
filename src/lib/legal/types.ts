@@ -14,7 +14,7 @@ export interface LegalDocument {
 }
 
 export const LEGAL_ENTITY_NAME =
-  process.env.NEXT_PUBLIC_LEGAL_ENTITY_NAME ?? "Passport Trade Compliance";
+  process.env.NEXT_PUBLIC_LEGAL_ENTITY_NAME ?? "Seadell Trade Compliance";
 export const LEGAL_CONTACT_EMAIL =
   process.env.NEXT_PUBLIC_LEGAL_CONTACT_EMAIL ?? "legal@passport.trade";
 export const SUPPORT_CONTACT_EMAIL =

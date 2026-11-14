@@ -1,8 +1,8 @@
-# Passport
+# Seadell
 
 Trade compliance and shipment intelligence platform for importers, customs brokers, and freight forwarders.
 
-Passport helps importers, customs brokers, and freight forwarders upload trade documents, run cross-document verification, score shipment readiness, assess regulatory and risk exposure, track containers, and collaborate on shipments — all in a multi-tenant SaaS with a public REST API.
+Seadell helps importers, customs brokers, and freight forwarders upload trade documents, run cross-document verification, score shipment readiness, assess regulatory and risk exposure, track containers, and collaborate on shipments — all in a multi-tenant SaaS with a public REST API.
 
 ## Documentation
 
@@ -49,10 +49,10 @@ Passport helps importers, customs brokers, and freight forwarders upload trade d
 
 Upload triggers auto-processing. Review extractions at `/shipments/[id]/documents/[docId]`.
 
-### Verification & Passport Score
+### Verification & Seadell Score
 
 - Cross-document verification engine with deterministic checks
-- Passport Score (overall, documentation, consistency, counterparty, regulatory)
+- Seadell Score (overall, documentation, consistency, counterparty, regulatory)
 - Discrepancy tracking (open / resolved / ignored)
 - Printable compliance report
 
@@ -198,7 +198,7 @@ Migration highlights:
 | # | Feature |
 |---|---|
 | 001–005 | Core schema, RLS, storage, document extraction |
-| 006–007 | Verification, Passport Score, regulatory, workflow |
+| 006–007 | Verification, Seadell Score, regulatory, workflow |
 | 008 | Risk, API keys, webhooks |
 | 009 | Platform admin, feedback |
 | 011 | Inbound channels |
@@ -367,13 +367,13 @@ Smoke test verifies homepage, `/api/health` (DB up), auth pages, legal pages, an
 
 ### SendGrid (collaboration invites)
 
-External broker invites send email via SendGrid. Without it, Passport still creates invitations and returns a **copy link** fallback.
+External broker invites send email via SendGrid. Without it, Seadell still creates invitations and returns a **copy link** fallback.
 
 1. Create a [SendGrid](https://sendgrid.com) API key with **Mail Send** permission
 2. Verify a sender domain or single sender in SendGrid
 3. Set in Vercel **Production**:
    - `SENDGRID_API_KEY`
-   - `INBOUND_EMAIL_FROM=Passport <noreply@yourdomain.com>` (must match verified sender)
+   - `INBOUND_EMAIL_FROM=Seadell <noreply@yourdomain.com>` (must match verified sender)
    - `NEXT_PUBLIC_APP_URL=https://your-production-url`
 4. Redeploy, then test:
 
@@ -397,7 +397,7 @@ Set these under **Vercel → Project → Settings → Environment Variables → 
 | `UPSTASH_REDIS_REST_URL` | Yes | Rate limiting |
 | `UPSTASH_REDIS_REST_TOKEN` | Yes | Rate limiting |
 | `SENDGRID_API_KEY` | Recommended | Collaboration invite emails |
-| `INBOUND_EMAIL_FROM` | With SendGrid | `Passport <mensahstephen385@gmail.com>` (verified sender) |
+| `INBOUND_EMAIL_FROM` | With SendGrid | `Seadell <mensahstephen385@gmail.com>` (verified sender) |
 | `SENTRY_DSN` | Recommended | Error monitoring |
 
 **Never set in Production:** `AUTO_CONFIRM_EMAIL`, `FIRST_USER_IS_ADMIN`, `INBOUND_ALLOW_UNVERIFIED`

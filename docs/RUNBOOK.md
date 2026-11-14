@@ -1,13 +1,13 @@
-# Passport platform admin runbook
+# Seadell platform admin runbook
 
-Operator procedures for the Passport trade compliance SaaS. The live version is also available in the admin UI at `/admin/runbook` (platform admin access required).
+Operator procedures for the Seadell trade compliance SaaS. The live version is also available in the admin UI at `/admin/runbook` (platform admin access required).
 
 ## Overview
 
 - **Admin UI:** `/admin` — requires `is_platform_admin = true` on your user profile (migration 009)
 - **Scope:** Cross-tenant monitoring, reference data, user promotion, error triage
 - **Read-only:** Admin shipment views do not mutate tenant data
-- **Disclaimer:** Passport outputs are assistive, not legal or customs advice
+- **Disclaimer:** Seadell outputs are assistive, not legal or customs advice
 
 ## Daily checks (5–10 min)
 

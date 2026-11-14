@@ -597,12 +597,12 @@ export function AnalyticsDashboard() {
           <div className="grid gap-6 lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Discrepancy trend</CardTitle>
-                <CardDescription>Open vs resolved by month</CardDescription>
+                <CardTitle>{t("discrepancyTrend")}</CardTitle>
+                <CardDescription>{t("discrepancyTrendDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="h-64">
                 {discrepancyTrend.length === 0 ? (
-                  <EmptyChart message="No discrepancy history" />
+                  <EmptyChart message={t("noDiscrepancyHistory")} />
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={discrepancyTrend}>
@@ -611,8 +611,8 @@ export function AnalyticsDashboard() {
                       <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="open" stackId="a" fill="#ef4444" name="Open" />
-                      <Bar dataKey="resolved" stackId="a" fill="#10b981" name="Resolved" />
+                      <Bar dataKey="open" stackId="a" fill="#ef4444" name={t("open")} />
+                      <Bar dataKey="resolved" stackId="a" fill="#10b981" name={t("resolved")} />
                     </BarChart>
                   </ResponsiveContainer>
                 )}
@@ -621,20 +621,20 @@ export function AnalyticsDashboard() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Passport Score dimensions</CardTitle>
-                <CardDescription>Average across latest shipment scores</CardDescription>
+                <CardTitle>{t("scoreDimensions")}</CardTitle>
+                <CardDescription>{t("scoreDimensionsDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="h-64">
                 {scoreDimensions?.overall == null ? (
-                  <EmptyChart message="No score dimensions yet" />
+                  <EmptyChart message={t("noScoreDimensions")} />
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={[
                         { name: t("chartOverall"), score: scoreDimensions.overall },
                         { name: t("chartDocumentation"), score: scoreDimensions.documentation },
-                        { name: "Consistency", score: scoreDimensions.consistency },
-                        { name: "Counterparty", score: scoreDimensions.counterparty },
+                        { name: t("chartConsistency"), score: scoreDimensions.consistency },
+                        { name: t("chartCounterparty"), score: scoreDimensions.counterparty },
                         { name: t("chartRegulatory"), score: scoreDimensions.regulatory },
                       ].filter((d) => d.score != null)}
                     >
@@ -653,12 +653,12 @@ export function AnalyticsDashboard() {
           <div className="grid gap-6 lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Risk factor scores</CardTitle>
-                <CardDescription>Average factor contribution by type</CardDescription>
+                <CardTitle>{t("riskFactorScores")}</CardTitle>
+                <CardDescription>{t("riskFactorScoresDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="h-64">
                 {riskFactors.length === 0 ? (
-                  <EmptyChart message="No risk factors yet" />
+                  <EmptyChart message={t("noRiskFactors")} />
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={riskFactors} layout="vertical" margin={{ left: 16 }}>
@@ -666,7 +666,7 @@ export function AnalyticsDashboard() {
                       <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} />
                       <YAxis type="category" dataKey="label" width={100} tick={{ fontSize: 10 }} />
                       <Tooltip />
-                      <Bar dataKey="avgScore" fill="#f97316" radius={[0, 4, 4, 0]} name="Avg score" />
+                      <Bar dataKey="avgScore" fill="#f97316" radius={[0, 4, 4, 0]} name={t("avgScoreBar")} />
                     </BarChart>
                   </ResponsiveContainer>
                 )}
@@ -675,12 +675,12 @@ export function AnalyticsDashboard() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Shipment pipeline</CardTitle>
-                <CardDescription>Status breakdown in selected range</CardDescription>
+                <CardTitle>{t("shipmentPipeline")}</CardTitle>
+                <CardDescription>{t("shipmentPipelineDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="h-64">
                 {statusBreakdown.length === 0 ? (
-                  <EmptyChart message="No shipments in range" />
+                  <EmptyChart message={t("noShipmentsInRange")} />
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -711,26 +711,26 @@ export function AnalyticsDashboard() {
           {tracking ? (
             <Card>
               <CardHeader>
-                <CardTitle>Freight tracking</CardTitle>
-                <CardDescription>Container and event summary</CardDescription>
+                <CardTitle>{t("freightTracking")}</CardTitle>
+                <CardDescription>{t("freightTrackingDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 sm:grid-cols-4">
                   <div>
                     <p className="text-2xl font-bold">{String(tracking.containersTracked ?? 0)}</p>
-                    <p className="text-xs text-muted-foreground">Containers</p>
+                    <p className="text-xs text-muted-foreground">{t("containers")}</p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{String(tracking.shipmentsWithTracking ?? 0)}</p>
-                    <p className="text-xs text-muted-foreground">Shipments tracked</p>
+                    <p className="text-xs text-muted-foreground">{t("shipmentsTracked")}</p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{String(tracking.delayedEvents ?? 0)}</p>
-                    <p className="text-xs text-muted-foreground">Delays</p>
+                    <p className="text-xs text-muted-foreground">{t("delays")}</p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{String(tracking.delivered ?? 0)}</p>
-                    <p className="text-xs text-muted-foreground">Deliveries</p>
+                    <p className="text-xs text-muted-foreground">{t("deliveries")}</p>
                   </div>
                 </div>
               </CardContent>
@@ -765,6 +765,7 @@ function KpiCard({
 }
 
 function RiskMix({ distribution }: { distribution?: Record<string, number> }) {
+  const localizedStatus = useLocalizedStatus();
   if (!distribution) return <span className="text-muted-foreground">—</span>;
   return (
     <div className="flex flex-wrap gap-1">
@@ -778,7 +779,7 @@ function RiskMix({ distribution }: { distribution?: Record<string, number> }) {
                 RISK_COLORS[level as keyof typeof RISK_COLORS] ?? "#94a3b8",
             }}
           >
-            {level.slice(0, 1).toUpperCase()}:{count}
+            {localizedStatus(level)}:{count}
           </span>
         ) : null
       )}

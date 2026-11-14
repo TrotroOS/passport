@@ -315,7 +315,7 @@ export async function MarketingLanding() {
                     >
                       {tier === "enterprise" ? (
                         <Link
-                          href={`mailto:${SUPPORT_CONTACT_EMAIL}?subject=Passport%20Enterprise`}
+                          href={`mailto:${SUPPORT_CONTACT_EMAIL}?subject=Seadell%20Enterprise`}
                         >
                           {t("pricing.ctaEnterprise")}
                         </Link>

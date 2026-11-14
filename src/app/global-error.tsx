@@ -11,7 +11,7 @@ export default function GlobalError({
       <body className="flex min-h-screen flex-col items-center justify-center bg-white px-4 font-sans">
         <h1 className="text-2xl font-bold">Application error</h1>
         <p className="mt-2 text-muted-foreground">
-          Passport encountered a critical error. Please refresh the page.
+          Seadell encountered a critical error. Please refresh the page.
         </p>
         <button
           type="button"

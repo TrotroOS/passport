@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!doc) return { title: "Legal" };
 
   return buildPageMetadata({
-    title: `${doc.title} — Passport`,
+    title: `${doc.title} — Seadell`,
     description: doc.description,
     path: `/legal/${slug}`,
   });

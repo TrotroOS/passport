@@ -12,7 +12,7 @@ export function getSupabaseAuthCallbackUrl(): string {
   return `${supabaseUrl}/auth/v1/callback`;
 }
 
-/** Passport app callback after Supabase completes OAuth / email confirm. */
+/** Seadell app callback after Supabase completes OAuth / email confirm. */
 export function getAppAuthCallbackUrl(next: string = DEFAULT_POST_AUTH_PATH): string {
   return `${getAppUrl()}/auth/callback?next=${encodeURIComponent(next)}`;
 }

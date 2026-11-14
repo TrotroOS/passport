@@ -67,7 +67,7 @@ export function validateProductionEnvironment(): void {
 
   if (process.env.TRACKING_PROVIDER === "mock") {
     console.warn(
-      "[Passport] TRACKING_PROVIDER=mock in production — configure a live provider for real tracking"
+      "[Seadell] TRACKING_PROVIDER=mock in production — configure a live provider for real tracking"
     );
   }
 

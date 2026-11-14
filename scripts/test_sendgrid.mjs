@@ -50,11 +50,11 @@ if (!to) {
   process.exit(1);
 }
 
-const from = process.env.INBOUND_EMAIL_FROM ?? "Passport <noreply@passport.trade>";
+const from = process.env.INBOUND_EMAIL_FROM ?? "Seadell <noreply@passport.trade>";
 const match = from.match(/^(.+?)\s*<([^>]+)>$/);
 const fromPayload = match
   ? { name: match[1].trim(), email: match[2].trim() }
-  : { name: "Passport", email: from };
+  : { name: "Seadell", email: from };
 
 const appUrl = resolveEmailAppUrl();
 
@@ -67,11 +67,11 @@ const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
   body: JSON.stringify({
     personalizations: [{ to: [{ email: to }] }],
     from: fromPayload,
-    subject: "Passport SendGrid test",
+    subject: "Seadell SendGrid test",
     content: [
       {
         type: "text/plain",
-        value: `SendGrid is configured for Passport.\nApp URL: ${appUrl}\nFrom: ${from}`,
+        value: `SendGrid is configured for Seadell.\nApp URL: ${appUrl}\nFrom: ${from}`,
       },
     ],
   }),

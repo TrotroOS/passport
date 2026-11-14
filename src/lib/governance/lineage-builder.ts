@@ -143,9 +143,9 @@ export async function buildShipmentLineage(shipmentId: string): Promise<LineageG
     nodes.push({
       id: scoreId,
       type: "passport_score",
-      label: `Passport Score ${score.overall_score}`,
+      label: `Seadell Score ${score.overall_score}`,
       sourceId: "passport-arbiter",
-      sourceName: "Passport Score engine",
+      sourceName: "Seadell Score engine",
       timestamp: score.created_at,
     });
     sourcesUsed.add("passport-arbiter");

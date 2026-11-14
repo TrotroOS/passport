@@ -102,7 +102,7 @@ export function ChannelsSettings({
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Must match the number you use to message Passport on WhatsApp.
+              Must match the number you use to message Seadell on WhatsApp.
             </p>
           </div>
           <div className="rounded-md border bg-slate-50 p-4 text-sm">

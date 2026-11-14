@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** Smoke-test that Supabase OAuth providers are enabled for Passport. */
+/** Smoke-test that Supabase OAuth providers are enabled for Seadell. */
 import { readFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";

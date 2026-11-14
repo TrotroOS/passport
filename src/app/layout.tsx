@@ -1,10 +1,12 @@
 import { Inter, Cairo } from "next/font/google";
-import { headers } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "sonner";
 import { isRtlLocale, type Locale } from "@/i18n/config";
-import { messagesForPath } from "@/lib/i18n/client-messages";
+import {
+  handleIntlError,
+  missingMessageFallback,
+} from "@/lib/i18n/missing-message";
 import { AppProviders } from "@/components/providers/app-providers";
 import { KeyboardShortcutsProvider } from "@/components/layout/keyboard-shortcuts";
 import { buildRootMetadata } from "@/lib/seo/metadata";
@@ -41,16 +43,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [locale, messages, headerStore] = await Promise.all([
-    getLocale(),
-    getMessages(),
-    headers(),
-  ]);
+  const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
   const resolvedLocale = locale as Locale;
-  const pathname = headerStore.get("x-passport-path");
-  const clientMessages = pathname
-    ? messagesForPath(messages as Record<string, unknown>, pathname)
-    : messages;
   const dir = isRtlLocale(resolvedLocale) ? "rtl" : "ltr";
   const fontClass = isRtlLocale(resolvedLocale)
     ? `${cairo.variable} font-[family-name:var(--font-cairo)]`
@@ -66,7 +60,12 @@ export default async function RootLayout({
           </>
         ) : null}
         <AppProviders>
-          <NextIntlClientProvider locale={resolvedLocale} messages={clientMessages}>
+          <NextIntlClientProvider
+            locale={resolvedLocale}
+            messages={messages}
+            onError={handleIntlError}
+            getMessageFallback={missingMessageFallback}
+          >
             <KeyboardShortcutsProvider>
               <div id="passport-app-shell" className="no-print">
                 {children}

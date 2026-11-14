@@ -5,14 +5,14 @@ export const complianceDisclaimer: LegalDocument = {
   slug: "compliance-disclaimer",
   title: "Compliance & AI Disclaimer",
   description:
-    "Important limitations on Passport verification, AI outputs, regulatory checks, and tracking data.",
+    "Important limitations on Seadell verification, AI outputs, regulatory checks, and tracking data.",
   lastUpdated: LEGAL_LAST_UPDATED,
   sections: [
     {
       id: "summary",
-      title: "1. Read this before relying on Passport",
+      title: "1. Read this before relying on Seadell",
       paragraphs: [
-        `${LEGAL_ENTITY_NAME} ("Passport") provides software tools to help organize trade documents, run checks, and collaborate on shipments. This disclaimer summarizes critical limitations. It supplements our Terms of Service and does not replace them.`,
+        `${LEGAL_ENTITY_NAME} ("Seadell") provides software tools to help organize trade documents, run checks, and collaborate on shipments. This disclaimer summarizes critical limitations. It supplements our Terms of Service and does not replace them.`,
         "If anything in the product UI conflicts with this disclaimer or the Terms, the Terms and Policies govern.",
       ],
     },
@@ -20,7 +20,7 @@ export const complianceDisclaimer: LegalDocument = {
       id: "no-advice",
       title: "2. No professional or government advice",
       paragraphs: [
-        "Passport does not provide legal, customs, tax, accounting, or export control advice. We are not a government agency, customs authority, licensed broker, or law firm.",
+        "Seadell does not provide legal, customs, tax, accounting, or export control advice. We are not a government agency, customs authority, licensed broker, or law firm.",
         "Nothing in the Service constitutes clearance approval, compliance certification, or a guarantee that goods will be accepted by customs or any regulator.",
         "Always consult qualified professionals and official authorities for binding guidance.",
       ],
@@ -36,10 +36,10 @@ export const complianceDisclaimer: LegalDocument = {
     },
     {
       id: "verification-limits",
-      title: "4. Verification and Passport Score",
+      title: "4. Verification and Seadell Score",
       paragraphs: [
         "Cross-document verification compares data you and the system have captured. It cannot detect fraud, missing documents you did not upload, or errors in source documents that appear internally consistent.",
-        "Passport Score and readiness indicators are composite metrics for workflow prioritization. A high score does not mean a shipment will clear without inspection, duty adjustment, or penalty.",
+        "Seadell Score and readiness indicators are composite metrics for workflow prioritization. A high score does not mean a shipment will clear without inspection, duty adjustment, or penalty.",
         "Discrepancy resolution and ignored flags are your decisions — the Service does not automatically resolve legal or customs issues.",
       ],
     },
@@ -47,7 +47,7 @@ export const complianceDisclaimer: LegalDocument = {
       id: "regulatory-limits",
       title: "5. Regulatory and corridor checks",
       paragraphs: [
-        "Regulatory rules in Passport (including corridor-specific checks such as Ghana import requirements) are based on configured rule sets that may be incomplete, outdated, or not applicable to your specific facts, exemptions, or free trade agreements.",
+        "Regulatory rules in Seadell (including corridor-specific checks such as Ghana import requirements) are based on configured rule sets that may be incomplete, outdated, or not applicable to your specific facts, exemptions, or free trade agreements.",
         "Pass/fail results are automated signals, not legal determinations. Requirements change frequently; you must confirm current rules with official sources.",
       ],
     },
@@ -56,7 +56,7 @@ export const complianceDisclaimer: LegalDocument = {
       title: "6. Sanctions and denied-party screening",
       paragraphs: [
         "Where enabled, screening uses third-party or configured lists that may be delayed, incomplete, or produce false positives and false negatives.",
-        "Screening in Passport is not a substitute for your own export control and sanctions compliance program, including list updates, escalation procedures, and record-keeping required by law.",
+        "Screening in Seadell is not a substitute for your own export control and sanctions compliance program, including list updates, escalation procedures, and record-keeping required by law.",
       ],
     },
     {
@@ -64,7 +64,7 @@ export const complianceDisclaimer: LegalDocument = {
       title: "7. Tracking and logistics data",
       paragraphs: [
         "Container and bill-of-lading tracking depends on carriers and third-party data providers. Positions, ETAs, and events may be estimated, stale, or incorrect.",
-        "Do not rely solely on Passport tracking for time-critical customs, demurrage, or delivery decisions without independent confirmation.",
+        "Do not rely solely on Seadell tracking for time-critical customs, demurrage, or delivery decisions without independent confirmation.",
       ],
     },
     {
@@ -72,7 +72,7 @@ export const complianceDisclaimer: LegalDocument = {
       title: "8. Collaboration and shared data",
       paragraphs: [
         "When you invite collaborators or share shipment data, you are responsible for ensuring they are authorized recipients and bound by appropriate confidentiality obligations.",
-        "Passport facilitates sharing; it does not verify the professional credentials or trustworthiness of collaborators.",
+        "Seadell facilitates sharing; it does not verify the professional credentials or trustworthiness of collaborators.",
       ],
     },
     {

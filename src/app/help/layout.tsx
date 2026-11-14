@@ -34,7 +34,7 @@ export default async function HelpLayout({
       <header className="border-b bg-background">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4 sm:px-6">
           <Link href={user ? "/dashboard" : "/"} className="flex items-center">
-            <PassportLogo height={28} />
+            <PassportLogo variant="lockup" height={26} />
           </Link>
           <div className="flex items-center gap-3 text-sm">
             {user ? (

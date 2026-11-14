@@ -9,10 +9,10 @@ export function formatCollaboratorRoleForEmail(role: string): string {
 }
 
 export function emailSubjectHeading(subject: string): string {
-  return subject.replace(/^Passport\s*[:\u2014-]\s*/i, "").trim();
+  return subject.replace(/^(?:Seadell|Passport)\s*[:\u2014-]\s*/i, "").trim();
 }
 
 export const TRANSACTIONAL_EMAIL_FOOTER =
-  "Passport provides assistive trade compliance tools. Outputs are not legal, customs, or tax advice. For binding decisions, consult qualified counsel or your licensed customs broker.";
+  "Seadell provides assistive trade compliance tools. Outputs are not legal, customs, or tax advice. For binding decisions, consult qualified counsel or your licensed customs broker.";
 
-export const TRANSACTIONAL_EMAIL_SIGNOFF = "Passport Trade Compliance";
+export const TRANSACTIONAL_EMAIL_SIGNOFF = "Seadell Trade Compliance";

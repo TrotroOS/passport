@@ -106,7 +106,7 @@ export default async function AdminDashboardPage() {
 
         title="Platform Dashboard"
 
-        description="Everything you need to monitor Passport, operate the platform, and know your responsibilities as a platform admin."
+        description="Everything you need to monitor Seadell, operate the platform, and know your responsibilities as a platform admin."
 
       />
 

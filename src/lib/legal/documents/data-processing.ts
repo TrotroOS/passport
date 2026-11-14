@@ -5,16 +5,16 @@ export const dataProcessingAgreement: LegalDocument = {
   slug: "data-processing",
   title: "Data Processing Agreement",
   description:
-    "Processor terms when Passport handles personal data on your behalf under GDPR, UK GDPR, and similar laws.",
+    "Processor terms when Seadell handles personal data on your behalf under GDPR, UK GDPR, and similar laws.",
   lastUpdated: LEGAL_LAST_UPDATED,
   sections: [
     {
       id: "scope",
       title: "1. Scope, parties, and precedence",
       paragraphs: [
-        `This Data Processing Agreement ("DPA") forms part of the agreement between you ("Customer", "Controller") and ${LEGAL_ENTITY_NAME} ("Passport", "Processor") and applies where Passport processes Personal Data on your behalf in connection with the Service.`,
+        `This Data Processing Agreement ("DPA") forms part of the agreement between you ("Customer", "Controller") and ${LEGAL_ENTITY_NAME} ("Seadell", "Processor") and applies where Seadell processes Personal Data on your behalf in connection with the Service.`,
         "This DPA applies when GDPR, UK GDPR, Nigeria Data Protection Act, Ghana Data Protection Act, or similar laws require a written processor agreement. If there is a conflict between this DPA and the Terms regarding processing of Personal Data, this DPA controls.",
-        "Passport may act as an independent controller for account, billing, security, and product analytics data as described in the Privacy Policy.",
+        "Seadell may act as an independent controller for account, billing, security, and product analytics data as described in the Privacy Policy.",
       ],
     },
     {
@@ -23,7 +23,7 @@ export const dataProcessingAgreement: LegalDocument = {
       bullets: [
         '"Personal Data", "Processing", "Controller", "Processor", "Data Subject", and "Supervisory Authority" have the meanings in applicable data protection law.',
         '"Customer Data" means Personal Data submitted to the Service by or on behalf of Customer.',
-        '"Subprocessor" means a third party engaged by Passport to process Customer Data.',
+        '"Subprocessor" means a third party engaged by Seadell to process Customer Data.',
         '"Security Incident" means a breach of security leading to accidental or unlawful destruction, loss, alteration, unauthorized disclosure of, or access to Customer Data.',
       ],
     },
@@ -53,14 +53,14 @@ export const dataProcessingAgreement: LegalDocument = {
       bullets: [
         "Data subjects: Customer personnel, collaborators, suppliers, buyers, carriers, customs agents, and other individuals identified in trade documents or invitations.",
         "Categories: names, business contact details, addresses, tax and registration identifiers, job titles, commercial terms, product descriptions, financial amounts, document images and text, communication metadata, and audit records.",
-        "Special categories: Customer must not upload special category data (e.g. health, biometric, political opinions) unless strictly necessary, lawful, and with appropriate safeguards. Passport does not require such data for the Service.",
+        "Special categories: Customer must not upload special category data (e.g. health, biometric, political opinions) unless strictly necessary, lawful, and with appropriate safeguards. Seadell does not require such data for the Service.",
       ],
     },
     {
       id: "instructions",
       title: "6. Customer instructions",
       paragraphs: [
-        "Passport will process Customer Data only on documented instructions from Customer, including configuration of the Service, uploads, sharing settings, API calls, and integrations — unless required by applicable law, in which case Passport will inform Customer unless prohibited.",
+        "Seadell will process Customer Data only on documented instructions from Customer, including configuration of the Service, uploads, sharing settings, API calls, and integrations — unless required by applicable law, in which case Seadell will inform Customer unless prohibited.",
         "Customer is responsible for the lawfulness of instructions and for providing required notices and obtaining consents from data subjects.",
       ],
     },
@@ -81,17 +81,17 @@ export const dataProcessingAgreement: LegalDocument = {
       id: "subprocessors",
       title: "8. Subprocessors",
       paragraphs: [
-        "Customer provides general authorization for Passport to use Subprocessors listed in the Privacy Policy, including Supabase, configured AI providers, SendGrid, Twilio, Stripe, Upstash, and optional monitoring tools.",
-        "Passport will impose data protection obligations on Subprocessors substantially similar to this DPA.",
-        "Passport will notify Customer of material Subprocessor changes via the Privacy Policy or email. Customer may object on reasonable grounds relating to data protection within thirty (30) days. If unresolved, Customer may terminate affected processing or the Service as permitted by the Terms.",
+        "Customer provides general authorization for Seadell to use Subprocessors listed in the Privacy Policy, including Supabase, configured AI providers, SendGrid, Twilio, Stripe, Upstash, and optional monitoring tools.",
+        "Seadell will impose data protection obligations on Subprocessors substantially similar to this DPA.",
+        "Seadell will notify Customer of material Subprocessor changes via the Privacy Policy or email. Customer may object on reasonable grounds relating to data protection within thirty (30) days. If unresolved, Customer may terminate affected processing or the Service as permitted by the Terms.",
       ],
     },
     {
       id: "transfers-dpa",
       title: "9. International transfers",
       paragraphs: [
-        "Where Customer Data is transferred to a country without an adequacy decision, Passport will implement appropriate safeguards such as EU Standard Contractual Clauses (Module Two: Controller to Processor), UK IDTA, or equivalent mechanisms.",
-        "Upon request, Passport will provide information about applicable transfer mechanisms.",
+        "Where Customer Data is transferred to a country without an adequacy decision, Seadell will implement appropriate safeguards such as EU Standard Contractual Clauses (Module Two: Controller to Processor), UK IDTA, or equivalent mechanisms.",
+        "Upon request, Seadell will provide information about applicable transfer mechanisms.",
       ],
     },
     {
@@ -110,7 +110,7 @@ export const dataProcessingAgreement: LegalDocument = {
       id: "audit",
       title: "11. Audits and information",
       paragraphs: [
-        "Upon reasonable written request no more than once per twelve (12) months, Passport will provide security documentation, certifications, or completed questionnaires sufficient to demonstrate compliance, unless confidential or legally restricted.",
+        "Upon reasonable written request no more than once per twelve (12) months, Seadell will provide security documentation, certifications, or completed questionnaires sufficient to demonstrate compliance, unless confidential or legally restricted.",
         "Onsite audits require thirty (30) days notice, mutual agreement on scope, confidentiality, and timing, and are at Customer expense. Onsite audits will not unreasonably interfere with operations.",
       ],
     },
@@ -118,15 +118,15 @@ export const dataProcessingAgreement: LegalDocument = {
       id: "breach",
       title: "12. Security incidents",
       paragraphs: [
-        "Passport will notify Customer without undue delay after becoming aware of a Security Incident affecting Customer Data, and will provide information reasonably available to assist Customer in meeting regulatory obligations.",
-        "Passport will take reasonable steps to investigate, mitigate, and remediate Security Incidents.",
+        "Seadell will notify Customer without undue delay after becoming aware of a Security Incident affecting Customer Data, and will provide information reasonably available to assist Customer in meeting regulatory obligations.",
+        "Seadell will take reasonable steps to investigate, mitigate, and remediate Security Incidents.",
       ],
     },
     {
       id: "deletion",
       title: "13. Return and deletion",
       paragraphs: [
-        "Upon termination or written request, Passport will delete or return Customer Data within ninety (90) days, except where retention is required by law or permitted under the Privacy Policy for backup cycles.",
+        "Upon termination or written request, Seadell will delete or return Customer Data within ninety (90) days, except where retention is required by law or permitted under the Privacy Policy for backup cycles.",
         "Customer may export data through the Service where export features are available before termination.",
       ],
     },

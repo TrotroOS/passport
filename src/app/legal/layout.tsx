@@ -29,7 +29,7 @@ export default async function LegalLayout({
       <header className="border-b bg-background">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
           <Link href="/" className="flex items-center">
-            <PassportLogo height={28} />
+            <PassportLogo variant="lockup" height={26} />
           </Link>
           <div className="flex items-center gap-3 text-sm">
             <Link href="/login" className="text-muted-foreground hover:text-foreground">

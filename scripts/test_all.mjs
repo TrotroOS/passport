@@ -21,7 +21,7 @@ function run(label, cmd, args, opts = {}) {
   }
 }
 
-console.log("Passport full test suite\n");
+console.log("Seadell full test suite\n");
 
 run("Lint", "npm", ["run", "lint"]);
 run("Build", "npm", ["run", "build"]);

@@ -223,7 +223,7 @@ export function buildShipmentComplianceReportHtml(input: ShipmentComplianceRepor
 
   return `<article class="report">
     <header class="report-header">
-      <p class="brand">Passport</p>
+      <p class="brand">Seadell</p>
       <h1>${escapeHtml(t.title)}</h1>
       <p class="tagline">${escapeHtml(t.tagline)}</p>
       <p class="header-intro">${escapeHtml(t.headerIntro)}</p>

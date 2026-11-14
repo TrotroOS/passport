@@ -1,4 +1,4 @@
-# Passport — System Architecture
+# Seadell — System Architecture
 
 **Version:** 1.0  
 **Last updated:** 2026-08-28
@@ -266,7 +266,7 @@ Manual reprocess: POST /api/documents/:id/process → 202 Accepted (async queue)
 
 - Loads shipment documents + extractions
 - Runs deterministic checks (`checks.ts`, `matching.ts`)
-- Computes Passport Score (`passport-score.ts`)
+- Computes Seadell Score (`passport-score.ts`)
 - Upserts `verification_checks`, `discrepancies`, `passport_scores`
 
 ### 6.3 Regulatory engine
@@ -354,11 +354,11 @@ Flow: invite → email/link via `invite-delivery.ts` → accept at `/invitations
 
 ## 10. System design principles
 
-Backend, API, and infrastructure changes in Passport should follow these definitions and constraints.
+Backend, API, and infrastructure changes in Seadell should follow these definitions and constraints.
 
 ### 10.1 Performance & network
 
-| Concept | Definition | Passport application |
+| Concept | Definition | Seadell application |
 |---------|------------|----------------------|
 | **Latency** | Time for a single request–response round trip | Keep route handlers thin; batch Supabase queries; use `Promise.all` for independent I/O. Document AI processing is the main latency hotspot — prefer async completion + webhooks over blocking the upload response. |
 | **Throughput** | Requests processed per unit of time | API v1 uses scoped keys + Upstash rate limiting (`src/lib/rate-limit/`). Paginate list endpoints; avoid unbounded `.select("*")` on large tables. |
@@ -366,14 +366,14 @@ Backend, API, and infrastructure changes in Passport should follow these definit
 
 ### 10.2 Database strategy
 
-| Pattern | When to use | Passport today |
+| Pattern | When to use | Seadell today |
 |---------|-------------|----------------|
 | **Replication** | Scale read-heavy workloads; improve availability | Supabase manages Postgres HA. Treat the app as write-primary; for heavy analytics, prefer aggregated queries, materialized views, or read-replica routing when load grows. |
 | **Sharding** | Single-node storage or write throughput limits | **Not required yet.** Tenancy is logical via `organization_id` + RLS. Prefer indexes, query design, and archival before horizontal partition. |
 
 ### 10.3 Execution & concurrency
 
-| Pattern | Use for | Passport today |
+| Pattern | Use for | Seadell today |
 |---------|---------|----------------|
 | **Concurrency** (async I/O) | DB, Storage, HTTP calls to OpenAI/SendGrid/Stripe | Default in route handlers and `src/lib/*` — non-blocking `await` chains. |
 | **Parallelism** (workers / threads) | CPU-bound computation at scale | Verification and regulatory engines run inline in Node today. If CPU time becomes a bottleneck, move work to a background job or worker queue rather than blocking requests. |
@@ -389,7 +389,7 @@ Backend, API, and infrastructure changes in Passport should follow these definit
 
 ### 10.5 Infrastructure
 
-| Component | Principle | Passport mapping |
+| Component | Principle | Seadell mapping |
 |-----------|-----------|------------------|
 | **Load balancing** | Services stay stateless so traffic distributes across instances | Next.js on Vercel scales horizontally; session in Supabase Auth cookies; no server-local tenant state. |
 | **API gateway** | Central auth, rate limiting, routing before internal services | Middleware + per-route auth (`authenticateApiKey()`, `requirePlatformAdmin()`) + Upstash limits. A dedicated gateway is optional until traffic or compliance requires it. |

@@ -7,7 +7,7 @@ import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { getPlatformAdminContext } from "@/lib/admin/require-platform-admin";
 
 export const metadata: Metadata = {
-  title: "Passport Admin",
+  title: "Seadell Admin",
   robots: { index: false, follow: false },
 };
 
@@ -28,7 +28,7 @@ export default async function AdminLayout({
           <div className="flex min-w-0 items-center gap-2">
             <Shield className="h-5 w-5 shrink-0 text-primary" aria-hidden />
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold">Passport Admin</p>
+              <p className="truncate text-sm font-semibold">Seadell Admin</p>
               <p className="hidden truncate text-xs text-muted-foreground sm:block">
                 {ctx.email}
               </p>

@@ -14,12 +14,12 @@ export interface SendEmailParams {
 }
 
 function parseFromAddress(): { email: string; name: string } {
-  const from = process.env.INBOUND_EMAIL_FROM ?? "Passport <noreply@passport.trade>";
+  const from = process.env.INBOUND_EMAIL_FROM ?? "Seadell <noreply@passport.trade>";
   const match = from.match(/^(.+?)\s*<([^>]+)>$/);
   if (match) {
     return { name: match[1].trim(), email: match[2].trim() };
   }
-  return { name: "Passport", email: from };
+  return { name: "Seadell", email: from };
 }
 
 async function isEmailAllowed(params: SendEmailParams): Promise<boolean> {

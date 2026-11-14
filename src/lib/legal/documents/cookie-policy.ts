@@ -5,14 +5,14 @@ export const cookiePolicy: LegalDocument = {
   slug: "cookie-policy",
   title: "Cookie Policy",
   description:
-    "How Passport uses cookies, local storage, and similar technologies.",
+    "How Seadell uses cookies, local storage, and similar technologies.",
   lastUpdated: LEGAL_LAST_UPDATED,
   sections: [
     {
       id: "what",
       title: "1. Introduction",
       paragraphs: [
-        `${LEGAL_ENTITY_NAME} ("Passport") uses cookies and similar technologies on our website and application. This Cookie Policy explains what they are, how we use them, and your choices.`,
+        `${LEGAL_ENTITY_NAME} ("Seadell") uses cookies and similar technologies on our website and application. This Cookie Policy explains what they are, how we use them, and your choices.`,
         "This policy should be read with our Privacy Policy and Terms of Service.",
       ],
     },

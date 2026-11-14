@@ -119,5 +119,5 @@ export function resolveOAuthFullName(metadata: Record<string, unknown> | undefin
     }
   }
 
-  return "Passport User";
+  return "Seadell User";
 }

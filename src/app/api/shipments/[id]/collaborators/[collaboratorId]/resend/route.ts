@@ -50,7 +50,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     recipientEmail:
       invite.kind === "external" ? invite.invite.invitee_email : invite.recipientEmail,
     shipmentRef: access.shipment.shipment_ref,
-    ownerOrganizationName: ownerOrg?.name ?? "Passport organization",
+    ownerOrganizationName: ownerOrg?.name ?? "Seadell organization",
     role: invite.kind === "external" ? invite.invite.role : invite.role,
     invitationId: collaboratorId,
     locale: invite.kind === "external" ? "en" : invite.locale,

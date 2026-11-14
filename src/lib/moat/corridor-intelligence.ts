@@ -189,7 +189,7 @@ function buildAdvantages(
 
   if ((orgProfile?.shipments_total ?? 0) >= 5) {
     advantages.push(
-      "Your organization has corridor-specific clearance history — Passport learns from your past shipments."
+      "Your organization has corridor-specific clearance history — Seadell learns from your past shipments."
     );
   }
   if ((orgProfile?.cleared_assistive_count ?? 0) >= 3) {

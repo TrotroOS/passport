@@ -35,7 +35,7 @@ async function check(name, fn) {
   }
 }
 
-console.log(`Passport integration tests (${base})\n`);
+console.log(`Seadell integration tests (${base})\n`);
 
 let passed = 0;
 let total = 0;

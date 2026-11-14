@@ -140,7 +140,7 @@ export function BillingSettingsPanel() {
                   </Button>
                 ) : plan.id === "enterprise" ? (
                   <Button variant="outline" className="w-full" asChild>
-                    <a href="mailto:sales@passport.trade?subject=Passport%20Enterprise">Contact sales</a>
+                    <a href="mailto:sales@passport.trade?subject=Seadell%20Enterprise">Contact sales</a>
                   </Button>
                 ) : status.stripeConfigured ? (
                   <Button

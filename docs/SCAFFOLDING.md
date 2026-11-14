@@ -1,6 +1,6 @@
 # Project Scaffolding
 
-Folder structure, extension points, and placeholder conventions for Passport.
+Folder structure, extension points, and placeholder conventions for Seadell.
 
 > The codebase is already implemented. Use this map when adding features — do not recreate existing structure.
 

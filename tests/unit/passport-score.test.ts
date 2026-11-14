@@ -23,7 +23,7 @@ const baseCheck = (
   ...overrides,
 });
 
-describe("Passport Score", () => {
+describe("Seadell Score", () => {
   it("returns 100 documentation when all core docs present", () => {
     const checks = [
       "invoice",

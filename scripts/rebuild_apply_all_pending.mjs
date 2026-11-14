@@ -44,7 +44,7 @@ function readMigration(name) {
 }
 
 const parts = [
-  "-- Passport: apply all pending migrations (003–023 after initial schema 001/002)",
+  "-- Seadell: apply all pending migrations (003–023 after initial schema 001/002)",
   "-- Regenerate with: node scripts/rebuild_apply_all_pending.mjs",
   "-- Paste entire file in Supabase SQL Editor if CLI apply-migrations fails.",
   "",

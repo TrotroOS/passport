@@ -105,7 +105,7 @@ export async function createCollaboratorInvitation(
     .eq("id", shipment.organization_id)
     .single();
 
-  const ownerOrganizationName = ownerOrg?.name ?? "Passport organization";
+  const ownerOrganizationName = ownerOrg?.name ?? "Seadell organization";
 
   if (invitee) {
     if (invitee.organization_id === shipment.organization_id) {

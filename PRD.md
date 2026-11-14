@@ -1,4 +1,4 @@
-# Passport — Product Requirements Document
+# Seadell — Product Requirements Document
 
 **Version:** 1.0  
 **Last updated:** 2026-08-28  
@@ -8,9 +8,9 @@
 
 ## 1. Product vision
 
-Passport is an **AI-powered trade compliance and shipment intelligence platform**. It helps importers, customs brokers, and freight forwarders upload trade documents, verify consistency across documents, assess regulatory readiness, score shipment risk, track containers, and collaborate on clearance workflows — before filing with customs authorities.
+Seadell is an **AI-powered trade compliance and shipment intelligence platform**. It helps importers, customs brokers, and freight forwarders upload trade documents, verify consistency across documents, assess regulatory readiness, score shipment risk, track containers, and collaborate on clearance workflows — before filing with customs authorities.
 
-Passport is **decision-support software**, not a licensed customs broker or government agency. It does not guarantee clearance.
+Seadell is **decision-support software**, not a licensed customs broker or government agency. It does not guarantee clearance.
 
 ---
 
@@ -33,7 +33,7 @@ Trade compliance teams struggle with:
 | **Importer / compliance manager** | Organization owner or member | Upload docs, run verification, track readiness, manage shipments |
 | **Customs broker** | External collaborator (viewer / commenter / editor) | Review shipment docs, confirm readiness, resolve discrepancies |
 | **Freight forwarder** | External collaborator | Track containers, update logistics context |
-| **Platform admin** | Passport operator | Monitor tenants, regulations, AI usage, inbound channels |
+| **Platform admin** | Seadell operator | Monitor tenants, regulations, AI usage, inbound channels |
 | **API integrator** | Back-office IT | Sync shipments and documents from ERP/WMS via REST API |
 
 **Geographic focus (initial):** West and East Africa import corridors — Ghana (primary), Nigeria, Kenya.
@@ -47,11 +47,11 @@ Trade compliance teams struggle with:
 1. Multi-tenant SaaS with organizations and secure data isolation
 2. Shipment lifecycle management (create → documents → verify → ready)
 3. Document upload with AI-assisted classification and field extraction
-4. Cross-document verification and Passport Score
+4. Cross-document verification and Seadell Score
 5. Regulatory checks for supported corridors
 6. HS code suggestion and verification per product line
 7. Shipment collaboration with role-based access
-8. External collaborator invites (email, including non-Passport users)
+8. External collaborator invites (email, including non-Seadell users)
 9. Audit logging for mutating actions
 10. Public REST API (v1) with scoped API keys
 11. Analytics dashboard and compliance alerts
@@ -88,7 +88,7 @@ Trade compliance teams struggle with:
 3. Add parties and product line items
 4. Upload trade documents (PDF/images)
 5. AI extracts fields → user reviews extractions
-6. Run verification → view discrepancies and Passport Score
+6. Run verification → view discrepancies and Seadell Score
 7. Run regulatory checks → resolve workflow tasks
 8. Confirm owner readiness; invite broker to confirm broker readiness
 9. Export compliance report / audit trail
@@ -139,7 +139,7 @@ Trade compliance teams struggle with:
 | ID | Requirement | Priority |
 |----|-------------|----------|
 | VER-01 | Deterministic cross-document checks (amounts, parties, quantities) | P0 |
-| VER-02 | Passport Score (overall + dimensions) | P0 |
+| VER-02 | Seadell Score (overall + dimensions) | P0 |
 | VER-03 | Discrepancy tracking (open / resolved / ignored) | P0 |
 | VER-04 | Printable compliance report | P1 |
 
@@ -165,7 +165,7 @@ Trade compliance teams struggle with:
 | ID | Requirement | Priority |
 |----|-------------|----------|
 | COL-01 | Invite collaborators by email with role assignment | P0 |
-| COL-02 | Invite users not yet on Passport (external invite flow) | P0 |
+| COL-02 | Invite users not yet on Seadell (external invite flow) | P0 |
 | COL-03 | Comments on shipments | P1 |
 | COL-04 | Owner + broker readiness confirmation | P1 |
 | COL-05 | Resend invitation; copy invite link when email not configured | P1 |

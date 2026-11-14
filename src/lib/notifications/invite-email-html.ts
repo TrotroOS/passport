@@ -48,7 +48,7 @@ export function buildTransactionalEmailHtml(params: {
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;">
           <tr>
             <td style="padding:28px 32px 16px;border-bottom:1px solid #e2e8f0;">
-              <p style="margin:0;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#64748b;font-weight:600;">Passport</p>
+              <p style="margin:0;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#64748b;font-weight:600;">Seadell</p>
               <h1 style="margin:10px 0 0;font-size:20px;font-weight:600;line-height:1.35;color:#0f172a;">${heading}</h1>
             </td>
           </tr>
@@ -85,12 +85,12 @@ export function buildInviteEmailBodyHtml(params: {
   const role = escapeHtml(params.role);
 
   const greeting = paragraphHtml("Dear colleague,");
-  const invitation = `<p style="margin:0 0 14px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.6;color:#334155;"><strong>${orgName}</strong> has invited you to collaborate on shipment <strong>${shipmentRef}</strong> in Passport.</p>`;
+  const invitation = `<p style="margin:0 0 14px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.6;color:#334155;"><strong>${orgName}</strong> has invited you to collaborate on shipment <strong>${shipmentRef}</strong> in Seadell.</p>`;
   const access = `<p style="margin:0 0 14px;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.6;color:#334155;"><strong style="color:#0f172a;">Access level:</strong> ${role}</p>`;
 
   const instructions = params.isExternal
     ? paragraphHtml(
-        "To accept this invitation, please create a Passport account using the button below. No existing account is required."
+        "To accept this invitation, please create a Seadell account using the button below. No existing account is required."
       )
     : paragraphHtml(
         "Please use the button below to review this invitation and accept or decline access."

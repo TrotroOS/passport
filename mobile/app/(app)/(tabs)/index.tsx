@@ -95,7 +95,7 @@ export default function HomeScreen() {
         ListHeaderComponent={
           <View style={{ gap: 16, marginBottom: 4 }}>
             <View>
-              <Text style={{ fontSize: 14, color: colors.muted }}>{orgName ?? "Passport"}</Text>
+              <Text style={{ fontSize: 14, color: colors.muted }}>{orgName ?? "Seadell"}</Text>
               <Text style={{ fontSize: 26, fontWeight: "800", color: colors.text, marginTop: 2 }}>
                 Welcome back{greeting !== "there" ? `, ${greeting}` : ""}
               </Text>

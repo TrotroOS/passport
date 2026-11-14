@@ -36,12 +36,9 @@ export function MarketingHeader() {
     <>
       <header className="sticky top-0 z-50 border-b bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/75">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:h-16 sm:px-6">
-          <Link href="/" className="flex min-w-0 items-center gap-2">
-            <PassportLogo height={32} className="sm:hidden" />
-            <PassportLogo height={36} className="hidden sm:block" />
-            <span className="truncate text-base font-semibold tracking-tight sm:text-lg">
-              Passport
-            </span>
+          <Link href="/" className="flex min-w-0 items-center">
+            <PassportLogo variant="lockup" height={28} className="sm:hidden" />
+            <PassportLogo variant="lockup" height={32} className="hidden sm:block" />
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">

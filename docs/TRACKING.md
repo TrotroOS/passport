@@ -1,6 +1,6 @@
 # Freight tracking setup
 
-Passport supports three ways to get container milestones — pick based on cost and accuracy needs.
+Seadell supports three ways to get container milestones — pick based on cost and accuracy needs.
 
 ## Recommended: Terminal49 (live, multi-carrier)
 
@@ -36,7 +36,7 @@ Body: `{ "shipment_id", "container_number", "events": [...] }` (see `trackingWeb
 
 ## Not supported: VesselFinder
 
-`TRACKING_PROVIDER=vesselfinder` is disabled. Prepaid container credits (~$500/100 containers) and vessel AIS APIs do not fit Passport’s multi-tenant refresh model as well as Terminal49.
+`TRACKING_PROVIDER=vesselfinder` is disabled. Prepaid container credits (~$500/100 containers) and vessel AIS APIs do not fit Seadell’s multi-tenant refresh model as well as Terminal49.
 
 ## Cost tips
 

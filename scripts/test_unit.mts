@@ -7,6 +7,11 @@ import { extractShipmentReferences, normalizeReferenceForLookup } from "../src/l
 import { normalizePhoneE164, parseEmailAddress } from "../src/lib/inbound/normalize.ts";
 import { validateInboundAttachment, guessMimeType } from "../src/lib/inbound/validate-attachment.ts";
 import { MAX_FILE_SIZE } from "../src/lib/utils.ts";
+import {
+  formatMissingTranslationKey,
+  missingMessageFallback,
+} from "../src/lib/i18n/missing-message.ts";
+import { messagesForPath } from "../src/lib/i18n/client-messages.ts";
 
 function test(name: string, fn: () => void) {
   try {
@@ -18,7 +23,7 @@ function test(name: string, fn: () => void) {
   }
 }
 
-console.log("Passport unit tests\n");
+console.log("Seadell unit tests\n");
 
 console.log("Shipment reference extraction");
 test("extracts GH-IMP-2026-0042", () => {
@@ -784,6 +789,37 @@ test("mergeDiscrepancyCounts aggregates", () => {
 
 test("scoreVsBenchmark detects above", () => {
   assert.equal(scoreVsBenchmark(85, 78), "above");
+});
+
+console.log("\nMissing translation fallback");
+test("formats analytics.kpiShipments", () => {
+  assert.equal(
+    formatMissingTranslationKey("analytics.kpiShipments"),
+    "Analytics Kpi Shipments"
+  );
+});
+test("formats documentCompleteness", () => {
+  assert.equal(
+    missingMessageFallback({ namespace: "analytics", key: "documentCompleteness" }),
+    "Analytics Document Completeness"
+  );
+});
+test("formats missing shipment keys without dots", () => {
+  assert.equal(
+    missingMessageFallback({ namespace: "shipment", key: "unknownField" }),
+    "Shipment Unknown Field"
+  );
+});
+test("keeps every namespace on every route", () => {
+  const catalog = {
+    analytics: { title: "Trade Analytics" },
+    marketing: { nav: {} },
+    shipment: { parties: "Parties" },
+  };
+  const picked = messagesForPath(catalog, "/");
+  assert.equal((picked.analytics as { title: string }).title, "Trade Analytics");
+  assert.ok(picked.marketing);
+  assert.ok(picked.shipment);
 });
 
 console.log("\nAll unit tests passed.");

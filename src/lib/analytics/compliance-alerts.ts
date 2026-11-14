@@ -105,7 +105,7 @@ export async function getComplianceAlerts(
       pushAlert({
         severity: "critical",
         category: "score",
-        title: "Low Passport Score",
+        title: "Low Seadell Score",
         description: `Score ${overallScore}/100 — review verification and documents`,
         shipmentId,
         shipmentRef: shipmentRefById.get(shipmentId) ?? shipmentId,
@@ -116,7 +116,7 @@ export async function getComplianceAlerts(
       pushAlert({
         severity: "warning",
         category: "score",
-        title: "Passport Score below target",
+        title: "Seadell Score below target",
         description: `Score ${overallScore}/100 — address open issues before clearance`,
         shipmentId,
         shipmentRef: shipmentRefById.get(shipmentId) ?? shipmentId,

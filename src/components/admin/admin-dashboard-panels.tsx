@@ -159,7 +159,7 @@ export function AdminGuidePanel({
       <section className="rounded-lg border border-border p-4 lg:col-span-2">
         <h2 className="mb-3 text-lg font-semibold text-foreground">Compliance reminder</h2>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Passport outputs are assistive trade-compliance tools, not legal or customs advice.
+          Seadell outputs are assistive trade-compliance tools, not legal or customs advice.
           Platform changes to regulations and abbreviations affect customer compliance checks — review
           carefully before activating. User feedback may contain PII; handle according to your privacy
           policy. Rotate service role keys and admin passwords if they were shared during setup.

@@ -8,7 +8,7 @@ interface ScoreGaugeProps {
   size?: number;
 }
 
-export function ScoreGauge({ score, label = "Passport Score", size = 100 }: ScoreGaugeProps) {
+export function ScoreGauge({ score, label = "Seadell Score", size = 100 }: ScoreGaugeProps) {
   const color = getScoreColor(score);
   const ringSize = size;
   const innerSize = size - 16;

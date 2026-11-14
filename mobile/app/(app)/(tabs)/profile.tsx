@@ -167,7 +167,7 @@ export default function ProfileScreen() {
       </Section>
 
       <Section title="Application">
-        <DetailRow icon="information-circle-outline" label="Version" value={`Passport Mobile ${appVersion}`} />
+        <DetailRow icon="information-circle-outline" label="Version" value={`Seadell Mobile ${appVersion}`} />
         <Divider />
         <Text style={styles.aboutText}>
           Trade compliance platform for document verification, shipment scoring, and audit-ready
@@ -180,7 +180,7 @@ export default function ProfileScreen() {
         <Text style={styles.signOutText}>Sign Out</Text>
       </Pressable>
 
-      <Text style={styles.footer}>Passport Trade Compliance</Text>
+      <Text style={styles.footer}>Seadell Trade Compliance</Text>
     </ScrollView>
   );
 }
