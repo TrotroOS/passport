@@ -589,8 +589,12 @@ test("resolveEmailAppUrl ignores localhost browser origin", () => {
 });
 
 console.log("\nInvite email helpers");
-import { resolveSendgridFromAddress } from "../src/lib/notifications/email-from.ts";
+import {
+  formatSendgridError,
+  resolveSendgridFromAddress,
+} from "../src/lib/notifications/email-from.ts";
 import { parseInviteEmails } from "../src/lib/collaboration/parse-invite-emails.ts";
+import { buildInviteMailto } from "../src/lib/collaboration/invite-mailto.ts";
 
 test("resolveSendgridFromAddress prefers SENDGRID_FROM_EMAIL without brackets", () => {
   const prevFrom = process.env.SENDGRID_FROM_EMAIL;
@@ -626,6 +630,18 @@ test("parseInviteEmails drops invalid addresses", () => {
     parseInviteEmails("Ada <ada@example.com>, not-an-email\nBob@Example.com"),
     ["ada@example.com", "bob@example.com"]
   );
+});
+test("formatSendgridError explains exhausted credits", () => {
+  assert.match(
+    formatSendgridError(401, '{"errors":[{"message":"Maximum credits exceeded"}]}'),
+    /out of email credits/i
+  );
+});
+test("buildInviteMailto includes recipient and invite URL", () => {
+  const href = buildInviteMailto("broker@example.com", "https://app.example/invitations/abc");
+  assert.match(href, /^mailto:/);
+  assert.match(href, /broker%40example.com/);
+  assert.match(href, /invitations%2Fabc/);
 });
 
 console.log("\nAuth redirect helpers");

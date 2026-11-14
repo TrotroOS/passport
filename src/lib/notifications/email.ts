@@ -1,5 +1,8 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { resolveSendgridFromAddress } from "@/lib/notifications/email-from";
+import {
+  formatSendgridError,
+  resolveSendgridFromAddress,
+} from "@/lib/notifications/email-from";
 import {
   shouldSendNotification,
   type NotificationChannel,
@@ -69,12 +72,16 @@ export async function sendEmail(params: SendEmailParams): Promise<boolean> {
         { type: "text/plain", value: params.text },
         { type: "text/html", value: html },
       ],
+      tracking_settings: {
+        click_tracking: { enable: false },
+        open_tracking: { enable: false },
+      },
     }),
   });
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(`SendGrid error: ${response.status} ${text}`);
+    throw new Error(formatSendgridError(response.status, text));
   }
 
   return true;

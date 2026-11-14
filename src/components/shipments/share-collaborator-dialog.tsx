@@ -17,6 +17,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { parseInviteEmails } from "@/lib/collaboration/parse-invite-emails";
+import {
+  buildInviteMailto,
+  openInviteMailto,
+} from "@/lib/collaboration/invite-mailto";
 import type { CollaboratorParticipantType } from "@/types/database";
 
 interface ShareCollaboratorDialogProps {
@@ -62,6 +66,7 @@ export function ShareCollaboratorDialog({
   const [participantType, setParticipantType] =
     useState<CollaboratorParticipantType>("customs_broker");
   const [loading, setLoading] = useState(false);
+  const [createdInvites, setCreatedInvites] = useState<InviteResult[]>([]);
 
   function handleParticipantTypeChange(value: CollaboratorParticipantType) {
     setParticipantType(value);
@@ -69,34 +74,42 @@ export function ShareCollaboratorDialog({
   }
 
   function summarizeResults(results: InviteResult[]) {
-    const sent = results.filter((result) => result.success);
+    const created = results.filter((result) => result.success);
     const failed = results.filter((result) => !result.success);
+    const emailed = created.filter((result) => result.email_sent);
+    const needsManual = created.filter(
+      (result) => !result.email_sent && result.invitation_url
+    );
 
-    if (sent.length === 1 && failed.length === 0) {
-      const result = sent[0];
-      if (result.email_sent) {
-        toast.success(t("inviteSent"));
-      } else if (result.invitation_url) {
-        toast.success(t("inviteCreated"), {
-          description: result.email_configured
-            ? t("inviteEmailFailed")
-            : t("inviteEmailNotConfigured"),
-          action: {
-            label: t("copyLink"),
-            onClick: () => {
-              void copyInviteLink(result.invitation_url!, t("linkCopied"));
-            },
-          },
-        });
-        void copyInviteLink(result.invitation_url, t("linkCopied"));
-      } else {
-        toast.success(t("inviteCreated"));
-      }
-      return;
+    setCreatedInvites(created.filter((result) => result.invitation_url));
+
+    if (needsManual.length === 1 && needsManual[0].invitation_url) {
+      void copyInviteLink(needsManual[0].invitation_url, t("linkCopied"));
+      openInviteMailto(needsManual[0].email, needsManual[0].invitation_url);
+    } else if (needsManual.length > 1) {
+      void copyInviteLink(
+        needsManual
+          .map((result) => `${result.email}: ${result.invitation_url}`)
+          .join("\n"),
+        t("linkCopied")
+      );
     }
 
-    if (sent.length > 0) {
-      toast.success(t("batchInviteSuccess", { count: sent.length }));
+    if (emailed.length > 0 && needsManual.length === 0 && failed.length === 0) {
+      toast.success(t("inviteSent"));
+      if (created[0]?.invitation_url) {
+        void copyInviteLink(created[0].invitation_url, t("linkCopied"));
+      }
+    } else if (needsManual.length > 0) {
+      toast.success(t("inviteLinkReady"), {
+        description:
+          needsManual[0]?.email_error ||
+          (needsManual[0]?.email_configured
+            ? t("inviteEmailFailed")
+            : t("inviteEmailNotConfigured")),
+      });
+    } else if (created.length > 0) {
+      toast.success(t("batchInviteSuccess", { count: created.length }));
     }
 
     if (failed.length > 0) {
@@ -139,9 +152,6 @@ export function ShareCollaboratorDialog({
       const results = (data.results ?? []) as InviteResult[];
       summarizeResults(results);
       setEmailsRaw("");
-      if (!inline) {
-        setOpen(false);
-      }
       router.refresh();
     } catch {
       toast.error(t("inviteFailed"));
@@ -229,6 +239,35 @@ export function ShareCollaboratorDialog({
             </Button>
           ) : null}
         </div>
+        {createdInvites.length > 0 ? (
+          <div className="space-y-2 rounded-md border bg-muted/40 p-3">
+            <p className="text-xs font-medium">{t("inviteLinksHeading")}</p>
+            {createdInvites.map((result) => (
+              <div key={result.email} className="space-y-1">
+                <p className="break-all text-xs text-muted-foreground">
+                  {result.email}: {result.invitation_url}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      void copyInviteLink(result.invitation_url!, t("linkCopied"))
+                    }
+                  >
+                    {t("copyLink")}
+                  </Button>
+                  <Button type="button" variant="outline" size="sm" asChild>
+                    <a href={buildInviteMailto(result.email, result.invitation_url!)}>
+                      {t("sendFromInbox")}
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );

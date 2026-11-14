@@ -609,8 +609,8 @@
     "inviteFailed": "Failed to send invitation",
     "inviteSent": "Collaboration invitation email sent",
     "inviteSentExternal": "Invitation email sent — they can create a Seadell account to join",
-    "inviteCreated": "Invitation created",
-    "inviteEmailFailed": "Email could not be delivered. Copy the invite link and send it manually.",
+    "inviteCreated": "Invitation created. Link copied — send it from your inbox if they do not get an email.",
+    "inviteEmailFailed": "Seadell could not deliver email (SendGrid credits or sender issue). Send the copied invite link from your own inbox.",
     "inviteEmailNotConfigured": "Email is not configured. Copy the invite link and send it to your collaborator.",
     "inviteMultiHint": "Add one or more email addresses — each person gets their own invitation.",
     "inviteEmailsLabel": "Email addresses",
@@ -620,8 +620,11 @@
     "participantFreightForwarder": "Freight forwarder",
     "participantCollaborator": "Other collaborator",
     "sendInvitations": "Send invitations",
-    "batchInviteSuccess": "{count, plural, one {# invitation sent} other {# invitations sent}}",
-    "batchInvitePartialFailure": "{count, plural, one {# invitation failed} other {# invitations failed}}"
+    "batchInviteSuccess": "{count, plural, one {# invitation created} other {# invitations created}}",
+    "batchInvitePartialFailure": "{count, plural, one {# invitation failed} other {# invitations failed}}",
+    "inviteLinkReady": "Invitation ready. Link copied.",
+    "sendFromInbox": "Send from your inbox",
+    "inviteLinksHeading": "Invite links"
   },
   "legal": {
     "hubTitle": "Legal",

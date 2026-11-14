@@ -81,7 +81,7 @@ const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
     content: [
       {
         type: "text/plain",
-        value: `SendGrid is configured for Seadell.\nApp URL: ${appUrl}\nFrom: ${from}`,
+        value: `SendGrid is configured for Seadell.\nApp URL: ${appUrl}\nFrom: ${fromPayload.name} <${fromPayload.email}>`,
       },
     ],
   }),

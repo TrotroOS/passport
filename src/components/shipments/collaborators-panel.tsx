@@ -58,6 +58,9 @@ export function CollaboratorsPanel({
 
     if (data.email_sent) {
       toast.success(t("resent"));
+      if (data.invitation_url) {
+        await navigator.clipboard.writeText(data.invitation_url);
+      }
       return;
     }
 

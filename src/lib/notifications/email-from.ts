@@ -41,3 +41,23 @@ export function resolveSendgridFromAddress(): EmailFromAddress {
     "No valid SendGrid from address. Set SENDGRID_FROM_EMAIL to a verified sender (for example you@gmail.com)."
   );
 }
+
+export function formatSendgridError(status: number, body: string): string {
+  let message = body;
+  try {
+    const parsed = JSON.parse(body) as { errors?: Array<{ message?: string }> };
+    const joined = parsed.errors
+      ?.map((entry) => entry.message)
+      .filter((entry): entry is string => Boolean(entry))
+      .join("; ");
+    if (joined) message = joined;
+  } catch {
+    // Keep raw body when SendGrid does not return JSON.
+  }
+
+  if (/credits exceeded/i.test(message)) {
+    return "SendGrid is out of email credits. Copy the invite link and send it from your inbox.";
+  }
+
+  return `SendGrid error: ${status} ${message}`;
+}
