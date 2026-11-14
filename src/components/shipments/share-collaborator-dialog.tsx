@@ -31,6 +31,8 @@ type InviteResult = {
   success: boolean;
   error?: string;
   email_sent?: boolean;
+  email_configured?: boolean;
+  email_error?: string;
   invitation_url?: string;
 };
 
@@ -76,7 +78,9 @@ export function ShareCollaboratorDialog({
         toast.success(t("inviteSent"));
       } else if (result.invitation_url) {
         toast.success(t("inviteCreated"), {
-          description: t("inviteEmailNotConfigured"),
+          description: result.email_configured
+            ? t("inviteEmailFailed")
+            : t("inviteEmailNotConfigured"),
           action: {
             label: t("copyLink"),
             onClick: () => {

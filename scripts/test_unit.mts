@@ -588,6 +588,46 @@ test("resolveEmailAppUrl ignores localhost browser origin", () => {
   else process.env.EMAIL_PUBLIC_APP_URL = prevEmail;
 });
 
+console.log("\nInvite email helpers");
+import { resolveSendgridFromAddress } from "../src/lib/notifications/email-from.ts";
+import { parseInviteEmails } from "../src/lib/collaboration/parse-invite-emails.ts";
+
+test("resolveSendgridFromAddress prefers SENDGRID_FROM_EMAIL without brackets", () => {
+  const prevFrom = process.env.SENDGRID_FROM_EMAIL;
+  const prevName = process.env.SENDGRID_FROM_NAME;
+  const prevInbound = process.env.INBOUND_EMAIL_FROM;
+  process.env.SENDGRID_FROM_EMAIL = "verified@example.com";
+  process.env.SENDGRID_FROM_NAME = "Seadell";
+  process.env.INBOUND_EMAIL_FROM = "Passport";
+  const from = resolveSendgridFromAddress();
+  assert.equal(from.email, "verified@example.com");
+  assert.equal(from.name, "Seadell");
+  if (prevFrom === undefined) delete process.env.SENDGRID_FROM_EMAIL;
+  else process.env.SENDGRID_FROM_EMAIL = prevFrom;
+  if (prevName === undefined) delete process.env.SENDGRID_FROM_NAME;
+  else process.env.SENDGRID_FROM_NAME = prevName;
+  if (prevInbound === undefined) delete process.env.INBOUND_EMAIL_FROM;
+  else process.env.INBOUND_EMAIL_FROM = prevInbound;
+});
+test("resolveSendgridFromAddress extracts email when display-name brackets were stripped", () => {
+  const prevFrom = process.env.SENDGRID_FROM_EMAIL;
+  const prevInbound = process.env.INBOUND_EMAIL_FROM;
+  delete process.env.SENDGRID_FROM_EMAIL;
+  process.env.INBOUND_EMAIL_FROM = "broker@example.com";
+  const from = resolveSendgridFromAddress();
+  assert.equal(from.email, "broker@example.com");
+  if (prevFrom === undefined) delete process.env.SENDGRID_FROM_EMAIL;
+  else process.env.SENDGRID_FROM_EMAIL = prevFrom;
+  if (prevInbound === undefined) delete process.env.INBOUND_EMAIL_FROM;
+  else process.env.INBOUND_EMAIL_FROM = prevInbound;
+});
+test("parseInviteEmails drops invalid addresses", () => {
+  assert.deepEqual(
+    parseInviteEmails("Ada <ada@example.com>, not-an-email\nBob@Example.com"),
+    ["ada@example.com", "bob@example.com"]
+  );
+});
+
 console.log("\nAuth redirect helpers");
 import {
   getAuthCallbackUrl,
@@ -596,17 +636,23 @@ import {
 
 test("getAuthCallbackUrl uses production app URL", () => {
   const prevUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const prevEmail = process.env.EMAIL_PUBLIC_APP_URL;
   process.env.NEXT_PUBLIC_APP_URL = "https://passport-one-kappa.vercel.app";
+  delete process.env.EMAIL_PUBLIC_APP_URL;
   assert.equal(
     getAuthCallbackUrl(),
     "https://passport-one-kappa.vercel.app/auth/callback?next=%2Fdashboard"
   );
   if (prevUrl === undefined) delete process.env.NEXT_PUBLIC_APP_URL;
   else process.env.NEXT_PUBLIC_APP_URL = prevUrl;
+  if (prevEmail === undefined) delete process.env.EMAIL_PUBLIC_APP_URL;
+  else process.env.EMAIL_PUBLIC_APP_URL = prevEmail;
 });
 test("getAuthCallbackUrl rejects unsafe next paths", () => {
   const prevUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const prevEmail = process.env.EMAIL_PUBLIC_APP_URL;
   process.env.NEXT_PUBLIC_APP_URL = "https://passport-one-kappa.vercel.app";
+  delete process.env.EMAIL_PUBLIC_APP_URL;
   assert.equal(
     getAuthCallbackUrl("//evil.com"),
     "https://passport-one-kappa.vercel.app/auth/callback?next=%2Fdashboard"
@@ -617,6 +663,8 @@ test("getAuthCallbackUrl rejects unsafe next paths", () => {
   );
   if (prevUrl === undefined) delete process.env.NEXT_PUBLIC_APP_URL;
   else process.env.NEXT_PUBLIC_APP_URL = prevUrl;
+  if (prevEmail === undefined) delete process.env.EMAIL_PUBLIC_APP_URL;
+  else process.env.EMAIL_PUBLIC_APP_URL = prevEmail;
 });
 test("resolvePostAuthPath defaults to dashboard", () => {
   assert.equal(resolvePostAuthPath(null), "/dashboard");

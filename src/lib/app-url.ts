@@ -17,10 +17,23 @@ export function isLocalhostAppUrl(url: string): boolean {
   }
 }
 
+function vercelPublicUrl(): string | null {
+  const host = (
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+    process.env.VERCEL_URL ||
+    ""
+  ).trim();
+  if (!host) return null;
+  const normalized = host.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  return normalized ? `https://${normalized}` : null;
+}
+
 /** Canonical public app URL for links in emails, invites, and API docs. */
 export function getAppUrl(): string {
   const url = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
   if (url) return url;
+  const vercel = vercelPublicUrl();
+  if (vercel) return vercel;
   if (isProduction()) {
     throw new Error("NEXT_PUBLIC_APP_URL is required in production");
   }
@@ -45,6 +58,9 @@ export function resolveEmailAppUrl(requestOrigin?: string | null): string {
   if (requestOrigin?.trim() && !isLocalhostAppUrl(requestOrigin)) {
     return normalizeUrl(requestOrigin);
   }
+
+  const vercel = vercelPublicUrl();
+  if (vercel) return vercel;
 
   return configured;
 }

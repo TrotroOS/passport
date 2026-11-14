@@ -17,6 +17,7 @@ import {
   shouldAutoConfirmEmail,
 } from "@/lib/auth/admin-auth";
 import { linkPendingInvitationsForUser, isSafeRedirectPath } from "@/lib/collaboration/link-pending-invitations";
+import { provisionUserProfile } from "@/lib/auth/provision-user-profile";
 import {
   getOrganizationIdForUser,
   insertShipmentForUser,
@@ -100,15 +101,18 @@ export async function loginAction(
     const cookieStore = await cookies();
     cookieStore.set(localeCookieOptions(locale));
 
-    const { data: profile } = await admin
-      .from("users")
-      .select("organization_id")
-      .eq("id", userId)
-      .single();
+    const provision = await provisionUserProfile({
+      userId,
+      email: parsed.data.email,
+      fullName:
+        typeof signInData.user?.user_metadata?.full_name === "string"
+          ? signInData.user.user_metadata.full_name
+          : parsed.data.email,
+    });
 
-    if (profile?.organization_id) {
+    if (provision.ok) {
       await writeAuditEvent(admin, {
-        organizationId: profile.organization_id,
+        organizationId: provision.organizationId,
         userId,
         action: "user.login",
         entityType: "user",
@@ -218,6 +222,21 @@ export async function signupAction(
     if (authData.session) {
       // fall through to org setup, then redirect below
     } else {
+      const provision = await provisionUserProfile({
+        userId,
+        email,
+        fullName,
+        registrationMetadata: {
+          referral_source: parsed.data.referralSource ?? null,
+          utm_source: parsed.data.utmSource ?? null,
+          utm_medium: parsed.data.utmMedium ?? null,
+          utm_campaign: parsed.data.utmCampaign ?? null,
+        },
+      });
+      if (!provision.ok) {
+        return { success: false, error: provision.error };
+      }
+      await linkPendingInvitationsForUser(userId, email);
       return {
         success: true,
         error: "Account created. Please check your email to confirm your account, then log in.",

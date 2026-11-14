@@ -29,7 +29,10 @@ const PRODUCTION_URL = "https://passport-one-kappa.vercel.app";
 
 const SECRET_VARS = ["SENDGRID_API_KEY", "UPSTASH_REDIS_REST_TOKEN", "OPENSANCTIONS_API_KEY"];
 const CONFIG_VARS = [
+  "SENDGRID_FROM_EMAIL",
+  "SENDGRID_FROM_NAME",
   "INBOUND_EMAIL_FROM",
+  "EMAIL_PUBLIC_APP_URL",
   "NEXT_PUBLIC_APP_URL",
   "NEXT_PUBLIC_SUPABASE_URL",
   "NEXT_PUBLIC_SUPABASE_ANON_KEY",
@@ -81,8 +84,14 @@ for (const name of SECRET_VARS) {
 }
 for (const name of CONFIG_VARS) {
   let value = env[name];
-  if (name === "NEXT_PUBLIC_APP_URL") {
+  if (name === "NEXT_PUBLIC_APP_URL" || name === "EMAIL_PUBLIC_APP_URL") {
     value = PRODUCTION_URL;
+  } else if (name === "SENDGRID_FROM_NAME") {
+    value = value || "Seadell";
+  } else if (name === "SENDGRID_FROM_EMAIL") {
+    const inbound = env.INBOUND_EMAIL_FROM ?? "";
+    const match = inbound.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+    value = value || match?.[0] || "";
   } else if (name === "NEXT_PUBLIC_SUPABASE_URL") {
     value = env.NEXT_PUBLIC_SUPABASE_URL ?? env.SUPABASE_URL;
   } else if (name === "NEXT_PUBLIC_SUPABASE_ANON_KEY") {

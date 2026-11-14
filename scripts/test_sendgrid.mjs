@@ -50,11 +50,21 @@ if (!to) {
   process.exit(1);
 }
 
-const from = process.env.INBOUND_EMAIL_FROM ?? "Seadell <noreply@passport.trade>";
-const match = from.match(/^(.+?)\s*<([^>]+)>$/);
-const fromPayload = match
-  ? { name: match[1].trim(), email: match[2].trim() }
-  : { name: "Seadell", email: from };
+function resolveFrom() {
+  const dedicated = process.env.SENDGRID_FROM_EMAIL?.trim();
+  const name = process.env.SENDGRID_FROM_NAME?.trim() || "Seadell";
+  const inbound = process.env.INBOUND_EMAIL_FROM?.trim() ?? "";
+  const emailMatch = (dedicated || inbound).match(
+    /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i
+  );
+  if (!emailMatch) {
+    console.error("Set SENDGRID_FROM_EMAIL or INBOUND_EMAIL_FROM to a verified sender");
+    process.exit(1);
+  }
+  return { name, email: emailMatch[0] };
+}
+
+const fromPayload = resolveFrom();
 
 const appUrl = resolveEmailAppUrl();
 
@@ -85,4 +95,4 @@ if (!response.ok) {
 }
 
 console.log(`SendGrid test email sent to ${to}`);
-console.log(`From address: ${from}`);
+console.log(`From address: ${fromPayload.name} <${fromPayload.email}>`);

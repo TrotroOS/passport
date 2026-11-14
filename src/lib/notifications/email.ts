@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { resolveSendgridFromAddress } from "@/lib/notifications/email-from";
 import {
   shouldSendNotification,
   type NotificationChannel,
@@ -14,12 +15,7 @@ export interface SendEmailParams {
 }
 
 function parseFromAddress(): { email: string; name: string } {
-  const from = process.env.INBOUND_EMAIL_FROM ?? "Seadell <noreply@passport.trade>";
-  const match = from.match(/^(.+?)\s*<([^>]+)>$/);
-  if (match) {
-    return { name: match[1].trim(), email: match[2].trim() };
-  }
-  return { name: "Seadell", email: from };
+  return resolveSendgridFromAddress();
 }
 
 async function isEmailAllowed(params: SendEmailParams): Promise<boolean> {

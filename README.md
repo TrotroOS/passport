@@ -373,7 +373,9 @@ External broker invites send email via SendGrid. Without it, Seadell still creat
 2. Verify a sender domain or single sender in SendGrid
 3. Set in Vercel **Production**:
    - `SENDGRID_API_KEY`
-   - `INBOUND_EMAIL_FROM=Seadell <noreply@yourdomain.com>` (must match verified sender)
+   - `SENDGRID_FROM_EMAIL=you@example.com` (verified SendGrid sender; no angle brackets)
+   - `SENDGRID_FROM_NAME=Seadell`
+   - `EMAIL_PUBLIC_APP_URL=https://your-production-url`
    - `NEXT_PUBLIC_APP_URL=https://your-production-url`
 4. Redeploy, then test:
 
@@ -397,7 +399,9 @@ Set these under **Vercel → Project → Settings → Environment Variables → 
 | `UPSTASH_REDIS_REST_URL` | Yes | Rate limiting |
 | `UPSTASH_REDIS_REST_TOKEN` | Yes | Rate limiting |
 | `SENDGRID_API_KEY` | Recommended | Collaboration invite emails |
-| `INBOUND_EMAIL_FROM` | With SendGrid | `Seadell <mensahstephen385@gmail.com>` (verified sender) |
+| `SENDGRID_FROM_EMAIL` | With SendGrid | Verified sender address, no angle brackets |
+| `SENDGRID_FROM_NAME` | With SendGrid | `Seadell` |
+| `EMAIL_PUBLIC_APP_URL` | With SendGrid | Public app URL used in invite links |
 | `SENTRY_DSN` | Recommended | Error monitoring |
 
 **Never set in Production:** `AUTO_CONFIRM_EMAIL`, `FIRST_USER_IS_ADMIN`, `INBOUND_ALLOW_UNVERIFIED`

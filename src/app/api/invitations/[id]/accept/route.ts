@@ -46,6 +46,27 @@ export async function POST(_request: Request, { params }: RouteParams) {
 
   const invitation = await getInvitationForUser(id, user.id, userEmail);
   if (!invitation) {
+    if (await hasInviteeEmailColumn(admin)) {
+      const { data: pending } = await admin
+        .from("shipment_collaborators")
+        .select("invitee_email, status")
+        .eq("id", id)
+        .maybeSingle();
+
+      if (
+        pending?.status === "pending" &&
+        pending.invitee_email &&
+        pending.invitee_email.trim().toLowerCase() !== userEmail.trim().toLowerCase()
+      ) {
+        return NextResponse.json(
+          {
+            error: `This invitation was sent to ${pending.invitee_email}. Sign in with that email to accept.`,
+          },
+          { status: 403 }
+        );
+      }
+    }
+
     return NextResponse.json({ error: "Invitation not found" }, { status: 404 });
   }
 

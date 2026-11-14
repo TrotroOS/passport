@@ -48,11 +48,7 @@ export function InvitationAcceptPanel({
   const returnPath = `/invitations/${invitationId}`;
 
   useEffect(() => {
-    const endpoint = isAuthenticated
-      ? `/api/invitations/${invitationId}`
-      : `/api/invitations/${invitationId}/preview`;
-
-    fetch(endpoint)
+    fetch(`/api/invitations/${invitationId}/preview`)
       .then(async (res) => {
         if (!res.ok) return null;
         const data = await res.json();
@@ -60,7 +56,7 @@ export function InvitationAcceptPanel({
       })
       .then(setInvitation)
       .finally(() => setLoading(false));
-  }, [invitationId, isAuthenticated]);
+  }, [invitationId]);
 
   async function accept() {
     setActing(true);

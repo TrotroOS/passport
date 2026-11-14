@@ -1,4 +1,4 @@
-import { getAppUrl } from "@/lib/app-url";
+import { resolveEmailAppUrl } from "@/lib/app-url";
 import { isSafeRedirectPath } from "@/lib/collaboration/link-pending-invitations";
 
 const DEFAULT_POST_AUTH_PATH = "/dashboard";
@@ -6,7 +6,7 @@ const DEFAULT_POST_AUTH_PATH = "/dashboard";
 export function getAuthCallbackUrl(next?: string | null): string {
   const redirectPath =
     next && isSafeRedirectPath(next) ? next : DEFAULT_POST_AUTH_PATH;
-  return `${getAppUrl()}/auth/callback?next=${encodeURIComponent(redirectPath)}`;
+  return `${resolveEmailAppUrl()}/auth/callback?next=${encodeURIComponent(redirectPath)}`;
 }
 
 export function resolvePostAuthPath(next?: string | null): string {

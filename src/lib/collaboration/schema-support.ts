@@ -16,13 +16,19 @@ export async function hasInviteeEmailColumn(
 
   if (!error) {
     inviteeEmailSupported = true;
-  } else if (isMissingInviteeEmailError(error.message)) {
-    inviteeEmailSupported = false;
-  } else {
-    inviteeEmailSupported = false;
+    return true;
   }
 
-  return inviteeEmailSupported;
+  if (isMissingInviteeEmailError(error.message)) {
+    inviteeEmailSupported = false;
+    return false;
+  }
+
+  console.warn(
+    "[Collaboration] invitee_email probe failed; not caching schema result:",
+    error.message
+  );
+  return false;
 }
 
 /** Whether migration 026 (participant_type) is applied and visible to PostgREST. */
@@ -38,13 +44,19 @@ export async function hasParticipantTypeColumn(
 
   if (!error) {
     participantTypeSupported = true;
-  } else if (isMissingParticipantTypeError(error.message)) {
-    participantTypeSupported = false;
-  } else {
-    participantTypeSupported = false;
+    return true;
   }
 
-  return participantTypeSupported;
+  if (isMissingParticipantTypeError(error.message)) {
+    participantTypeSupported = false;
+    return false;
+  }
+
+  console.warn(
+    "[Collaboration] participant_type probe failed; not caching schema result:",
+    error.message
+  );
+  return false;
 }
 
 export function resetInviteeEmailSchemaCache(): void {

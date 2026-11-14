@@ -21,7 +21,12 @@ export function formatNotificationMessage(
   key: keyof MessageTree["notifications"],
   params: Record<string, string>
 ): string {
-  let template = getMessagesForLocale(locale).notifications[key];
+  const catalog = getMessagesForLocale(locale).notifications[key];
+  let template = typeof catalog === "string" ? catalog : "";
+  if (!template) {
+    const fallback = en.notifications[key];
+    template = typeof fallback === "string" ? fallback : "";
+  }
   for (const [name, value] of Object.entries(params)) {
     template = template.replace(new RegExp(`\\{${name}\\}`, "g"), value);
   }

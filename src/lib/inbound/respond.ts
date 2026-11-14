@@ -1,5 +1,6 @@
 import { getInboundConfig } from "@/lib/inbound/config";
 import { resolveEmailAppUrl } from "@/lib/app-url";
+import { resolveSendgridFromAddress } from "@/lib/notifications/email-from";
 import {
   emailSubjectHeading,
   TRANSACTIONAL_EMAIL_FOOTER,
@@ -35,9 +36,6 @@ export async function sendInboundResponse(
 
 async function sendEmailResponse(payload: InboundResponsePayload): Promise<void> {
   const apiKey = process.env.SENDGRID_API_KEY;
-  const from =
-    process.env.INBOUND_EMAIL_FROM ??
-    `Seadell <noreply@${getInboundConfig().inboundEmailDomain}>`;
 
   const link = dashboardUrl(payload.shipmentId);
   const subject = `Seadell — Documents received for ${payload.shipmentRef}`;
@@ -52,6 +50,8 @@ async function sendEmailResponse(payload: InboundResponsePayload): Promise<void>
     return;
   }
 
+  const from = resolveSendgridFromAddress();
+
   const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
     method: "POST",
     headers: {
@@ -60,7 +60,7 @@ async function sendEmailResponse(payload: InboundResponsePayload): Promise<void>
     },
     body: JSON.stringify({
       personalizations: [{ to: [{ email: payload.recipient }] }],
-      from: { email: parseFromEmail(from), name: parseFromName(from) },
+      from,
       subject,
       content: [
         { type: "text/plain", value: body },
@@ -127,9 +127,6 @@ export async function sendUnknownSenderReply(
 
   if (channel === "email") {
     const apiKey = process.env.SENDGRID_API_KEY;
-    const from =
-      process.env.INBOUND_EMAIL_FROM ??
-      `Seadell <noreply@${getInboundConfig().inboundEmailDomain}>`;
     const subject = "Seadell — Account not found";
     const body = [
       "Hello,",
@@ -149,6 +146,8 @@ export async function sendUnknownSenderReply(
       return;
     }
 
+    const from = resolveSendgridFromAddress();
+
     await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "POST",
       headers: {
@@ -157,7 +156,7 @@ export async function sendUnknownSenderReply(
       },
       body: JSON.stringify({
         personalizations: [{ to: [{ email: recipient }] }],
-        from: { email: parseFromEmail(from), name: parseFromName(from) },
+        from,
         subject,
         content: [
           { type: "text/plain", value: body },
@@ -237,12 +236,3 @@ function buildWhatsAppBody(payload: InboundResponsePayload, link: string): strin
   return `Received ${payload.documentCount} document(s) for ${payload.shipmentRef}${createdNote}. Processing. View: ${link}`;
 }
 
-function parseFromEmail(from: string): string {
-  const match = from.match(/<([^>]+)>/);
-  return match?.[1] ?? from;
-}
-
-function parseFromName(from: string): string {
-  const match = from.match(/^([^<]+)</);
-  return match?.[1]?.trim() ?? "Seadell";
-}
