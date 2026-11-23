@@ -89,6 +89,10 @@ export function RiskPanel({ assessment, factors }: RiskPanelProps) {
   const score = assessment?.overall_risk_score ?? null;
   const level = assessment?.risk_level ?? null;
 
+  if (!assessment) {
+    return null;
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -99,9 +103,6 @@ export function RiskPanel({ assessment, factors }: RiskPanelProps) {
         <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
-        {!assessment ? (
-          <p className="text-sm text-muted-foreground">{t("noAssessment")}</p>
-        ) : (
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
             <div className="flex shrink-0 flex-col items-center rounded-xl border bg-white px-6 py-4">
               <span
@@ -137,7 +138,6 @@ export function RiskPanel({ assessment, factors }: RiskPanelProps) {
               ) : null}
             </div>
           </div>
-        )}
       </CardContent>
     </Card>
   );

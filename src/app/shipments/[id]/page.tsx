@@ -525,6 +525,17 @@ async function ShipmentDetailContent({
           </div>
 
           <div id="checks" className="scroll-mt-24 space-y-6 lg:col-span-2">
+            <WorkflowTasksPanel
+              tasks={(workflowTasks ?? []) as WorkflowTask[]}
+              canEditTasks={canEditTasks}
+            />
+
+            <DiscrepanciesPanel
+              openDiscrepancies={openDiscrepancies}
+              resolvedDiscrepancies={resolvedDiscrepancies}
+              canAct={canEditTasks}
+            />
+
             <RiskPanel
               assessment={latestRiskAssessment}
               factors={(riskFactors ?? []) as RiskFactor[]}
@@ -538,16 +549,6 @@ async function ShipmentDetailContent({
               originCountry={shipment.origin_country}
               checks={(regulatoryChecks ?? []) as RegulatoryCheckWithRegulation[]}
               readOnly={!isOwner}
-            />
-
-            <WorkflowTasksPanel
-              tasks={(workflowTasks ?? []) as WorkflowTask[]}
-              canEditTasks={canEditTasks}
-            />
-
-            <DiscrepanciesPanel
-              openDiscrepancies={openDiscrepancies}
-              resolvedDiscrepancies={resolvedDiscrepancies}
             />
 
             <HsCodeChecksPanel

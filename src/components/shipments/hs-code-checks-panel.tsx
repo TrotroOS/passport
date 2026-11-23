@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Tags } from "lucide-react";
 import type { HsCodeVerificationCheck } from "@/types/database";
+import { sanitizeUserText } from "@/lib/security/sanitize-text";
 import { formatDate, formatStatus } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -43,6 +44,10 @@ export function HsCodeChecksPanel({ shipmentId, products }: HsCodeChecksPanelPro
       .catch(() => undefined);
   }, [shipmentId]);
 
+  if (products.length === 0 && checks.length === 0) {
+    return null;
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -74,9 +79,7 @@ export function HsCodeChecksPanel({ shipmentId, products }: HsCodeChecksPanelPro
               </li>
             ))}
           </ul>
-        ) : (
-          <p className="text-sm text-muted-foreground">No products to classify</p>
-        )}
+        ) : null}
 
         {checks.length > 0 ? (
           <ul className="space-y-2 border-t pt-4">
@@ -93,7 +96,7 @@ export function HsCodeChecksPanel({ shipmentId, products }: HsCodeChecksPanelPro
                 </div>
                 {(check.details as { message?: string })?.message ? (
                   <p className="mt-1 text-muted-foreground">
-                    {(check.details as { message?: string }).message}
+                    {sanitizeUserText(String((check.details as { message?: string }).message))}
                   </p>
                 ) : null}
                 <p className="mt-1 text-xs text-muted-foreground">
@@ -102,11 +105,7 @@ export function HsCodeChecksPanel({ shipmentId, products }: HsCodeChecksPanelPro
               </li>
             ))}
           </ul>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            Run HS verification on products to see classification checks here.
-          </p>
-        )}
+        ) : null}
       </CardContent>
     </Card>
   );

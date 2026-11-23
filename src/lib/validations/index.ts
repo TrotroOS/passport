@@ -132,7 +132,11 @@ export const confirmExtractionSchema = z.object({
 export type ConfirmExtractionInput = z.infer<typeof confirmExtractionSchema>;
 
 export const discrepancyActionSchema = z.object({
-  resolution_note: z.string().max(500).optional(),
+  resolution_note: z
+    .string()
+    .max(500)
+    .transform(sanitizeUserText)
+    .optional(),
 });
 
 export type DiscrepancyActionInput = z.infer<typeof discrepancyActionSchema>;

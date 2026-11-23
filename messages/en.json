@@ -442,6 +442,7 @@
     "noTasksYet": "No workflow tasks yet. Run verification and regulatory checks to generate tasks.",
     "allCompleted": "All tasks completed",
     "completedTasks": "Completed tasks ({count})",
+    "completedHidden": "{count} completed steps are hidden",
     "markDone": "Mark done",
     "reopen": "Reopen",
     "priority": "Priority",
@@ -474,7 +475,11 @@
     "emptyDescription": "Run verification to see cross-document checks",
     "checkCount": "{count} deterministic checks — click to expand details",
     "documentsLabel": "Documents: {ids}",
-    "noChecks": "No verification checks yet. Run verification after uploading documents."
+    "noChecks": "No verification checks yet. Run verification after uploading documents.",
+    "attentionCount": "{count} checks need attention",
+    "allPassed": "All {count} verification checks passed",
+    "showPassed": "Show {count} passed checks",
+    "hidePassed": "Hide passed checks"
   },
   "discrepancies": {
     "title": "Discrepancies",
@@ -493,6 +498,9 @@
     "resolvedToast": "Discrepancy resolved",
     "ignoredToast": "Discrepancy ignored",
     "historyCount": "{count} resolved/ignored",
+    "historyHidden": "{count} resolved findings are hidden",
+    "ignoreNoteLabel": "Why are you ignoring this? Required for the audit log.",
+    "confirmIgnore": "Confirm ignore",
     "resolvedAt": "Resolved {date}",
     "ignoredAt": "Ignored {date}"
   },
@@ -939,7 +947,21 @@
     "bill_of_lading": "Bill of lading",
     "certificate": "Certificate",
     "import_declaration": "Import declaration",
-    "other": "Other"
+    "other": "Other",
+    "quantity_mismatch": "Quantity mismatch",
+    "value_mismatch": "Value mismatch",
+    "product_description_mismatch": "Product description mismatch",
+    "seller_mismatch": "Seller mismatch",
+    "buyer_mismatch": "Buyer mismatch",
+    "missing_document": "Missing document",
+    "incomplete_extraction": "Incomplete extraction",
+    "incoterm_mismatch": "Incoterm mismatch",
+    "obtain_document": "Obtain document",
+    "resolve_discrepancy": "Resolve discrepancy",
+    "verify_permit": "Verify permit",
+    "contact_authority": "Contact authority",
+    "provide_info": "Provide information",
+    "verify_hs_code": "Verify HS code"
   },
   "events": {
     "vessel_departed": "Vessel departed",

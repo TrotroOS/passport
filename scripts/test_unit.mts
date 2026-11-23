@@ -855,6 +855,73 @@ test("scoreVsBenchmark detects above", () => {
   assert.equal(scoreVsBenchmark(85, 78), "above");
 });
 
+console.log("\nDiscrepancy and task display");
+import { formatDiscrepancyComparisons, sanitizeDiscrepancyDescription } from "../src/lib/shipments/discrepancy-display.ts";
+import { visibleWorkflowTasks } from "../src/lib/shipments/workflow-task-display.ts";
+import { maskClientError } from "../src/lib/security/mask-client-error.ts";
+import type { WorkflowTask } from "../src/types/database.ts";
+
+test("formatDiscrepancyComparisons uses expected vs found labels", () => {
+  const rows = formatDiscrepancyComparisons({
+    invoice_total_value: 1200,
+    packing_list_quantity: 1080,
+    document_id: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+    stack: "Error: boom\n    at engine.ts:12",
+  });
+  assert.deepEqual(
+    rows.map((row) => row.label),
+    ["Invoice Total Value", "Packing List Quantity"]
+  );
+});
+
+test("sanitizeDiscrepancyDescription drops stack-like copy", () => {
+  assert.equal(sanitizeDiscrepancyDescription("Failure postgres boom"), "");
+  assert.equal(sanitizeDiscrepancyDescription("Quantity mismatch on invoice"), "Quantity mismatch on invoice");
+});
+
+test("visibleWorkflowTasks hides resolve_discrepancy clones", () => {
+  const tasks = [
+    {
+      id: "1",
+      shipment_id: "s",
+      title: "Resolve discrepancy: qty",
+      description: null,
+      task_type: "resolve_discrepancy",
+      priority: "urgent",
+      status: "open",
+      assigned_to: null,
+      due_date: null,
+      related_document_id: null,
+      related_regulation_id: null,
+      created_at: "",
+      updated_at: "",
+    },
+    {
+      id: "2",
+      shipment_id: "s",
+      title: "Upload commercial invoice",
+      description: null,
+      task_type: "obtain_document",
+      priority: "high",
+      status: "open",
+      assigned_to: null,
+      due_date: null,
+      related_document_id: null,
+      related_regulation_id: null,
+      created_at: "",
+      updated_at: "",
+    },
+  ] as WorkflowTask[];
+  const visible = visibleWorkflowTasks(tasks);
+  assert.equal(visible.length, 1);
+  assert.equal(visible[0].id, "2");
+});
+
+test("maskClientError hides database errors", () => {
+  assert.equal(maskClientError("PGRST116: JWT expired", "Action failed"), "Action failed");
+  assert.equal(maskClientError("Discrepancy not found", "Action failed"), "Discrepancy not found");
+});
+
 console.log("\nMissing translation fallback");
 test("formats analytics.kpiShipments", () => {
   assert.equal(

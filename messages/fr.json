@@ -274,7 +274,8 @@
     "done": "Terminé",
     "blocked": "Bloqué",
     "updateFailed": "Échec de la mise à jour",
-    "markedAs": "Tâche marquée comme {status}"
+    "markedAs": "Tâche marquée comme {status}",
+    "completedHidden": "{count} completed steps are hidden"
   },
   "documents": {
     "upload": "Téléverser un document",
@@ -297,7 +298,11 @@
     "noChecks": "Aucun contrôle. Lancez la vérification après téléversement.",
     "emptyDescription": "Run verification to see cross-document checks",
     "checkCount": "{count} deterministic checks — click to expand details",
-    "documentsLabel": "Documents: {ids}"
+    "documentsLabel": "Documents: {ids}",
+    "attentionCount": "{count} checks need attention",
+    "allPassed": "All {count} verification checks passed",
+    "showPassed": "Show {count} passed checks",
+    "hidePassed": "Hide passed checks"
   },
   "discrepancies": {
     "title": "Divergences",
@@ -317,7 +322,10 @@
     "ignoredToast": "Discrepancy ignored",
     "historyCount": "{count} resolved/ignored",
     "resolvedAt": "Resolved {date}",
-    "ignoredAt": "Ignored {date}"
+    "ignoredAt": "Ignored {date}",
+    "historyHidden": "{count} resolved findings are hidden",
+    "ignoreNoteLabel": "Why are you ignoring this? Required for the audit log.",
+    "confirmIgnore": "Confirm ignore"
   },
   "hsCode": {
     "title": "Contrôles code SH",
@@ -580,7 +588,21 @@
     "bill_of_lading": "Bill of lading",
     "certificate": "Certificate",
     "import_declaration": "Import declaration",
-    "other": "Other"
+    "other": "Other",
+    "quantity_mismatch": "Quantity mismatch",
+    "value_mismatch": "Value mismatch",
+    "product_description_mismatch": "Product description mismatch",
+    "seller_mismatch": "Seller mismatch",
+    "buyer_mismatch": "Buyer mismatch",
+    "missing_document": "Missing document",
+    "incomplete_extraction": "Incomplete extraction",
+    "incoterm_mismatch": "Incoterm mismatch",
+    "obtain_document": "Obtain document",
+    "resolve_discrepancy": "Resolve discrepancy",
+    "verify_permit": "Verify permit",
+    "contact_authority": "Contact authority",
+    "provide_info": "Provide information",
+    "verify_hs_code": "Verify HS code"
   },
   "events": {
     "vessel_departed": "Navire parti",
