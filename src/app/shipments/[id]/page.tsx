@@ -35,6 +35,7 @@ import { ReadinessPanel } from "@/components/shipments/readiness-panel";
 import { ProductHsPanel } from "@/components/shipments/product-hs-panel";
 import { HsCodeChecksPanel } from "@/components/shipments/hs-code-checks-panel";
 import { ShipmentDetailActions } from "@/components/shipments/shipment-detail-actions";
+import { ShipmentJumpNav } from "@/components/shipments/shipment-jump-nav";
 import { ShipmentTrackingPanel } from "@/components/shipments/shipment-tracking-panel";
 import { getTrackingConfig } from "@/lib/tracking/config";
 import { AuditEventList } from "@/components/audit/audit-event-list";
@@ -318,7 +319,7 @@ async function ShipmentDetailContent({
   );
 
   return (
-      <main className="no-print mx-auto w-full max-w-7xl min-w-0 overflow-x-hidden px-4 py-6 print:hidden sm:px-6 sm:py-8 lg:px-8">
+      <main id="main-content" className="no-print mx-auto w-full max-w-7xl min-w-0 overflow-x-hidden px-4 py-6 print:hidden sm:px-6 sm:py-8 lg:px-8">
         <Button variant="ghost" size="sm" asChild className="no-print mb-6 print:hidden">
           <Link href="/dashboard">
             <ArrowLeft className="me-2 h-4 w-4" />
@@ -369,7 +370,9 @@ async function ShipmentDetailContent({
           />
         </div>
 
-        <div className="mb-6 grid min-w-0 gap-6 lg:grid-cols-2">
+        <ShipmentJumpNav />
+
+        <div id="overview" className="mb-6 scroll-mt-24 grid min-w-0 gap-6 lg:grid-cols-2">
           <ReadinessPanel
             shipmentId={id}
             ownerConfirmed={shipment.owner_confirmed_ready}
@@ -380,11 +383,13 @@ async function ShipmentDetailContent({
             canOwnerConfirm={canOwnerConfirm}
             canBrokerConfirm={canBrokerConfirm}
           />
-          <CollaboratorsPanel
-            shipmentId={id}
-            collaborators={collaborators}
-            canManage={isOwner}
-          />
+          <div id="people" className="scroll-mt-24">
+            <CollaboratorsPanel
+              shipmentId={id}
+              collaborators={collaborators}
+              canManage={isOwner}
+            />
+          </div>
         </div>
 
         <div className="mb-6 min-w-0">
@@ -414,7 +419,7 @@ async function ShipmentDetailContent({
           <CorridorMoatPanel shipmentId={id} />
         </div>
 
-        <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+        <div id="cargo" className="mb-6 grid min-w-0 scroll-mt-24 gap-6 lg:grid-cols-2">
           <Card className="min-w-0 overflow-hidden">
             <CardHeader>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -495,7 +500,7 @@ async function ShipmentDetailContent({
             </div>
           ) : null}
 
-          <Card className="min-w-0 overflow-hidden lg:col-span-2">
+          <Card id="documents" className="min-w-0 scroll-mt-24 overflow-hidden lg:col-span-2">
             <CardHeader>
               <div className="flex min-w-0 items-center gap-2">
                 <FileText className="h-5 w-5 shrink-0 text-muted-foreground" />
@@ -509,7 +514,7 @@ async function ShipmentDetailContent({
             </CardContent>
           </Card>
 
-          <div className="lg:col-span-2">
+          <div id="tracking" className="scroll-mt-24 lg:col-span-2">
             <ShipmentTrackingPanel
               shipmentId={id}
               containers={(containers ?? []) as ContainerDetail[]}
@@ -519,20 +524,14 @@ async function ShipmentDetailContent({
             />
           </div>
 
-          <div className="lg:col-span-2">
+          <div id="checks" className="scroll-mt-24 space-y-6 lg:col-span-2">
             <RiskPanel
               assessment={latestRiskAssessment}
               factors={(riskFactors ?? []) as RiskFactor[]}
             />
-          </div>
 
-          {tradeGraph && (
-            <div className="lg:col-span-2">
-              <TradeGraphPanelLazy graph={tradeGraph} />
-            </div>
-          )}
+            {tradeGraph ? <TradeGraphPanelLazy graph={tradeGraph} /> : null}
 
-          <div className="lg:col-span-2">
             <CompliancePanel
               shipmentId={id}
               destinationCountry={shipment.destination_country}
@@ -540,55 +539,47 @@ async function ShipmentDetailContent({
               checks={(regulatoryChecks ?? []) as RegulatoryCheckWithRegulation[]}
               readOnly={!isOwner}
             />
-          </div>
 
-          <div className="lg:col-span-2">
             <WorkflowTasksPanel
               tasks={(workflowTasks ?? []) as WorkflowTask[]}
               canEditTasks={canEditTasks}
             />
-          </div>
 
-          <div className="lg:col-span-2">
             <DiscrepanciesPanel
               openDiscrepancies={openDiscrepancies}
               resolvedDiscrepancies={resolvedDiscrepancies}
             />
-          </div>
 
-          <div className="lg:col-span-2">
             <HsCodeChecksPanel
               shipmentId={id}
               products={(products ?? []) as Product[]}
             />
-          </div>
 
-          <div className="lg:col-span-2">
             <VerificationChecksPanel
               checks={(verificationChecks ?? []) as VerificationCheck[]}
             />
           </div>
 
-          <div className="lg:col-span-2">
+          <div id="activity" className="scroll-mt-24 space-y-6 lg:col-span-2">
             <ShipmentCommentsPanel
               shipmentId={id}
               initialComments={(comments ?? []) as ShipmentComment[]}
               canComment={canComment}
             />
-          </div>
 
-          <Card className="min-w-0 overflow-hidden lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="text-lg">{t("auditLog")}</CardTitle>
-              <CardDescription>{t("auditDescription")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <AuditEventList
-                events={(auditEvents ?? []) as AuditEvent[]}
-                emptyMessage={t("noAudit")}
-              />
-            </CardContent>
-          </Card>
+            <Card className="min-w-0 overflow-hidden">
+              <CardHeader>
+                <CardTitle className="text-lg">{t("auditLog")}</CardTitle>
+                <CardDescription>{t("auditDescription")}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AuditEventList
+                  events={(auditEvents ?? []) as AuditEvent[]}
+                  emptyMessage={t("noAudit")}
+                />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
   );

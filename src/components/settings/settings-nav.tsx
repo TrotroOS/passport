@@ -2,19 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-
-const links = [
-  { href: "/settings/profile", label: "Profile" },
-  { href: "/settings/activity", label: "Activity" },
-  { href: "/settings/channels", label: "Channels" },
-  { href: "/settings/api-keys", label: "API keys" },
-  { href: "/settings/webhooks", label: "Webhooks" },
-  { href: "/settings/api-docs", label: "API docs" },
-  { href: "/settings/billing", label: "Billing" },
-  { href: "/help", label: "Help" },
-  { href: "/legal", label: "Legal" },
-];
 
 function NavLink({ href, label }: { href: string; label: string }) {
   const pathname = usePathname();
@@ -39,16 +28,29 @@ function NavLink({ href, label }: { href: string; label: string }) {
 }
 
 export function SettingsNav() {
+  const t = useTranslations("nav");
+  const links = [
+    { href: "/settings/profile", label: t("settingsProfile") },
+    { href: "/settings/activity", label: t("activity") },
+    { href: "/settings/channels", label: t("settingsChannels") },
+    { href: "/settings/api-keys", label: t("apiKeys") },
+    { href: "/settings/webhooks", label: t("settingsWebhooks") },
+    { href: "/settings/api-docs", label: t("settingsApiDocs") },
+    { href: "/settings/billing", label: t("settingsBilling") },
+    { href: "/help", label: t("help") },
+    { href: "/legal", label: t("legal") },
+  ];
+
   return (
     <nav
-      aria-label="Settings navigation"
+      aria-label={t("settings")}
       className={cn(
         "shrink-0 border-b bg-background md:w-52 md:rounded-lg md:border md:bg-card md:p-2 md:shadow-sm",
         "md:sticky md:top-[4.5rem] md:self-start lg:top-20"
       )}
     >
       <p className="hidden px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground md:block">
-        Settings
+        {t("settings")}
       </p>
       <ul
         className={cn(
@@ -62,9 +64,6 @@ export function SettingsNav() {
           </li>
         ))}
       </ul>
-      <p className="px-2 pb-2 text-[11px] text-muted-foreground md:hidden">
-        Swipe to see more sections
-      </p>
     </nav>
   );
 }

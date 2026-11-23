@@ -40,7 +40,7 @@ export async function DashboardMain({ userId, organizationId }: DashboardMainPro
   const pendingWorkflowTasks = shipments.reduce((sum, s) => sum + s.pendingTasks, 0);
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+    <main id="main-content" className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div className="mb-8 flex min-w-0 flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-6">
         <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>

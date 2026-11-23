@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, GitBranch, ShieldCheck } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { GitBranch, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getUserProfileForUser, getOrganizationIdForUser } from "@/lib/auth/get-organization-id";
 import { AppHeader } from "@/components/layout/app-header";
@@ -18,9 +19,10 @@ export default async function AnalyticsPage() {
   }
 
   const supabase = await createClient();
-  const [organizationId, profile] = await Promise.all([
+  const [organizationId, profile, tNav] = await Promise.all([
     getOrganizationIdForUser(supabase, user.id),
     getUserProfileForUser(supabase, user.id),
+    getTranslations("nav"),
   ]);
   if (!organizationId) {
     redirect("/dashboard");
@@ -39,27 +41,23 @@ export default async function AnalyticsPage() {
         userEmail={profile?.email}
         isPlatformAdmin={profile?.is_platform_admin === true}
       />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <Button variant="ghost" size="sm" asChild className="mb-6">
-          <Link href="/dashboard">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to dashboard
-          </Link>
-        </Button>
+      <main id="main-content" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <div />
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/analytics/governance">
-              <ShieldCheck className="me-2 h-4 w-4" />
-              Data governance
-            </Link>
-          </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/analytics/network">
-              <GitBranch className="me-2 h-4 w-4" />
-              Trade network
-            </Link>
-          </Button>
+          <h1 className="text-2xl font-bold tracking-tight">{tNav("analytics")}</h1>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/analytics/governance">
+                <ShieldCheck className="me-2 h-4 w-4" />
+                {tNav("dataGovernance")}
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/analytics/network">
+                <GitBranch className="me-2 h-4 w-4" />
+                {tNav("tradeNetwork")}
+              </Link>
+            </Button>
+          </div>
         </div>
         <AnalyticsDashboardLazy />
       </main>

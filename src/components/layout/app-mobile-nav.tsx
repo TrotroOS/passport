@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
-  Activity,
   BarChart3,
   Bell,
+  Calendar,
   CheckCircle2,
+  CircleHelp,
   LayoutDashboard,
   LogOut,
   Menu,
+  Plus,
   Settings,
   Shield,
   X,
@@ -37,12 +39,14 @@ export function AppMobileNav({ showAdmin = false }: AppMobileNavProps) {
   }, [open]);
 
   const links = [
-    { href: "/dashboard", label: t("dashboard"), icon: LayoutDashboard },
+    { href: "/dashboard", label: t("shipments"), icon: LayoutDashboard },
+    { href: "/shipments/new", label: t("newShipment"), icon: Plus },
     { href: "/analytics", label: t("analytics"), icon: BarChart3 },
     { href: "/readiness", label: t("readiness"), icon: CheckCircle2 },
+    { href: "/compliance/calendar", label: t("calendar"), icon: Calendar },
     { href: "/compliance-alerts", label: t("complianceAlerts"), icon: Bell },
     { href: "/settings/profile", label: t("settings"), icon: Settings },
-    { href: "/settings/activity", label: t("activity"), icon: Activity },
+    { href: "/help", label: t("help"), icon: CircleHelp },
   ];
 
   return (

@@ -59,16 +59,17 @@ export function ShipmentSearch() {
   }, []);
 
   return (
-    <div className="relative hidden md:block">
+    <div className="relative">
       <Button
         type="button"
         variant="outline"
         size="sm"
-        className="h-9 w-44 justify-start gap-2 text-muted-foreground lg:w-56"
+        className="h-9 w-9 justify-center p-0 text-muted-foreground sm:w-auto sm:justify-start sm:gap-2 sm:px-3 lg:w-56"
         onClick={() => setOpen(true)}
+        aria-label={t("placeholder")}
       >
         <Search className="h-4 w-4 shrink-0" />
-        <span className="truncate">{t("placeholder")}</span>
+        <span className="hidden truncate sm:inline">{t("placeholder")}</span>
         <kbd className="ms-auto hidden rounded border bg-muted px-1 text-[10px] lg:inline">/</kbd>
       </Button>
 

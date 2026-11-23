@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getUserProfileForUser, getOrganizationIdForUser } from "@/lib/auth/get-organization-id";
@@ -18,7 +19,10 @@ export default async function ReadinessPage() {
   const organizationId = await getOrganizationIdForUser(supabase, user.id);
   if (!organizationId) redirect("/dashboard");
 
-  const profile = await getUserProfileForUser(supabase, user.id);
+  const [profile, tNav] = await Promise.all([
+    getUserProfileForUser(supabase, user.id),
+    getTranslations("nav"),
+  ]);
   const orgName =
     profile?.organizations && typeof profile.organizations === "object" && "name" in profile.organizations
       ? (profile.organizations as { name: string }).name
@@ -27,11 +31,11 @@ export default async function ReadinessPage() {
   return (
     <div className="min-h-screen bg-white">
       <AppHeader organizationName={orgName} userEmail={profile?.email} />
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main id="main-content" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Button variant="ghost" size="sm" asChild className="mb-6">
           <Link href="/dashboard">
             <ArrowLeft className="me-2 h-4 w-4" />
-            Back to dashboard
+            {tNav("backToDashboard")}
           </Link>
         </Button>
         <ReadinessDashboardPanel />
