@@ -29,7 +29,7 @@ export function PassportLogo({
     return (
       <div
         className={cn(
-          "relative shrink-0 overflow-hidden rounded-md bg-[#0d0d0d]",
+          "relative shrink-0 overflow-hidden rounded-md bg-[#2563eb]",
           className
         )}
         style={{ width: resolvedWidth, height: resolvedHeight }}
@@ -51,7 +51,7 @@ export function PassportLogo({
   return (
     <div
       className={cn(
-        "relative shrink-0 overflow-hidden rounded-md bg-[#0d0d0d]",
+          "relative shrink-0 overflow-hidden rounded-md bg-[#2563eb]",
         className
       )}
       style={{ width: diameter, height: diameter }}
