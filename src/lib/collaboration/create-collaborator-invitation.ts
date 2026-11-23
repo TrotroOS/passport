@@ -139,14 +139,6 @@ export async function createCollaboratorInvitation(
       };
     }
 
-    if (existing?.status === "pending") {
-      return {
-        email,
-        success: false,
-        error: "An invitation is already pending for this user",
-      };
-    }
-
     const collaboratorPayload: Record<string, unknown> = applyParticipantType({
       shipment_id: shipmentId,
       organization_id: invitee.organization_id,
@@ -187,7 +179,7 @@ export async function createCollaboratorInvitation(
     await writeAuditEvent(admin, {
       organizationId: shipment.organization_id,
       userId,
-      action: "collaborator.invited",
+      action: existing ? "collaborator.invite_resent" : "collaborator.invited",
       entityType: "shipment_collaborator",
       entityId: collaborator.id,
       shipmentId,
@@ -197,6 +189,7 @@ export async function createCollaboratorInvitation(
         invitee_organization_id: invitee.organization_id,
         role,
         participant_type: participantType,
+        resent: Boolean(existing),
       },
     });
 
@@ -228,14 +221,6 @@ export async function createCollaboratorInvitation(
         email,
         success: false,
         error: "This email already has active access to this shipment",
-      };
-    }
-
-    if (existingEmailInvite?.status === "pending") {
-      return {
-        email,
-        success: false,
-        error: "An invitation is already pending for this email",
       };
     }
 
@@ -276,7 +261,9 @@ export async function createCollaboratorInvitation(
     await writeAuditEvent(admin, {
       organizationId: shipment.organization_id,
       userId,
-      action: "collaborator.invited",
+      action: existingEmailInvite
+        ? "collaborator.invite_resent"
+        : "collaborator.invited",
       entityType: "shipment_collaborator",
       entityId: collaborator.id,
       shipmentId,
@@ -285,6 +272,7 @@ export async function createCollaboratorInvitation(
         role,
         participant_type: participantType,
         is_external: true,
+        resent: Boolean(existingEmailInvite),
       },
     });
 
